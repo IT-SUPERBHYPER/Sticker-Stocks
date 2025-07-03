@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <title>Sticker Inventory Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#007bff">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.png" sizes="any">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -219,11 +216,12 @@
   <canvas id="usageChart" height="100"></canvas>
 </div>
 
-<!-- Load External Libraries - SAFE SOURCES -->
-<script src=" https://cdn.jsdelivr.net/npm/chart.js @3.9.1/dist/chart.min.js"></script>
+<!-- Load Working External Libraries -->
+<script src=" https://unpkg.com/chart.js @3.9.1/dist/chart.min.js"></script>
 <script src="https://unpkg.com/jspdf @2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/jspdf-autotable @3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
 
+<!-- App Logic -->
 <script>
   let inventory = [];
 
@@ -367,14 +365,12 @@
 
     window.myChartInstance = new Chart(ctx, {
       type: 'pie',
-       {
+      data: {
         labels: labels,
         datasets: [{
           label: 'Sticker Usage by Department',
-           data,
-          backgroundColor: [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-          ]
+          data: data,
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
         }]
       },
       options: {
@@ -408,7 +404,7 @@
     URL.revokeObjectURL(url);
   }
 
-  async function exportToPDF() {
+  function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -434,7 +430,7 @@
     });
 
     doc.autoTable({
-      head: [["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date", "Cost Each", "Total Cost"],
+      head: [["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date", "Cost Each", "Total Cost"]],
       body: rows,
       startY: 30
     });
@@ -442,20 +438,22 @@
     doc.save("sticker_usage_report.pdf");
   }
 
-  // Set today's date as default
+  function updateSelectors() {
+    const select = document.getElementById("selectSticker");
+    select.innerHTML = "";
+
+    inventory.forEach((item, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = item.name;
+      select.appendChild(option);
+    });
+  }
+
   window.onload = () => {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("deductDate").value = today;
   };
-</script>
-
-<!-- Service Worker Registration -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.error('SW registration failed:', err));
-  }
 </script>
 
 </body>
