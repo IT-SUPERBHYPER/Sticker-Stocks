@@ -8,65 +8,127 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.png" sizes="any">
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --card-bg: white;
+      --text-color: #333;
+      --accent-color: #007bff;
+      --border-color: #ddd;
+      --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
       padding: 20px;
-      background-color: #f4f4f4;
     }
-    h1, h2 {
+
+    h1, h2, h3 {
       text-align: center;
+      color: #2c3e50;
     }
-    table, .report-summary {
+
+    .container {
+      max-width: 960px;
+      margin: auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: var(--box-shadow);
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      box-shadow: var(--box-shadow);
     }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
+      border: 1px solid var(--border-color);
+      padding: 12px;
       text-align: center;
     }
-    input[type="text"], input[type="number"], select, input[type="date"] {
-      padding: 5px;
+
+    th {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      padding: 10px;
       width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
+
     button {
-      padding: 8px 12px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
       cursor: pointer;
-      margin-top: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      margin: 5px;
     }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
+
+    button:hover {
+      background-color: #0056b3;
     }
+
     .form-group {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
     }
+
     .form-group label {
       flex: 1;
-      min-width: 150px;
+      min-width: 160px;
+      font-weight: 500;
+      align-self: center;
     }
+
     .form-group div {
       flex: 3;
     }
+
     .report-summary {
       margin-top: 30px;
-      background-color: #eef;
-      padding: 15px;
-      border-radius: 8px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
     }
+
     canvas {
       margin-top: 30px;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -117,8 +179,6 @@
 
   <!-- Report Table -->
   <h2>Inventory & Usage Report</h2>
-  <button onclick="exportToCSV()">📥 Export to CSV</button>
-  <button onclick="exportToPDF()">📄 Export to PDF</button>
   <table id="reportTable">
     <thead>
       <tr>
@@ -151,73 +211,9 @@
 </div>
 
 <!-- Load External Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jsPdfAutoTable.min.js "></script>
-
+<script src=" https://cdn.jsdelivr.net/npm/chart.js "></script>
 <script>
   let inventory = [];
-
-  window.onload = () => {
-    const saved = localStorage.getItem("inventory");
-    if (saved) inventory = JSON.parse(saved);
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("deductDate").value = today;
-    updateSelectors();
-    updateReport();
-  };
-
-  function saveData() {
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-  }
-
-  function exportToCSV() {
-    let csv = "Sticker Name,Total Stock,Remaining Stock,Department,Amount,Person,Date\n";
-    inventory.forEach(item => {
-      item.usage.forEach(u => {
-        csv += `"${item.name}",${item.totalStock},${item.remainingStock},"${u.department}",${u.amount},"${u.person}","${u.date}"\n`;
-      });
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sticker_usage_report.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFontSize(16);
-    doc.text("Sticker Usage Report", 14, 20);
-
-    const rows = [];
-    inventory.forEach(item => {
-      item.usage.forEach(u => {
-        rows.push([
-          item.name,
-          item.totalStock,
-          item.remainingStock,
-          u.department,
-          u.amount,
-          u.person,
-          u.date
-        ]);
-      });
-    });
-
-    doc.autoTable({
-      head: [["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date"]],
-      body: rows,
-      startY: 30
-    });
-
-    doc.save("sticker_usage_report.pdf");
-  }
 
   function addSticker() {
     const name = document.getElementById("stickerName").value.trim();
@@ -232,10 +228,9 @@
       name,
       totalStock: stock,
       remainingStock: stock,
-      usage: [] // { department, amount, person, date }
+      usage: []
     });
 
-    saveData();
     updateSelectors();
     updateReport();
     document.getElementById("stickerName").value = "";
@@ -244,7 +239,7 @@
 
   function updateSelectors() {
     const select = document.getElementById("selectSticker");
-    select.innerHTML = ""; // Clear options
+    select.innerHTML = "";
 
     inventory.forEach((item, index) => {
       const option = document.createElement("option");
@@ -275,7 +270,6 @@
     item.remainingStock -= amount;
     item.usage.push({ department, amount, person, date });
 
-    saveData();
     updateReport();
     document.getElementById("department").value = "";
     document.getElementById("person").value = "";
@@ -341,17 +335,15 @@
     const labels = Object.keys(deptUsage).map(d => d.charAt(0).toUpperCase() + d.slice(1));
     const data = Object.values(deptUsage);
 
-    if (window.myChartInstance) {
-      window.myChartInstance.destroy(); // Destroy previous chart
-    }
+    if (window.myChartInstance) window.myChartInstance.destroy();
 
     window.myChartInstance = new Chart(ctx, {
       type: 'pie',
-      data: {
+       {
         labels: labels,
         datasets: [{
           label: 'Sticker Usage by Department',
-          data: data,
+           data,
           backgroundColor: [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
           ]
@@ -360,9 +352,7 @@
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            position: 'right'
-          },
+          legend: { position: 'right' },
           title: {
             display: true,
             text: 'UsageId Distribution by Department'
@@ -371,6 +361,12 @@
       }
     });
   }
+
+  // Set today's date as default
+  window.onload = () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("deductDate").value = today;
+  };
 </script>
 
 <!-- Service Worker Registration -->

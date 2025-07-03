@@ -1,5 +1,5 @@
 const CACHE_NAME = 'sticker-manager-cache-v1';
-const urlsToCache = ['/', '/sticker_inventory.html', '/icon.png'];
+const urlsToCache = ['/', '/index.html', '/icon.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
