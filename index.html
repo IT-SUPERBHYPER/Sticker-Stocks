@@ -147,6 +147,10 @@
     <label for="initialStock">Initial Stock:</label>
     <div><input type="number" id="initialStock" min="0"></div>
   </div>
+  <div class="form-group">
+    <label for="stickerCost">Cost per Sticker (R):</label>
+    <div><input type="number" id="stickerCost" step="0.01" min="0"></div>
+  </div>
   <button onclick="addSticker()">Add Sticker</button>
 
   <hr>
@@ -179,6 +183,8 @@
 
   <!-- Report Table -->
   <h2>Inventory & Usage Report</h2>
+  <button onclick="exportToCSV()">📥 Export to CSV</button>
+  <button onclick="exportToPDF()">📄 Export to PDF</button>
   <table id="reportTable">
     <thead>
       <tr>
@@ -186,6 +192,8 @@
         <th>Total Stock</th>
         <th>Used By Departments</th>
         <th>Remaining Stock</th>
+        <th>Cost per Sticker</th>
+        <th>Total Cost Used</th>
       </tr>
     </thead>
     <tbody>
@@ -197,10 +205,11 @@
   <div class="report-summary">
     <h3>📊 Summary Report</h3>
     <p><strong>Total Stickers Used:</strong> <span id="totalUsed">0</span></p>
+    <p><strong>Total Cost of Used Stickers:</strong> R<span id="totalCost">0.00</span></p>
     <p><strong>Total Remaining Stickers:</strong> <span id="totalRemaining">0</span></p>
     <p><strong>Total Stickers Ever in Inventory:</strong> <span id="totalEver">0</span></p>
 
-    <h4>UsageId Department Breakdown</h4>
+    <h4>UsageId Department Breakdown (with Cost)</h4>
     <ul id="deptUsageList">
       <li>No usage recorded yet.</li>
     </ul>
@@ -212,12 +221,16 @@
 
 <!-- Load External Libraries -->
 <script src=" https://cdn.jsdelivr.net/npm/chart.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jsPdfAutoTable.min.js "></script>
+
 <script>
   let inventory = [];
 
   function addSticker() {
     const name = document.getElementById("stickerName").value.trim();
     const stock = parseInt(document.getElementById("initialStock").value);
+    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
 
     if (!name || isNaN(stock) || stock < 0) {
       alert("Please enter valid sticker name and stock.");
@@ -228,13 +241,15 @@
       name,
       totalStock: stock,
       remainingStock: stock,
-      usage: []
+      costPerSticker: cost,
+      usage: [] // {department, amount, person, date}
     });
 
     updateSelectors();
     updateReport();
     document.getElementById("stickerName").value = "";
     document.getElementById("initialStock").value = "";
+    document.getElementById("stickerCost").value = "";
   }
 
   function updateSelectors() {
@@ -284,7 +299,10 @@
     let totalUsed = 0;
     let totalRemaining = 0;
     let totalEver = 0;
+    let totalCost = 0;
+
     const deptUsage = {};
+    const deptCost = {};
 
     inventory.forEach(item => {
       const used = item.totalStock - item.remainingStock;
@@ -294,6 +312,7 @@
 
       item.usage.forEach(u => {
         deptUsage[u.department] = (deptUsage[u.department] || 0) + u.amount;
+        deptCost[u.department] = (deptCost[u.department] || 0) + (u.amount * item.costPerSticker);
       });
 
       const tr = document.createElement("tr");
@@ -301,11 +320,15 @@
         `${u.department} (${u.amount}) - ${u.person} on ${u.date}`
       ).join("<br>") || "None";
 
+      const totalUsedCost = used * item.costPerSticker;
+
       tr.innerHTML = `
         <td>${item.name}</td>
         <td>${item.totalStock}</td>
         <td>${usedBy}</td>
         <td>${item.remainingStock}</td>
+        <td>R${item.costPerSticker.toFixed(2)}</td>
+        <td>R${totalUsedCost.toFixed(2)}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -313,6 +336,7 @@
     document.getElementById("totalUsed").textContent = totalUsed;
     document.getElementById("totalRemaining").textContent = totalRemaining;
     document.getElementById("totalEver").textContent = totalEver;
+    document.getElementById("totalCost").textContent = totalUsed === 0 ? "0.00" : (totalUsed * getAverageCost()).toFixed(2);
 
     const deptList = document.getElementById("deptUsageList");
     deptList.innerHTML = "";
@@ -321,12 +345,18 @@
     } else {
       for (let dept in deptUsage) {
         const li = document.createElement("li");
-        li.textContent = `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${deptUsage[dept]} stickers`;
+        li.textContent = `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${deptUsage[dept]} stickers → R${deptCost[dept].toFixed(2)}`;
         deptList.appendChild(li);
       }
     }
 
     updateChart(deptUsage);
+  }
+
+  function getAverageCost() {
+    const totalCost = inventory.reduce((sum, item) => sum + (item.costPerSticker * (item.totalStock - item.remainingStock)), 0);
+    const totalUsed = inventory.reduce((sum, item) => sum + (item.totalStock - item.remainingStock), 0);
+    return totalUsed > 0 ? totalCost / totalUsed : 0;
   }
 
   function updateChart(deptUsage) {
@@ -360,6 +390,58 @@
         }
       }
     });
+  }
+
+  function exportToCSV() {
+    let csv = "Sticker Name,Total Stock,Remaining Stock,Department,Amount,Person,Date,Cost per Sticker,Total Cost\n";
+    inventory.forEach(item => {
+      item.usage.forEach(u => {
+        const totalCost = u.amount * item.costPerSticker;
+        csv += `"${item.name}",${item.totalStock},${item.remainingStock},"${u.department}",${u.amount},"${u.person}","${u.date}",R${item.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\n`;
+      });
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sticker_usage_report.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Sticker Usage Report", 14, 20);
+
+    const rows = [];
+    inventory.forEach(item => {
+      item.usage.forEach(u => {
+        const totalCost = u.amount * item.costPerSticker;
+        rows.push([
+          item.name,
+          item.totalStock,
+          item.remainingStock,
+          u.department,
+          u.amount,
+          u.person,
+          u.date,
+          `R${item.costPerSticker.toFixed(2)}`,
+          `R${totalCost.toFixed(2)}`
+        ]);
+      });
+    });
+
+    doc.autoTable({
+      head: ["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date", "Cost Each", "Total Cost"],
+      body: rows,
+      startY: 30
+    });
+
+    doc.save("sticker_usage_report.pdf");
   }
 
   // Set today's date as default
