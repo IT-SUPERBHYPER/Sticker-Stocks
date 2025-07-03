@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sticker Inventory Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#007bff">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png" sizes="any">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    table, .report-summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="text"], input[type="number"], select, input[type="date"] {
+      padding: 5px;
+      width: 100%;
+    }
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .form-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      flex: 1;
+      min-width: 150px;
+    }
+    .form-group div {
+      flex: 3;
+    }
+    .report-summary {
+      margin-top: 30px;
+      background-color: #eef;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    canvas {
+      margin-top: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Sticker Inventory Management</h1>
+
+  <!-- Add New Sticker -->
+  <h2>Add New Sticker</h2>
+  <div class="form-group">
+    <label for="stickerName">Sticker Name:</label>
+    <div><input type="text" id="stickerName"></div>
+  </div>
+  <div class="form-group">
+    <label for="initialStock">Initial Stock:</label>
+    <div><input type="number" id="initialStock" min="0"></div>
+  </div>
+  <button onclick="addSticker()">Add Sticker</button>
+
+  <hr>
+
+  <!-- Deduct Stock -->
+  <h2>Deduct Sticker Usage</h2>
+  <div class="form-group">
+    <label for="selectSticker">Select Sticker:</label>
+    <div><select id="selectSticker"></select></div>
+  </div>
+  <div class="form-group">
+    <label for="department">Department:</label>
+    <div><input type="text" id="department"></div>
+  </div>
+  <div class="form-group">
+    <label for="person">Person:</label>
+    <div><input type="text" id="person"></div>
+  </div>
+  <div class="form-group">
+    <label for="deductDate">Date of Use:</label>
+    <div><input type="date" id="deductDate"></div>
+  </div>
+  <div class="form-group">
+    <label for="deductAmount">Deduct Amount:</label>
+    <div><input type="number" id="deductAmount" min="1"></div>
+  </div>
+  <button onclick="deductStock()">Deduct Stock</button>
+
+  <hr>
+
+  <!-- Report Table -->
+  <h2>Inventory & Usage Report</h2>
+  <button onclick="exportToCSV()">📥 Export to CSV</button>
+  <button onclick="exportToPDF()">📄 Export to PDF</button>
+  <table id="reportTable">
+    <thead>
+      <tr>
+        <th>Sticker Name</th>
+        <th>Total Stock</th>
+        <th>Used By Departments</th>
+        <th>Remaining Stock</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamic rows go here -->
+    </tbody>
+  </table>
+
+  <!-- Summary Report -->
+  <div class="report-summary">
+    <h3>📊 Summary Report</h3>
+    <p><strong>Total Stickers Used:</strong> <span id="totalUsed">0</span></p>
+    <p><strong>Total Remaining Stickers:</strong> <span id="totalRemaining">0</span></p>
+    <p><strong>Total Stickers Ever in Inventory:</strong> <span id="totalEver">0</span></p>
+
+    <h4>UsageId Department Breakdown</h4>
+    <ul id="deptUsageList">
+      <li>No usage recorded yet.</li>
+    </ul>
+  </div>
+
+  <!-- Chart -->
+  <canvas id="usageChart" height="100"></canvas>
+</div>
+
+<!-- Load External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jsPdfAutoTable.min.js "></script>
+
+<script>
+  let inventory = [];
+
+  window.onload = () => {
+    const saved = localStorage.getItem("inventory");
+    if (saved) inventory = JSON.parse(saved);
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("deductDate").value = today;
+    updateSelectors();
+    updateReport();
+  };
+
+  function saveData() {
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+  }
+
+  function exportToCSV() {
+    let csv = "Sticker Name,Total Stock,Remaining Stock,Department,Amount,Person,Date\n";
+    inventory.forEach(item => {
+      item.usage.forEach(u => {
+        csv += `"${item.name}",${item.totalStock},${item.remainingStock},"${u.department}",${u.amount},"${u.person}","${u.date}"\n`;
+      });
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sticker_usage_report.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Sticker Usage Report", 14, 20);
+
+    const rows = [];
+    inventory.forEach(item => {
+      item.usage.forEach(u => {
+        rows.push([
+          item.name,
+          item.totalStock,
+          item.remainingStock,
+          u.department,
+          u.amount,
+          u.person,
+          u.date
+        ]);
+      });
+    });
+
+    doc.autoTable({
+      head: [["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date"]],
+      body: rows,
+      startY: 30
+    });
+
+    doc.save("sticker_usage_report.pdf");
+  }
+
+  function addSticker() {
+    const name = document.getElementById("stickerName").value.trim();
+    const stock = parseInt(document.getElementById("initialStock").value);
+
+    if (!name || isNaN(stock) || stock < 0) {
+      alert("Please enter valid sticker name and stock.");
+      return;
+    }
+
+    inventory.push({
+      name,
+      totalStock: stock,
+      remainingStock: stock,
+      usage: [] // { department, amount, person, date }
+    });
+
+    saveData();
+    updateSelectors();
+    updateReport();
+    document.getElementById("stickerName").value = "";
+    document.getElementById("initialStock").value = "";
+  }
+
+  function updateSelectors() {
+    const select = document.getElementById("selectSticker");
+    select.innerHTML = ""; // Clear options
+
+    inventory.forEach((item, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = item.name;
+      select.appendChild(option);
+    });
+  }
+
+  function deductStock() {
+    const index = parseInt(document.getElementById("selectSticker").value);
+    const department = document.getElementById("department").value.trim().toLowerCase();
+    const person = document.getElementById("person").value.trim();
+    const date = document.getElementById("deductDate").value;
+    const amount = parseInt(document.getElementById("deductAmount").value);
+
+    if (isNaN(index) || !department || !person || !date || isNaN(amount) || amount <= 0) {
+      alert("Please fill in all fields correctly.");
+      return;
+    }
+
+    const item = inventory[index];
+    if (amount > item.remainingStock) {
+      alert(`Not enough stock. Only ${item.remainingStock} left.`);
+      return;
+    }
+
+    item.remainingStock -= amount;
+    item.usage.push({ department, amount, person, date });
+
+    saveData();
+    updateReport();
+    document.getElementById("department").value = "";
+    document.getElementById("person").value = "";
+    document.getElementById("deductDate").value = "";
+    document.getElementById("deductAmount").value = "";
+  }
+
+  function updateReport() {
+    const tbody = document.querySelector("#reportTable tbody");
+    tbody.innerHTML = "";
+
+    let totalUsed = 0;
+    let totalRemaining = 0;
+    let totalEver = 0;
+    const deptUsage = {};
+
+    inventory.forEach(item => {
+      const used = item.totalStock - item.remainingStock;
+      totalUsed += used;
+      totalRemaining += item.remainingStock;
+      totalEver += item.totalStock;
+
+      item.usage.forEach(u => {
+        deptUsage[u.department] = (deptUsage[u.department] || 0) + u.amount;
+      });
+
+      const tr = document.createElement("tr");
+      const usedBy = item.usage.map(u =>
+        `${u.department} (${u.amount}) - ${u.person} on ${u.date}`
+      ).join("<br>") || "None";
+
+      tr.innerHTML = `
+        <td>${item.name}</td>
+        <td>${item.totalStock}</td>
+        <td>${usedBy}</td>
+        <td>${item.remainingStock}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("totalUsed").textContent = totalUsed;
+    document.getElementById("totalRemaining").textContent = totalRemaining;
+    document.getElementById("totalEver").textContent = totalEver;
+
+    const deptList = document.getElementById("deptUsageList");
+    deptList.innerHTML = "";
+    if (Object.keys(deptUsage).length === 0) {
+      deptList.innerHTML = "<li>No usage recorded yet.</li>";
+    } else {
+      for (let dept in deptUsage) {
+        const li = document.createElement("li");
+        li.textContent = `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${deptUsage[dept]} stickers`;
+        deptList.appendChild(li);
+      }
+    }
+
+    updateChart(deptUsage);
+  }
+
+  function updateChart(deptUsage) {
+    const ctx = document.getElementById('usageChart').getContext('2d');
+
+    const labels = Object.keys(deptUsage).map(d => d.charAt(0).toUpperCase() + d.slice(1));
+    const data = Object.values(deptUsage);
+
+    if (window.myChartInstance) {
+      window.myChartInstance.destroy(); // Destroy previous chart
+    }
+
+    window.myChartInstance = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Sticker Usage by Department',
+          data: data,
+          backgroundColor: [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right'
+          },
+          title: {
+            display: true,
+            text: 'UsageId Distribution by Department'
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch(err => console.error('SW registration failed:', err));
+  }
+</script>
+
+</body>
+</html>
