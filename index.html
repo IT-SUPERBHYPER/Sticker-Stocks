@@ -219,10 +219,10 @@
   <canvas id="usageChart" height="100"></canvas>
 </div>
 
-<!-- Load Working External Libraries -->
-<script src=" https://cdn.jsdelivr.net/npm/chart.js "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jsPdfAutoTable.min.js "></script>
+<!-- Load External Libraries - SAFE SOURCES -->
+<script src=" https://cdn.jsdelivr.net/npm/chart.js @3.9.1/dist/chart.min.js"></script>
+<script src="https://unpkg.com/jspdf @2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable @3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
 
 <script>
   let inventory = [];
@@ -336,7 +336,7 @@
     document.getElementById("totalUsed").textContent = totalUsed;
     document.getElementById("totalRemaining").textContent = totalRemaining;
     document.getElementById("totalEver").textContent = totalEver;
-    document.getElementById("totalCost").textContent = totalUsed === 0 ? "0.00" : getTotalCost().toFixed(2);
+    document.getElementById("totalCost").textContent = getTotalCost().toFixed(2);
 
     const deptList = document.getElementById("deptUsageList");
     deptList.innerHTML = "";
@@ -367,11 +367,11 @@
 
     window.myChartInstance = new Chart(ctx, {
       type: 'pie',
-      data: {
+       {
         labels: labels,
         datasets: [{
           label: 'Sticker Usage by Department',
-          data: data,
+           data,
           backgroundColor: [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
           ]
