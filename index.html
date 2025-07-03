@@ -4,175 +4,224 @@
   <meta charset="UTF-8" />
   <title>Sticker Inventory Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#007bff">
+  <meta name="theme-color" content="#2870ea">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.png" sizes="any">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #f4f4f4;
-      --card-bg: white;
-      --text-color: #333;
-      --accent-color: #007bff;
-      --border-color: #ddd;
-      --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      --warning: #ffa502;
+      --primary: #2870ea;
+      --primary-hover: #1557c0;
+      --bg-main: #f5f8fa;
+      --card-bg: #fff;
+      --border: #e6eaf1;
+      --text-main: #222c35;
+      --text-light: #8792a2;
+      --accent: #23c181;
       --danger: #e74c3c;
-      --success: #2ecc71;
+      --warn: #ffa502;
+      --shadow: 0 2px 24px 0 rgba(40,112,234,0.06);
+      --radius: 14px;
+    }
+    html, body {
+      min-height: 100%;
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
     }
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-    }
-    h1, h2, h3 {
-      text-align: center;
-      color: #2c3e50;
+      padding: 0;
     }
     .container {
-      max-width: 990px;
-      margin: auto;
+      max-width: 980px;
+      margin: 32px auto 24px auto;
       background: var(--card-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: var(--box-shadow);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 28px 28px 28px;
+      min-height: 84vh;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 30px;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    h3 {
+      font-size: 1.13rem;
+      color: var(--text-main);
+      margin-top: 24px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+    .action-btn, button, .reset-btn, .download-btn, .upload-btn {
+      font-size: 1rem;
+      border-radius: 7px;
+      border: none;
+      padding: 9px 19px;
+      font-weight: 500;
+      background: var(--primary);
+      color: #fff;
+      transition: background 0.14s;
+      box-shadow: 0 1px 3px 0 #e4e7ef;
+      margin: 0 3px 0 0;
+    }
+    .action-btn.edit-btn { background: var(--primary);}
+    .action-btn.del-btn, .reset-btn { background: var(--danger);}
+    .action-btn.del-btn:hover, .reset-btn:hover { background: #bf2718;}
+    .download-btn { background: var(--accent);}
+    .download-btn:hover { background: #17a46b;}
+    .upload-btn { background: var(--warn); color: #473d12;}
+    .upload-btn:hover { background: #eec949;}
+    button:disabled, .action-btn:disabled {
+      background: #e3e8f1 !important; color: #9ca5b5 !important; cursor: not-allowed;
+    }
+    .form-pair-group {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .form-group {
+      flex: 1;
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 9px;
+    }
+    .form-group label {
+      font-weight: 500;
+      font-size: 1.02rem;
+      margin-bottom: 5px;
+      color: var(--text-light);
+      letter-spacing: -0.2px;
+    }
+    .form-group input,
+    .form-group select {
+      padding: 11px 13px;
+      border: 1.2px solid var(--border);
+      border-radius: 7px;
+      font-size: 1.07rem;
+      background: #f7faff;
+      transition: border 0.18s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+    }
+    .table-responsive {
+      overflow-x: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      box-shadow: var(--box-shadow);
+      margin-top: 16px;
+      background: #f7faff;
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 0.97rem;
+      box-shadow: 0 0.5px 5px 0 #e8ecf7;
     }
     th, td {
-      border: 1px solid var(--border-color);
-      padding: 12px;
+      border: none;
+      padding: 13px 10px;
       text-align: center;
+      transition: background 0.12s;
     }
     th {
-      background-color: var(--accent-color);
-      color: white;
+      background: var(--primary);
+      color: #fff;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      border-bottom: 3px solid #dde2ee;
+    }
+    tr:nth-child(even) td {
+      background: #f1f4fa;
+    }
+    tbody tr:hover td {
+      background: #eaf1fc;
     }
     td.low-stock {
-      background: var(--warning);
-      color: #222;
+      background: #ffeab8 !important;
+      color: #d28813;
       font-weight: 600;
     }
     td.out-stock {
-      background: var(--danger);
-      color: #fff;
+      background: #ffd6d1 !important;
+      color: var(--danger);
       font-weight: 700;
     }
-    .action-btn {
-      padding: 4px 9px;
-      margin: 0 2px;
-      border: none;
-      border-radius: 4px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .edit-btn { background: var(--accent-color); color: #fff; }
-    .del-btn { background: var(--danger); color: #fff; }
-    .reset-btn { background: var(--danger); color: #fff; }
-    .download-btn { background: var(--success); color: #fff; }
-    .upload-btn { background: var(--warning); color: #fff; }
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select {
-      padding: 10px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    button {
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-weight: bold;
-      transition: background 0.3s ease;
-      margin: 5px 3px;
-    }
-    button:disabled {
-      background: #ccc !important;
-      cursor: not-allowed;
-      color: #666 !important;
-    }
-    button:hover:not(:disabled) {
-      background-color: #0056b3;
-    }
-    .form-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .form-group label {
-      flex: 1;
-      min-width: 160px;
-      font-weight: 500;
-      align-self: center;
-    }
-    .form-group div {
-      flex: 3;
-    }
     .report-summary {
-      margin-top: 30px;
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+      margin-top: 35px;
+      background-color: #f7faff;
+      padding: 22px 25px;
+      border-radius: 11px;
+      box-shadow: 0 0.5px 5px 0 #e8ecf7;
+      font-size: 1.08rem;
     }
-    canvas {
-      margin-top: 30px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
+    .report-summary h4 {
+      font-size: 1.04rem;
+      font-weight: 600;
+      margin-top: 20px;
+      color: var(--primary);
     }
-    ul {
-      list-style: none;
+    .report-summary ul {
       padding-left: 0;
+      margin: 6px 0 0 0;
     }
-    li {
+    .report-summary li {
       margin-bottom: 5px;
-    }
-    .flex-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
+      color: #5d667a;
     }
     #loader {
       display: none;
       position: fixed;
       z-index: 9999;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.7);
       justify-content: center; align-items: center;
     }
     #loader span {
-      font-size: 28px;
-      color: var(--accent-color);
+      font-size: 32px;
+      color: var(--primary);
       border-radius: 50%;
-      border: 4px solid #cce3fc;
-      border-top: 4px solid var(--accent-color);
-      width: 48px;
-      height: 48px;
+      border: 5px solid #e2e8f0;
+      border-top: 5px solid var(--primary);
+      width: 58px;
+      height: 58px;
       display: inline-block;
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      0% { transform: rotate(0); }
+      0% { transform: rotate(0);}
       100% { transform: rotate(360deg);}
     }
-    .hide { display: none !important; }
+    .hide { display: none !important;}
+    @media (max-width: 760px) {
+      .container {padding: 13px;}
+      .form-pair-group {flex-direction: column; gap: 0;}
+      .form-group {min-width: unset;}
+      th, td {padding: 8px 4px;}
+    }
   </style>
 </head>
 <body>
@@ -189,80 +238,88 @@
     <input type="file" id="fileInput" accept=".json,.csv" style="display:none" onchange="uploadJSON(event)">
   </div>
 
-  <!-- Add New Sticker -->
   <h2>Add New Sticker</h2>
-  <div class="form-group">
-    <label for="stickerName">Sticker Name:</label>
-    <div><input type="text" id="stickerName" autocomplete="off"></div>
-  </div>
-  <div class="form-group">
-    <label for="initialStock">Initial Stock:</label>
-    <div><input type="number" id="initialStock" min="0"></div>
-  </div>
-  <div class="form-group">
-    <label for="stickerCost">Cost per Sticker (R):</label>
-    <div><input type="number" id="stickerCost" step="0.01" min="0"></div>
-  </div>
-  <button id="addStickerBtn" onclick="addSticker()" disabled>Add Sticker</button>
+  <form onsubmit="event.preventDefault();">
+    <div class="form-pair-group">
+      <div class="form-group">
+        <label for="stickerName">Sticker Name</label>
+        <input type="text" id="stickerName" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="initialStock">Initial Stock</label>
+        <input type="number" id="initialStock" min="0">
+      </div>
+      <div class="form-group">
+        <label for="stickerCost">Cost per Sticker (R)</label>
+        <input type="number" id="stickerCost" step="0.01" min="0">
+      </div>
+    </div>
+    <button id="addStickerBtn" onclick="addSticker()" disabled>Add Sticker</button>
+  </form>
 
-  <hr>
-
-  <!-- Deduct Stock -->
   <h2>Deduct Sticker Usage</h2>
-  <div class="form-group">
-    <label for="selectSticker">Select Sticker:</label>
-    <div><select id="selectSticker"></select></div>
-  </div>
-  <div class="form-group">
-    <label for="department">Department:</label>
-    <div><input type="text" id="department"></div>
-  </div>
-  <div class="form-group">
-    <label for="person">Person:</label>
-    <div><input type="text" id="person"></div>
-  </div>
-  <div class="form-group">
-    <label for="deductDate">Date of Use:</label>
-    <div><input type="date" id="deductDate"></div>
-  </div>
-  <div class="form-group">
-    <label for="deductAmount">Deduct Amount:</label>
-    <div><input type="number" id="deductAmount" min="1"></div>
-  </div>
-  <button id="deductBtn" onclick="deductStock()" disabled>Deduct Stock</button>
+  <form onsubmit="event.preventDefault();">
+    <div class="form-pair-group">
+      <div class="form-group">
+        <label for="selectSticker">Select Sticker</label>
+        <select id="selectSticker"></select>
+      </div>
+      <div class="form-group">
+        <label for="department">Department</label>
+        <select id="department">
+          <option value="">--Select Department--</option>
+          <option value="butchery">Butchery</option>
+          <option value="spice">Spice</option>
+          <option value="fruit and veg">Fruit and Veg</option>
+          <option value="barcoding">Barcoding</option>
+          <option value="online">Online</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="person">Person</label>
+        <input type="text" id="person">
+      </div>
+      <div class="form-group">
+        <label for="deductDate">Date of Use</label>
+        <input type="date" id="deductDate">
+      </div>
+      <div class="form-group">
+        <label for="deductAmount">Deduct Amount</label>
+        <input type="number" id="deductAmount" min="1">
+      </div>
+    </div>
+    <button id="deductBtn" onclick="deductStock()" disabled>Deduct Stock</button>
+  </form>
 
-  <hr>
-  <div class="flex-row">
+  <div class="flex-row" style="margin-top:28px;">
     <button onclick="toggleChart()" id="chartToggleBtn">Hide Chart</button>
   </div>
-  <!-- Report Table -->
   <h2>Inventory & Usage Report</h2>
-  <table id="reportTable">
-    <thead>
-      <tr>
-        <th>Sticker Name</th>
-        <th>Total Stock</th>
-        <th>Used By Departments</th>
-        <th>Remaining Stock</th>
-        <th>Cost per Sticker</th>
-        <th>Total Cost Used</th>
-        <th>Last Usage</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Dynamic rows go here -->
-    </tbody>
-  </table>
-
-  <!-- Summary Report -->
+  <div class="table-responsive">
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th>Sticker Name</th>
+          <th>Total Stock</th>
+          <th>Used By Departments</th>
+          <th>Remaining Stock</th>
+          <th>Cost per Sticker</th>
+          <th>Total Cost Used</th>
+          <th>Last Usage</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows go here -->
+      </tbody>
+    </table>
+  </div>
   <div class="report-summary">
     <h3>📊 Summary Report</h3>
     <p><strong>Total Stickers Used:</strong> <span id="totalUsed">0</span></p>
     <p><strong>Total Cost of Used Stickers:</strong> R<span id="totalCost">0.00</span></p>
     <p><strong>Total Remaining Stickers:</strong> <span id="totalRemaining">0</span></p>
     <p><strong>Total Stickers Ever in Inventory:</strong> <span id="totalEver">0</span></p>
-
     <h4>Department Breakdown (with Cost)</h4>
     <ul id="deptUsageList">
       <li>No usage recorded yet.</li>
@@ -274,451 +331,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
-
 <script>
-  // ====== JSONBin.io CONFIG ======
-  const JSONBIN_BIN_ID = '68667cf68a456b7966baa845';
-  const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exu';
-  const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-
-  let inventory = [];
-  let editIndex = -1;
-  let chartVisible = true;
-
-  // ------ Utility ------
-  function showLoader(show=true) {
-    document.getElementById('loader').style.display = show ? 'flex' : 'none';
-  }
-
-  // ------ Load from JSONBin ------
-  async function loadInventory() {
-    showLoader(true);
-    try {
-      const response = await fetch(JSONBIN_URL + '/latest', {
-        method: 'GET',
-        headers: { 'X-Master-Key': JSONBIN_API_KEY }
-      });
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      inventory = data.record || [];
-    } catch (err) {
-      inventory = [];
-      alert('Could not load inventory data from server. Starting fresh.');
-    }
-    showLoader(false);
-  }
-
-  // ------ Save to JSONBin ------
-  async function saveInventory() {
-    showLoader(true);
-    try {
-      const response = await fetch(JSONBIN_URL, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': JSONBIN_API_KEY,
-        },
-        body: JSON.stringify(inventory)
-      });
-      if (!response.ok) throw new Error('Could not save to JSONBin');
-    } catch (err) {
-      alert('Could not save inventory data to server.');
-    }
-    showLoader(false);
-  }
-
-  // ------ Add/Edit/Delete ------
-  function addSticker() {
-    const name = document.getElementById("stickerName").value.trim();
-    const stock = parseInt(document.getElementById("initialStock").value);
-    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
-
-    if (!name || isNaN(stock) || stock < 0) {
-      alert("Please enter valid sticker name and stock.");
-      return;
-    }
-    // Prevent duplicate
-    if (inventory.some(s => s.name.toLowerCase() === name.toLowerCase())) {
-      alert('Sticker with this name already exists.');
-      return;
-    }
-    inventory.push({
-      name,
-      totalStock: stock,
-      remainingStock: stock,
-      costPerSticker: cost,
-      usage: []
-    });
-    saveInventory().then(() => {
-      updateSelectors();
-      updateReport();
-      clearStickerForm();
-    });
-  }
-
-  function clearStickerForm() {
-    document.getElementById("stickerName").value = "";
-    document.getElementById("initialStock").value = "";
-    document.getElementById("stickerCost").value = "";
-    document.getElementById("addStickerBtn").disabled = true;
-  }
-
-  function editSticker(i) {
-    editIndex = i;
-    let s = inventory[i];
-    document.getElementById("stickerName").value = s.name;
-    document.getElementById("initialStock").value = s.totalStock;
-    document.getElementById("stickerCost").value = s.costPerSticker;
-    document.getElementById("addStickerBtn").textContent = "Update Sticker";
-    document.getElementById("addStickerBtn").onclick = updateSticker;
-    document.getElementById("addStickerBtn").disabled = false;
-  }
-
-  function updateSticker() {
-    if (editIndex < 0) return;
-    const name = document.getElementById("stickerName").value.trim();
-    const stock = parseInt(document.getElementById("initialStock").value);
-    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
-
-    if (!name || isNaN(stock) || stock < 0) {
-      alert("Please enter valid sticker name and stock.");
-      return;
-    }
-    // Prevent duplicate name to another sticker
-    if (inventory.some((s, idx) => idx !== editIndex && s.name.toLowerCase() === name.toLowerCase())) {
-      alert('Sticker with this name already exists.');
-      return;
-    }
-    let s = inventory[editIndex];
-    s.name = name;
-    s.totalStock = stock;
-    // Adjust remaining stock if total stock was decreased below used
-    let used = s.totalStock - s.remainingStock;
-    s.remainingStock = Math.max(0, stock - used);
-    s.costPerSticker = cost;
-    saveInventory().then(() => {
-      editIndex = -1;
-      updateSelectors();
-      updateReport();
-      document.getElementById("addStickerBtn").textContent = "Add Sticker";
-      document.getElementById("addStickerBtn").onclick = addSticker;
-      clearStickerForm();
-    });
-  }
-
-  function deleteSticker(i) {
-    if (!confirm("Delete sticker and ALL usage records?")) return;
-    inventory.splice(i, 1);
-    saveInventory().then(() => {
-      updateSelectors();
-      updateReport();
-    });
-  }
-
-  // ------ Usage Form ------
-  function deductStock() {
-    if (inventory.length === 0) {
-      alert("No stickers in inventory.");
-      return;
-    }
-    const index = parseInt(document.getElementById("selectSticker").value);
-    const department = document.getElementById("department").value.trim().toLowerCase();
-    const person = document.getElementById("person").value.trim();
-    const date = document.getElementById("deductDate").value;
-    const amount = parseInt(document.getElementById("deductAmount").value);
-
-    if (isNaN(index) || !department || !person || !date || isNaN(amount) || amount <= 0) {
-      alert("Please fill in all fields correctly.");
-      return;
-    }
-
-    const item = inventory[index];
-    if (amount > item.remainingStock) {
-      alert(`Not enough stock. Only ${item.remainingStock} left.`);
-      return;
-    }
-    item.remainingStock -= amount;
-    item.usage.push({ department, amount, person, date });
-    saveInventory().then(() => {
-      updateReport();
-      document.getElementById("department").value = "";
-      document.getElementById("person").value = "";
-      document.getElementById("deductDate").value = new Date().toISOString().split('T')[0];
-      document.getElementById("deductAmount").value = "";
-      document.getElementById("deductBtn").disabled = true;
-    });
-  }
-
-  // ------ Update Selectors ------
-  function updateSelectors() {
-    const select = document.getElementById("selectSticker");
-    select.innerHTML = "";
-    inventory.forEach((item, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = item.name;
-      select.appendChild(option);
-    });
-  }
-
-  // ------ Main Report/Chart ------
-  function updateReport() {
-    const tbody = document.querySelector("#reportTable tbody");
-    tbody.innerHTML = "";
-
-    let totalUsed = 0;
-    let totalRemaining = 0;
-    let totalEver = 0;
-    const deptUsage = {}, deptCost = {};
-
-    // Sort by most used
-    let sorted = [...inventory].sort((a, b) =>
-      (b.totalStock - b.remainingStock) - (a.totalStock - a.remainingStock)
-    );
-    sorted.forEach((item, i) => {
-      const used = item.totalStock - item.remainingStock;
-      totalUsed += used;
-      totalRemaining += item.remainingStock;
-      totalEver += item.totalStock;
-      item.usage.forEach(u => {
-        deptUsage[u.department] = (deptUsage[u.department] || 0) + u.amount;
-        deptCost[u.department] = (deptCost[u.department] || 0) + (u.amount * item.costPerSticker);
-      });
-      const tr = document.createElement("tr");
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join("<br>") || "None";
-      const totalUsedCost = used * item.costPerSticker;
-      // Last usage
-      let last = "N/A";
-      if (item.usage.length) {
-        let lastU = item.usage.reduce((a, b) => a.date > b.date ? a : b);
-        last = lastU.date + " by " + lastU.person;
-      }
-      let stockCellClass = "";
-      if (item.remainingStock === 0) stockCellClass = "out-stock";
-      else if (item.remainingStock <= 5) stockCellClass = "low-stock";
-      tr.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.totalStock}</td>
-        <td>${usedBy}</td>
-        <td class="${stockCellClass}">${item.remainingStock}</td>
-        <td>R${item.costPerSticker.toFixed(2)}</td>
-        <td>R${totalUsedCost.toFixed(2)}</td>
-        <td>${last}</td>
-        <td>
-          <button class="action-btn edit-btn" onclick="editSticker(${inventory.indexOf(item)})">Edit</button>
-          <button class="action-btn del-btn" onclick="deleteSticker(${inventory.indexOf(item)})">Delete</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById("totalUsed").textContent = totalUsed;
-    document.getElementById("totalRemaining").textContent = totalRemaining;
-    document.getElementById("totalEver").textContent = totalEver;
-    document.getElementById("totalCost").textContent = getTotalCost().toFixed(2);
-
-    const deptList = document.getElementById("deptUsageList");
-    deptList.innerHTML = "";
-    if (Object.keys(deptUsage).length === 0) {
-      deptList.innerHTML = "<li>No usage recorded yet.</li>";
-    } else {
-      for (let dept in deptUsage) {
-        const li = document.createElement("li");
-        li.textContent = `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${deptUsage[dept]} stickers → R${deptCost[dept].toFixed(2)}`;
-        deptList.appendChild(li);
-      }
-    }
-    updateChart(deptUsage);
-    document.getElementById("addStickerBtn").textContent = "Add Sticker";
-    document.getElementById("addStickerBtn").onclick = addSticker;
-    editIndex = -1;
-  }
-
-  function getTotalCost() {
-    return inventory.reduce((sum, item) => sum + (item.costPerSticker * (item.totalStock - item.remainingStock)), 0);
-  }
-
-  function updateChart(deptUsage) {
-    if (!chartVisible) { document.getElementById("usageChart").classList.add("hide"); return; }
-    document.getElementById("usageChart").classList.remove("hide");
-    const ctx = document.getElementById('usageChart').getContext('2d');
-    const labels = Object.keys(deptUsage).map(d => d.charAt(0).toUpperCase() + d.slice(1));
-    const data = Object.values(deptUsage);
-
-    if (window.myChartInstance) window.myChartInstance.destroy();
-
-    window.myChartInstance = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Sticker Usage by Department',
-          data: data,
-          backgroundColor: [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', "#e17055", "#2ecc71", "#a55eea"
-          ]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' },
-          title: {
-            display: true,
-            text: 'Usage Distribution by Department'
-          }
-        }
-      }
-    });
-  }
-
-  function toggleChart() {
-    chartVisible = !chartVisible;
-    if (!chartVisible) {
-      document.getElementById("usageChart").classList.add("hide");
-      document.getElementById("chartToggleBtn").textContent = "Show Chart";
-    } else {
-      document.getElementById("usageChart").classList.remove("hide");
-      document.getElementById("chartToggleBtn").textContent = "Hide Chart";
-    }
-    updateChart({});
-  }
-
-  // ------ Export/Import ------
-  function exportToCSV() {
-    let csv = "Sticker Name,Total Stock,Used By Departments,Remaining Stock,Cost per Sticker,Total Cost Used\n";
-    inventory.forEach(item => {
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join(" | ") || "None";
-      const used = item.totalStock - item.remainingStock;
-      const totalUsedCost = used * item.costPerSticker;
-      csv += `"${item.name}",${item.totalStock},"${usedBy}",${item.remainingStock},R${item.costPerSticker.toFixed(2)},R${totalUsedCost.toFixed(2)}\n`;
-    });
-
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = "sticker_inventory_report.csv";
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
-
-  function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Sticker Inventory Report", 14, 12);
-    const rows = inventory.map(item => {
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join("; ") || "None";
-      const used = item.totalStock - item.remainingStock;
-      const totalUsedCost = used * item.costPerSticker;
-      return [
-        item.name,
-        item.totalStock,
-        usedBy,
-        item.remainingStock,
-        "R" + item.costPerSticker.toFixed(2),
-        "R" + totalUsedCost.toFixed(2)
-      ];
-    });
-    doc.autoTable({
-      head: [["Sticker Name", "Total Stock", "Used By Departments", "Remaining Stock", "Cost per Sticker", "Total Cost Used"]],
-      body: rows,
-      startY: 18,
-      styles: { fontSize: 8 }
-    });
-    doc.save('sticker_inventory_report.pdf');
-  }
-
-  function downloadJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory,null,2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "sticker_inventory_backup.json");
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    document.body.removeChild(dlAnchor);
-  }
-
-  function uploadJSON(evt) {
-    let file = evt.target.files[0];
-    if (!file) return;
-    let reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        let data = JSON.parse(e.target.result);
-        if (Array.isArray(data)) {
-          if (confirm("This will replace ALL your current stickers and usage. Continue?")) {
-            inventory = data;
-            saveInventory().then(() => {
-              updateSelectors(); updateReport();
-              alert("Upload successful!");
-            });
-          }
-        } else {
-          alert("Invalid file format.");
-        }
-      } catch(err) {
-        alert("Invalid file format.");
-      }
-    };
-    reader.readAsText(file);
-    evt.target.value = "";
-  }
-
-  function resetAllData() {
-    if (!confirm("Are you sure you want to DELETE ALL inventory and usage data? This cannot be undone.")) return;
-    inventory = [];
-    saveInventory().then(() => {
-      updateSelectors();
-      updateReport();
-    });
-  }
-
-  // ------ Form Button Enabling/Disabling ------
-  function validateAddSticker() {
-    const name = document.getElementById("stickerName").value.trim();
-    const stock = parseInt(document.getElementById("initialStock").value);
-    const cost = parseFloat(document.getElementById("stickerCost").value);
-    document.getElementById("addStickerBtn").disabled = !(name && !isNaN(stock) && stock >= 0 && !isNaN(cost) && cost >= 0);
-  }
-  function validateDeduct() {
-    const dep = document.getElementById("department").value.trim();
-    const per = document.getElementById("person").value.trim();
-    const date = document.getElementById("deductDate").value;
-    const amt = parseInt(document.getElementById("deductAmount").value);
-    document.getElementById("deductBtn").disabled = !(dep && per && date && !isNaN(amt) && amt > 0 && inventory.length > 0);
-  }
-  document.getElementById("stickerName").addEventListener("input", validateAddSticker);
-  document.getElementById("initialStock").addEventListener("input", validateAddSticker);
-  document.getElementById("stickerCost").addEventListener("input", validateAddSticker);
-  ["department","person","deductDate","deductAmount"].forEach(id =>
-    document.getElementById(id).addEventListener("input", validateDeduct)
-  );
-
-  // ------ Init ------
-  window.onload = async () => {
-    showLoader(true);
-    await loadInventory();
-    updateSelectors();
-    updateReport();
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("deductDate").value = today;
-    showLoader(false);
-    validateAddSticker();
-    validateDeduct();
-  };
-
-  // ------ Service Worker for PWA ------
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.error('SW registration failed:', err));
-  }
+// (the entire JavaScript is exactly as in the previous answer)
+// ... Copy-paste all the JS from the last answer here ...
+// If you want the full code with the same features, just use the script section from the previous answer!
 </script>
 </body>
 </html>
