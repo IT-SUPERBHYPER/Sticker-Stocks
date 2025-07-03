@@ -1,460 +1,998 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sticker Inventory Management</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>Superb IT Sticker USAGE by Department</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@zxing/library@0.19.2/umd/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        :root {
+            /* Futuristic Theme Colors - Light Mode (Default) */
+            --superb-blue: #0A192F; /* Deep navy for main background */
+            --superb-accent: #00E6E6; /* Bright cyan/teal for accents */
+            --superb-card: #FFFFFF; /* White cards for contrast */
+            --superb-gradient: linear-gradient(135deg, #1A2A40 10%, #0A192F 100%); /* Subtle dark gradient */
+            --text-main: #0A192F; /* Dark text on light cards */
+            --chip-bg: linear-gradient(90deg, #00E6E6 0%, #00B3B3 100%); /* Cyan chip */
+            --chip-txt: #0A192F; /* Dark text on bright chip */
+            --tab-inactive-bg: #E0FFFF; /* Light background for inactive tab */
+            --tab-inactive-text: #0A192F; /* Dark text for inactive tab */
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+            /* Toast Colors */
+            --toast-success-bg: #28a745;
+            --toast-error-bg: #dc3545;
+            --toast-info-bg: #17a2b8;
+            --toast-text: #fff;
 
-  <style>
-    :root {
-      --bg-color: #f4f4f4;
-      --card-bg: white;
-      --text-color: #333;
-      --accent-color: #007bff;
-      --border-color: #ddd;
-      --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+            /* Chart Colors - Light Mode (Now with more vibrant gradients) */
+            --chart-bar-start: #00B3B3; /* Darker blue-green for start of gradient */
+            --chart-bar-end: #00FFFF; /* Brighter cyan-green for end of gradient */
+            --chart-bar-border: #00E6E6; /* Accent border */
+            --chart-text-color: #0A192F; /* Dark text on light background */
+            --chart-grid-color: rgba(10, 25, 47, 0.05); /* Very subtle dark grid lines */
+            --chart-tooltip-bg: rgba(0, 0, 0, 0.85);
+            --chart-tooltip-text: #E0FFFF; /* Light cyan for tooltip text */
+        }
+        body.dark {
+            /* Futuristic Theme Colors - Dark Mode */
+            --superb-blue: #0A192F; /* Deep navy for main background */
+            --superb-accent: #00E6E6; /* Bright cyan/teal for accents */
+            --superb-card: #0A192F; /* Dark cards */
+            --superb-gradient: linear-gradient(135deg, #0A192F 10%, #050C18 100%); /* Deeper dark gradient */
+            --text-main: #E0FFFF; /* Light cyan text on dark background */
+            --chip-bg: linear-gradient(90deg, #00E6E6 0%, #00B3B3 100%); /* Cyan chip */
+            --chip-txt: #0A192F; /* Dark text on bright chip */
+            --tab-inactive-bg: #1A2A40; /* Dark background for inactive tab */
+            --tab-inactive-text: #E0FFFF; /* Light text for inactive tab */
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-    }
+            /* Dark mode toast colors */
+            --toast-success-bg: #218838;
+            --toast-error-bg: #c82333;
+            --toast-info-bg: #138496;
 
-    h1, h2, h3 {
-      text-align: center;
-      color: #2c3e50;
-    }
+            /* Chart Colors - Dark Mode (Now with more vibrant gradients) */
+            --chart-bar-start: #00B3B3; /* Darker blue-green for start of gradient */
+            --chart-bar-end: #00FFFF; /* Brighter cyan-green for end of gradient */
+            --chart-bar-border: #00E6E6; /* Accent border */
+            --chart-text-color: #E0FFFF; /* Light cyan for text */
+            --chart-grid-color: rgba(0, 230, 230, 0.08); /* Subtle glowing grid lines */
+            --chart-tooltip-bg: rgba(0, 0, 0, 0.85);
+            --chart-tooltip-text: #E0FFFF; /* Light cyan for tooltip text */
+        }
+        html, body {
+            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: var(--superb-gradient);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
+            transition: background .4s ease, color .4s ease; /* Smoother transitions */
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            height: 100vh;
+            width: 100vw;
+        }
+        header {
+            background: var(--superb-card);
+            box-shadow: 0 2px 12px rgba(0, 230, 230, 0.1); /* Subtle glow shadow */
+            border-bottom: 2px solid var(--superb-accent); /* Thicker accent border */
+            padding: 18px 0 10px 0;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif; /* Futuristic font */
+            font-size: 1.9rem; /* Slightly larger */
+            font-weight: 700;
+            letter-spacing: 2px; /* More spaced out */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: var(--text-main);
+            transition: background .3s ease, color .3s ease, border-color .3s ease;
+        }
+        .dark-toggle-btn {
+            position: absolute;
+            right: 15px; top: 12px;
+            background: var(--superb-accent);
+            color: var(--superb-blue); /* Dark text on bright button */
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 44px; height: 44px; /* Slightly larger */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--superb-accent); /* Glowing shadow */
+            z-index: 200;
+            transition: background .2s ease, box-shadow .2s ease, color .2s ease;
+        }
+        .dark-toggle-btn:hover {
+            box-shadow: 0 0 20px var(--superb-accent);
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            background: var(--superb-card);
+            padding: 12px 14px 10px 14px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            border-bottom: 1px solid rgba(0, 230, 230, 0.2); /* Subtle accent border */
+            align-items: center;
+            flex-wrap: wrap;
+            transition: background .3s ease, border-color .3s ease;
+        }
+        body.dark .search-bar { border-bottom: 1px solid rgba(0, 230, 230, 0.1); }
+        .search-bar input, .search-bar select {
+            font-size: 1.11rem;
+            padding: 10px 11px;
+            border: 1.5px solid var(--superb-accent); /* Accent border */
+            border-radius: 8px;
+            outline: none;
+            width: 100%;
+            max-width: 180px;
+            background: var(--superb-card); /* Card background */
+            color: var(--text-main);
+            transition: background .3s ease, color .3s ease, border .3s ease, box-shadow .3s ease;
+        }
+        .search-bar input:focus, .search-bar select:focus {
+            box-shadow: 0 0 10px var(--superb-accent); /* Glowing focus */
+        }
+        body.dark .search-bar input, body.dark .search-bar select {
+            background: #0A192F; /* Dark input background */
+            color: #E0FFFF; /* Light text */
+            border-color: rgba(0, 230, 230, 0.5);
+        }
+        .download-pdf-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 1.6rem;
+            vertical-align: middle;
+            color: var(--superb-accent); /* Accent color */
+            transition: color 0.18s ease;
+            padding: 4px 0 0 0;
+            outline: none;
+        }
+        .download-pdf-btn:active { color: #00B3B3; }
+        .badge {
+            display: inline-block;
+            min-width: 22px;
+            padding: 2px 8px;
+            font-size: 13px;
+            background: var(--chip-bg);
+            color: var(--chip-txt);
+            border-radius: 12px;
+            margin-left: 7px;
+            font-weight: 700;
+            vertical-align: middle;
+            box-shadow: 0 0 8px rgba(0, 230, 230, 0.3); /* Subtle glow */
+        }
+        .asset-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1 1 auto;
+            overflow-y: auto;
+            background: transparent;
+        }
+        .asset-card {
+            background: var(--superb-card);
+            margin: 12px 11px 0 11px;
+            border-radius: 13px;
+            box-shadow: 0 2px 14px rgba(0, 230, 230, 0.1); /* Subtle glow */
+            border: 1px solid rgba(0, 230, 230, 0.15); /* Subtle accent border */
+            transition: box-shadow .2s ease, border .2s ease, background .2s ease;
+            position: relative;
+        }
+        body.dark .asset-card {
+            background: #0A192F; /* Dark card background */
+            border: 1px solid rgba(0, 230, 230, 0.1);
+        }
+        .asset-card-header {
+            font-weight: 600;
+            font-size: 1.11rem;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-main);
+        }
+        .asset-card .expand-icon {
+            margin-left: 8px;
+            font-size: 1.44rem;
+            color: var(--superb-accent);
+            transition: transform .2s ease;
+        }
+        .asset-card.open .expand-icon { transform: rotate(90deg);}
+        .asset-card.open {
+            box-shadow: 0 6px 28px rgba(0, 230, 230, 0.3); /* More pronounced glow when open */
+            border-color: var(--superb-accent);
+        }
+        .asset-details {
+            display: none;
+            padding: 10px 22px 14px 22px;
+            font-size: 1.03rem;
+            animation: fadein .22s ease;
+            color: var(--text-main);
+        }
+        .asset-card.open .asset-details { display: block;}
+        .asset-details label { font-weight: 600;}
+        .asset-details .chip {
+            display: inline-block;
+            background: var(--chip-bg);
+            color: var(--chip-txt);
+            border-radius: 6px;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 2px 9px;
+            margin-right: 6px;
+            box-shadow: 0 0 8px rgba(0, 230, 230, 0.3); /* Subtle glow */
+        }
+        .asset-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn {
+            border: none;
+            outline: none;
+            font-size: 1.12rem;
+            border-radius: 8px;
+            font-weight: 700;
+            padding: 11px 23px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #00E6E6 0%, #00B3B3 100%); /* Cyan gradient */
+            color: var(--superb-blue); /* Dark text on bright button */
+            transition: background .2s ease, opacity .2s ease, box-shadow .2s ease, transform .1s ease; /* Added transform */
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 12px rgba(0, 230, 230, 0.4); /* Glowing button shadow */
+        }
+        .btn:hover {
+            box-shadow: 0 0 18px rgba(0, 230, 230, 0.6);
+            transform: translateY(-1px); /* Slight lift on hover */
+        }
+        .btn.delete {
+            background: linear-gradient(90deg, #FF6B6B 0%, #E63946 100%); /* Red gradient for delete */
+            box-shadow: 0 0 12px rgba(255, 107, 107, 0.4);
+            color: #0A192F;
+        }
+        .btn.delete:hover {
+            box-shadow: 0 0 18px rgba(255, 107, 107, 0.6);
+        }
+        .btn.cancel {
+            background: #334455; /* Darker grey for cancel */
+            color: #E0FFFF; /* Light text */
+            box-shadow: none;
+        }
+        .btn.cancel:hover {
+            background: #445566;
+            transform: translateY(-1px);
+        }
+        .btn.scan {
+            background: linear-gradient(90deg, #21DB9D 0%, #00E6E6 100%);
+            color: var(--superb-blue);
+            margin-left: 6px;
+            border-radius: 8px;
+            padding: 11px 15px;
+            box-shadow: 0 0 12px rgba(33, 219, 157, 0.4);
+            font-size: 1rem;
+        }
+        .btn.scan:hover {
+            box-shadow: 0 0 18px rgba(33, 219, 157, 0.6);
+        }
+        /* Loading Spinner for Buttons */
+        .btn.loading {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .btn .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .btn.loading .spinner {
+            opacity: 1;
+        }
+        .btn.loading span {
+            visibility: hidden;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
 
-    .container {
-      max-width: 960px;
-      margin: auto;
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: var(--box-shadow);
-    }
+        .fab-container {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Space between FABs */
+            align-items: flex-end; /* Align FABs to the right */
+        }
+        .fab {
+            width: 62px; height: 62px;
+            background: linear-gradient(90deg, #00E6E6 0%, #00B3B3 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 230, 230, 0.5); /* Stronger glow */
+            font-size: 2.5rem;
+            color: var(--superb-blue); /* Dark text on bright FAB */
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: box-shadow .2s ease, background .2s ease, transform .15s ease; /* Added transform */
+        }
+        .fab:hover {
+            box-shadow: 0 0 30px rgba(0, 230, 230, 0.7);
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .fab.deduct {
+            background: linear-gradient(90deg, #FF6B6B 0%, #E63946 100%); /* Red gradient for deduct */
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+            color: var(--superb-blue);
+        }
+        .fab.deduct:hover {
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.7);
+        }
+        @media (min-width: 700px) {
+            .fab { width: 74px; height: 74px; font-size: 2.9rem;}
+            .form-card { min-width: 420px; }
+            .stats-card {
+                min-width: 420px;
+                max-width: 700px;
+                padding: 22px 25px 25px 25px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .stats-card h3 {
+                width: 100%;
+                order: -1;
+                margin-bottom: 15px;
+            }
+            .stats-summary {
+                width: 100%;
+                order: 0;
+                margin-bottom: 25px;
+            }
+            .chart-container {
+                width: 48%;
+                flex-shrink: 0;
+                height: 300px;
+            }
+        }
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: none;}
+        }
+        #scanner-container {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95); /* Very dark overlay */
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2500; flex-direction: column;
+            animation: fadein 0.33s ease;
+        }
+        #scanner-container video {
+            border-radius: 12px;
+            max-width: 97vw;
+            max-height: 55vh;
+            box-shadow: 0 0 50px rgba(0, 230, 230, 0.7); /* Intense glow for scanner */
+            border: 2px solid var(--superb-accent);
+        }
+        #scanner-close {
+            background: linear-gradient(90deg, #FF6B6B 0%, #E63946 100%);
+            color: #0A192F;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 38px;
+            margin-top: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+            letter-spacing: 0.7px;
+            transition: background 0.19s ease, box-shadow 0.19s ease;
+        }
+        #scanner-close:active { background: #b82812; }
+        #scanner-status {
+            color: #E0FFFF; /* Light cyan status text */
+            margin-top: 12px;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            text-shadow: 0 0 10px rgba(0, 230, 230, 0.8); /* Glowing text */
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      box-shadow: var(--box-shadow);
-    }
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background-color: var(--toast-info-bg);
+            color: var(--toast-text);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            transform: translateY(20px);
+            min-width: 250px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success { background-color: #218838; }
+        .toast.error { background-color: #c82333; }
 
-    th, td {
-      border: 1px solid var(--border-color);
-      padding: 12px;
-      text-align: center;
-    }
+        /* Statistics Modal Specific Styles */
+        #formModal, #statsModal, #confirmationModal, #geminiOutputModal { /* Added geminiOutputModal */
+            position: fixed; left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85); /* Darker, more opaque overlay */
+            backdrop-filter: blur(5px); /* Subtle blur effect */
+            display: none; align-items: center; justify-content: center;
+            z-index: 2000;
+        }
+        #formModal.show, #statsModal.show, #confirmationModal.show, #geminiOutputModal.show { display: flex;} /* Added geminiOutputModal */
+        .form-card, .stats-card, .confirmation-card, .gemini-card { /* Added gemini-card */
+            background: var(--superb-card);
+            border-radius: 15px;
+            padding: 22px 16px 15px 16px;
+            min-width: 90vw; max-width: 400px;
+            box-shadow: 0 0 40px rgba(0, 230, 230, 0.6); /* Stronger glow for modals */
+            color: var(--text-main);
+            animation: fadein .28s ease;
+            transition: background .3s ease, color .3s ease;
+            position: relative;
+            overflow-y: auto;
+            max-height: 95vh;
+            border: 1px solid var(--superb-accent); /* Accent border for modals */
+        }
+        body.dark .form-card, body.dark .stats-card, body.dark .confirmation-card, body.dark .gemini-card { /* Added gemini-card */
+            background: #0A192F; /* Dark modal background */
+            border: 1px solid rgba(0, 230, 230, 0.4);
+        }
+        .form-card form {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+        /* Form input styling */
+        .form-card input, .form-card select, .form-card textarea {
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 230, 230, 0.3); /* Subtle accent border */
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-main);
+            background: var(--superb-card);
+            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+        body.dark .form-card input, body.dark .form-card select, body.dark .form-card textarea {
+            background: #050C18; /* Even darker input background */
+            border-color: rgba(0, 230, 230, 0.2);
+            color: var(--text-main);
+        }
+        .form-card input:focus, .form-card select:focus, .form-card textarea:focus {
+            outline: none;
+            border-color: var(--superb-accent);
+            box-shadow: 0 0 10px rgba(0, 230, 230, 0.5); /* Glowing focus */
+        }
+        .form-card input.invalid, .form-card select.invalid, .form-card textarea.invalid {
+            border-color: #FF6B6B; /* Red for invalid */
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+        .stats-close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .stats-close-btn:hover {
+            color: var(--superb-accent);
+        }
+        .stats-card h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .stats-summary {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 230, 230, 0.1);
+            padding-bottom: 15px;
+            text-align: center;
+            color: var(--text-main);
+        }
+        .stats-summary p {
+            margin: 5px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        /* Chart Containers for responsiveness */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 230, 230, 0.1);
+            box-shadow: 0 0 15px rgba(0, 230, 230, 0.2);
+        }
+        .chart-container h4 {
+            text-align: center;
+            color: var(--superb-accent);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.8px;
+            text-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
+        }
+        @media (min-width: 700px) {
+            .chart-container {
+                height: 350px;
+            }
+            .stats-card {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-items: flex-start;
+                padding-top: 35px;
+            }
+            .stats-card h3 {
+                width: 100%;
+                order: -1;
+                margin-bottom: 15px;
+            }
+            .stats-summary {
+                width: 100%;
+                order: 0;
+                margin-bottom: 25px;
+            }
+            .chart-container {
+                width: 48%;
+                flex-shrink: 0;
+                height: 300px;
+            }
+        }
+        .footer {
+            text-align: center; margin-top: 13px; margin-bottom: 14px;
+            color: rgba(0, 230, 230, 0.6); /* Subtle cyan for footer */
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        body.dark .footer { color: rgba(0, 230, 230, 0.4);}
 
-    th {
-      background-color: var(--accent-color);
-      color: white;
-    }
+        /* Tab Styles */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            background: var(--superb-card);
+            border-bottom: 1px solid rgba(0, 230, 230, 0.2);
+            padding: 0 10px;
+            gap: 5px;
+            position: sticky;
+            top: 0; /* stick below search bar if it's sticky too */
+            z-index: 19; /* below search bar, above asset list */
+            transition: background .3s ease, border-color .3s ease;
+        }
+        .tab-button {
+            padding: 10px 15px;
+            border: none;
+            background: var(--tab-inactive-bg);
+            color: var(--tab-inactive-text);
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0; /* Rounded top corners */
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            outline: none;
+            flex-grow: 1; /* Allow tabs to grow and fill space */
+            text-align: center;
+            max-width: 200px; /* Limit tab width on larger screens */
+        }
+        .tab-button.active {
+            background: var(--superb-accent);
+            color: var(--superb-blue);
+            box-shadow: 0 -3px 15px rgba(0, 230, 230, 0.4); /* Glow from active tab */
+            position: relative;
+            z-index: 2; /* Bring active tab slightly forward */
+        }
+        .tab-button:hover:not(.active) {
+            background: rgba(0, 230, 230, 0.1); /* Subtle hover for inactive */
+            color: var(--superb-accent);
+        }
+        body.dark .tab-button.active {
+            box-shadow: 0 -3px 15px rgba(0, 230, 230, 0.6);
+        }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select {
-      padding: 10px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
+        /* Confirmation Modal Specific Styles */
+        .confirmation-card {
+            padding: 25px;
+            text-align: center;
+        }
+        .confirmation-card h3 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        .confirmation-card p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        .confirmation-card .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
 
-    button {
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-weight: bold;
-      transition: background 0.3s ease;
-      margin: 5px;
-    }
+        /* Report Controls in Stats Modal */
+        .report-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .report-controls .btn {
+            padding: 8px 15px;
+            font-size: 0.95rem;
+            flex-grow: 1;
+            max-width: 120px;
+        }
+        .report-content {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 230, 230, 0.05); /* Light accent background */
+            border-radius: 8px;
+            border: 1px solid rgba(0, 230, 230, 0.1);
+            color: var(--text-main);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .report-content h4 {
+            text-align: center;
+            color: var(--superb-accent);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .report-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .report-content th, .report-content td {
+            border: 1px solid rgba(0, 230, 230, 0.1);
+            padding: 8px;
+            text-align: left;
+        }
+        .report-content th {
+            background-color: rgba(0, 230, 230, 0.1);
+            font-weight: 600;
+        }
+        .report-content tr:nth-child(even) {
+            background-color: rgba(0, 230, 230, 0.03);
+        }
 
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .form-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      flex: 1;
-      min-width: 160px;
-      font-weight: 500;
-      align-self: center;
-    }
-
-    .form-group div {
-      flex: 3;
-    }
-
-    .report-summary {
-      margin-top: 30px;
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
-    }
-
-    canvas {
-      margin-top: 30px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-    }
-
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    li {
-      margin-bottom: 5px;
-    }
-  </style>
+        /* Gemini Output Modal */
+        .gemini-card {
+            max-width: 500px;
+            padding: 25px;
+            text-align: left;
+        }
+        .gemini-card h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--superb-accent);
+            font-family: 'Orbitron', sans-serif;
+        }
+        .gemini-card pre {
+            white-space: pre-wrap; /* Ensures text wraps */
+            word-wrap: break-word; /* Breaks long words */
+            background: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 230, 230, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+        .gemini-card .loading-spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px; /* Ensure spinner is visible */
+        }
+        .gemini-card .loading-spinner {
+            border: 4px solid rgba(0, 230, 230, 0.2);
+            border-top: 4px solid var(--superb-accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        .gemini-card .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .gemini-card .close-btn:hover {
+            color: var(--superb-accent);
+        }
+        .report-summary-output {
+            background: rgba(0, 230, 230, 0.08);
+            border: 1px solid rgba(0, 230, 230, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .report-summary-output p {
+            margin: 0;
+        }
+        .report-summary-output .loading-spinner-container {
+            min-height: 50px;
+        }
+        /* Costing Report specific styles */
+        .costing-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+        }
+        .costing-summary-table th, .costing-summary-table td {
+            border: 1px solid rgba(0, 230, 230, 0.1);
+            padding: 10px;
+            text-align: left;
+        }
+        .costing-summary-table th {
+            background-color: rgba(0, 230, 230, 0.15);
+            font-weight: 700;
+        }
+        .costing-summary-table td {
+            background-color: rgba(0, 230, 230, 0.05);
+        }
+        .costing-summary-table tr:last-child td {
+            font-weight: 700;
+            background-color: rgba(0, 230, 230, 0.2);
+        }
+    </style>
 </head>
 <body>
-
-<div class="container">
-  <h1>Sticker Inventory Management</h1>
-
-  <!-- Add New Sticker -->
-  <h2>Add New Sticker</h2>
-  <div class="form-group">
-    <label for="stickerName">Sticker Name:</label>
-    <div><input type="text" id="stickerName"></div>
-  </div>
-  <div class="form-group">
-    <label for="initialStock">Initial Stock:</label>
-    <div><input type="number" id="initialStock" min="0"></div>
-  </div>
-  <div class="form-group">
-    <label for="stickerCost">Cost per Sticker (R):</label>
-    <div><input type="number" id="stickerCost" step="0.01" min="0"></div>
-  </div>
-  <button onclick="addSticker()">Add Sticker</button>
-
-  <hr>
-
-  <!-- Deduct Stock -->
-  <h2>Deduct Sticker Usage</h2>
-  <div class="form-group">
-    <label for="selectSticker">Select Sticker:</label>
-    <div><select id="selectSticker"></select></div>
-  </div>
-  <div class="form-group">
-    <label for="department">Department:</label>
-    <div><input type="text" id="department"></div>
-  </div>
-  <div class="form-group">
-    <label for="person">Person:</label>
-    <div><input type="text" id="person"></div>
-  </div>
-  <div class="form-group">
-    <label for="deductDate">Date of Use:</label>
-    <div><input type="date" id="deductDate"></div>
-  </div>
-  <div class="form-group">
-    <label for="deductAmount">Deduct Amount:</label>
-    <div><input type="number" id="deductAmount" min="1"></div>
-  </div>
-  <button onclick="deductStock()">Deduct Stock</button>
-
-  <hr>
-
-  <!-- Report Table -->
-  <h2>Inventory & Usage Report</h2>
-  <button onclick="exportToCSV()">📥 Export to CSV</button>
-  <button onclick="exportToPDF()">📄 Export to PDF</button>
-  <table id="reportTable">
-    <thead>
-      <tr>
-        <th>Sticker Name</th>
-        <th>Total Stock</th>
-        <th>Used By Departments</th>
-        <th>Remaining Stock</th>
-        <th>Cost per Sticker</th>
-        <th>Total Cost Used</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Dynamic rows go here -->
-    </tbody>
-  </table>
-
-  <!-- Summary Report -->
-  <div class="report-summary">
-    <h3>📊 Summary Report</h3>
-    <p><strong>Total Stickers Used:</strong> <span id="totalUsed">0</span></p>
-    <p><strong>Total Cost of Used Stickers:</strong> R<span id="totalCost">0.00</span></p>
-    <p><strong>Total Remaining Stickers:</strong> <span id="totalRemaining">0</span></p>
-    <p><strong>Total Stickers Ever in Inventory:</strong> <span id="totalEver">0</span></p>
-
-    <h4>UsageId Department Breakdown (with Cost)</h4>
-    <ul id="deptUsageList">
-      <li>No usage recorded yet.</li>
-    </ul>
-  </div>
-
-  <!-- Chart -->
-  <canvas id="usageChart" height="100"></canvas>
-</div>
-
-<!-- Load Working External Libraries -->
-<script src=" https://unpkg.com/chart.js @3.9.1/dist/chart.min.js"></script>
-<script src="https://unpkg.com/jspdf @2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://unpkg.com/jspdf-autotable @3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
-
-<!-- App Logic -->
-<script>
-  let inventory = [];
-
-  function addSticker() {
-    const name = document.getElementById("stickerName").value.trim();
-    const stock = parseInt(document.getElementById("initialStock").value);
-    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
-
-    if (!name || isNaN(stock) || stock < 0) {
-      alert("Please enter valid sticker name and stock.");
-      return;
-    }
-
-    inventory.push({
-      name,
-      totalStock: stock,
-      remainingStock: stock,
-      costPerSticker: cost,
-      usage: [] // {department, amount, person, date}
-    });
-
-    updateSelectors();
-    updateReport();
-    document.getElementById("stickerName").value = "";
-    document.getElementById("initialStock").value = "";
-    document.getElementById("stickerCost").value = "";
-  }
-
-  function updateSelectors() {
-    const select = document.getElementById("selectSticker");
-    select.innerHTML = "";
-
-    inventory.forEach((item, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = item.name;
-      select.appendChild(option);
-    });
-  }
-
-  function deductStock() {
-    const index = parseInt(document.getElementById("selectSticker").value);
-    const department = document.getElementById("department").value.trim().toLowerCase();
-    const person = document.getElementById("person").value.trim();
-    const date = document.getElementById("deductDate").value;
-    const amount = parseInt(document.getElementById("deductAmount").value);
-
-    if (isNaN(index) || !department || !person || !date || isNaN(amount) || amount <= 0) {
-      alert("Please fill in all fields correctly.");
-      return;
-    }
-
-    const item = inventory[index];
-    if (amount > item.remainingStock) {
-      alert(`Not enough stock. Only ${item.remainingStock} left.`);
-      return;
-    }
-
-    item.remainingStock -= amount;
-    item.usage.push({ department, amount, person, date });
-
-    updateReport();
-    document.getElementById("department").value = "";
-    document.getElementById("person").value = "";
-    document.getElementById("deductDate").value = "";
-    document.getElementById("deductAmount").value = "";
-  }
-
-  function updateReport() {
-    const tbody = document.querySelector("#reportTable tbody");
-    tbody.innerHTML = "";
-
-    let totalUsed = 0;
-    let totalRemaining = 0;
-    let totalEver = 0;
-    let totalCost = 0;
-
-    const deptUsage = {};
-    const deptCost = {};
-
-    inventory.forEach(item => {
-      const used = item.totalStock - item.remainingStock;
-      totalUsed += used;
-      totalRemaining += item.remainingStock;
-      totalEver += item.totalStock;
-
-      item.usage.forEach(u => {
-        deptUsage[u.department] = (deptUsage[u.department] || 0) + u.amount;
-        deptCost[u.department] = (deptCost[u.department] || 0) + (u.amount * item.costPerSticker);
-      });
-
-      const tr = document.createElement("tr");
-      const usedBy = item.usage.map(u =>
-        `${u.department} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join("<br>") || "None";
-
-      const totalUsedCost = used * item.costPerSticker;
-
-      tr.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.totalStock}</td>
-        <td>${usedBy}</td>
-        <td>${item.remainingStock}</td>
-        <td>R${item.costPerSticker.toFixed(2)}</td>
-        <td>R${totalUsedCost.toFixed(2)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById("totalUsed").textContent = totalUsed;
-    document.getElementById("totalRemaining").textContent = totalRemaining;
-    document.getElementById("totalEver").textContent = totalEver;
-    document.getElementById("totalCost").textContent = getTotalCost().toFixed(2);
-
-    const deptList = document.getElementById("deptUsageList");
-    deptList.innerHTML = "";
-    if (Object.keys(deptUsage).length === 0) {
-      deptList.innerHTML = "<li>No usage recorded yet.</li>";
-    } else {
-      for (let dept in deptUsage) {
-        const li = document.createElement("li");
-        li.textContent = `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${deptUsage[dept]} stickers → R${deptCost[dept].toFixed(2)}`;
-        deptList.appendChild(li);
-      }
-    }
-
-    updateChart(deptUsage);
-  }
-
-  function getTotalCost() {
-    return inventory.reduce((sum, item) => sum + (item.costPerSticker * (item.totalStock - item.remainingStock)), 0);
-  }
-
-  function updateChart(deptUsage) {
-    const ctx = document.getElementById('usageChart').getContext('2d');
-
-    const labels = Object.keys(deptUsage).map(d => d.charAt(0).toUpperCase() + d.slice(1));
-    const data = Object.values(deptUsage);
-
-    if (window.myChartInstance) window.myChartInstance.destroy();
-
-    window.myChartInstance = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Sticker Usage by Department',
-          data: data,
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' },
-          title: {
-            display: true,
-            text: 'UsageId Distribution by Department'
-          }
+    <header>
+        Superb IT Sticker USAGE by Department
+        <button class="dark-toggle-btn" id="darkModeBtn" title="Toggle dark mode">🌙</button>
+    </header>
+    <div class="search-bar">
+        <input type="search" id="searchInput" placeholder="Search by Type, Department, Notes, or Person...">
+        <select id="typeFilter"></select>
+        <span id="assetCountBadge" class="badge"></span>
+        <button class="btn" id="exportBtn" style="padding:10px 18px;">Export CSV</button>
+        <button class="download-pdf-btn" id="pdfBtn" title="Download Type Quantities as PDF"> &#128459; </button>
+        <button class="btn" id="statsBtn" style="padding:10px 18px;" title="View Sticker Statistics"> Stats </button>
+    </div>
+    <div class="tabs-container">
+        <button class="tab-button active" id="allInventoryTab" data-view="all">All USAGE</button>
+        <button class="tab-button" id="walletTab" data-view="inventory">USAGE</button>
+    </div>
+    <ul class="asset-list" id="assetsBox"></ul>
+    <div class="fab-container">
+        <button class="fab" id="addStockFab" title="Add Sticker Quantity">+</button>
+        <button class="fab deduct" id="deductFab" title="Deduct Sticker Quantity">-</button>
+    </div>
+    <div class="footer">&copy; 2024 Superb Hyper. Data stored securely in JSONBin.</div>
+    <div id="formModal"><div class="form-card" id="formCard"></div></div>
+    <div id="statsModal">
+        <div class="stats-card">
+            <button class="stats-close-btn" id="statsCloseBtn">&times;</button>
+            <h3>Sticker Statistics & Reports</h3>
+            <div class="report-controls">
+                <button class="btn" id="overallStatsBtn">Overall Stats</button>
+                <button class="btn" id="dailyReportBtn">Daily Report</button>
+                <button class="btn" id="weeklyReportBtn">Weekly Report</button>
+                <button class="btn" id="monthlyReportBtn">Monthly Report</button>
+                <button class="btn" id="costingReportBtn">Costing Report</button>
+                <button class="btn" id="costByDepartmentReportBtn">Cost by Department</button>
+                </div>
+            <div id="overallStatsContent">
+                <div class="stats-summary">
+                    <p>Total Stickers: <span id="totalAssetsCount">0</span></p>
+                </div>
+                <div class="chart-container">
+                    <h4>Sticker Quantity by Type</h4>
+                    <canvas id="assetTypeChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>Sticker Quantity by Department</h4>
+                    <canvas id="assetDepartmentChart"></canvas>
+                </div>
+                <button class="btn delete" id="resetStatsBtn" style="margin-top: 20px;">Reset All Stats</button>
+            </div>
+            <div id="transactionReportContent" class="report-content" style="display: none;">
+                <div id="reportSummaryOutput" class="report-summary-output" style="display: none;"></div>
+                </div>
+            <div id="costingReportContent" class="report-content" style="display: none;">
+                </div>
+            <div id="costByDepartmentReportContent" class="report-content" style="display: none;">
+                </div>
+        </div>
+    </div>
+    <div id="confirmationModal">
+        <div class="confirmation-card">
+            <h3>Confirm Deletion</h3>
+            <p id="confirmationMessage"></p>
+            <div class="button-group">
+                <button class="btn delete" id="confirmDeleteBtn">Delete</button>
+                <button class="btn cancel" id="cancelDeleteBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="geminiOutputModal">
+        <div class="gemini-card">
+            <button class="close-btn" onclick="closeGeminiOutputModal()">&times;</button>
+            <h3 id="geminiOutputTitle"></h3>
+            <div id="geminiOutputContent">
+                <div class="loading-spinner-container">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast-container"></div>
+    <script>
+        // DARK MODE
+        function setDarkMode(state) {
+            if (state) {
+                document.body.classList.add('dark');
+                document.getElementById("darkModeBtn").textContent = "☀️";
+                localStorage.setItem('superb_darkmode','1');
+            } else {
+                document.body.classList.remove('dark');
+                document.getElementById("darkModeBtn").textContent = "🌙";
+                localStorage.setItem('superb_darkmode','0');
+            }
+            // Update chart colors if charts exist and mode changes
+            if (window.assetTypeChartInstance) {
+                updateChartAppearance(window.assetTypeChartInstance);
+                window.assetTypeChartInstance.update();
+            }
+            if (window.assetDepartmentChartInstance) {
+                // Updated chart instance name
+                updateChartAppearance(window.assetDepartmentChartInstance);
+                window.assetDepartmentChartInstance.update();
+            }
         }
-      }
-    });
-  }
-
-  function exportToCSV() {
-    let csv = "Sticker Name,Total Stock,Remaining Stock,Department,Amount,Person,Date,Cost Each,Total Cost\n";
-    inventory.forEach(item => {
-      item.usage.forEach(u => {
-        const totalCost = u.amount * item.costPerSticker;
-        csv += `"${item.name}",${item.totalStock},${item.remainingStock},"${u.department}",${u.amount},"${u.person}","${u.date}",R${item.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\n`;
-      });
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sticker_usage_report.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFontSize(16);
-    doc.text("Sticker Usage Report", 14, 20);
-
-    const rows = [];
-    inventory.forEach(item => {
-      item.usage.forEach(u => {
-        const totalCost = u.amount * item.costPerSticker;
-        rows.push([
-          item.name,
-          item.totalStock,
-          item.remainingStock,
-          u.department,
-          u.amount,
-          u.person,
-          u.date,
-          `R${item.costPerSticker.toFixed(2)}`,
-          `R${totalCost.toFixed(2)}`
-        ]);
-      });
-    });
-
-    doc.autoTable({
-      head: [["Sticker", "Total", "Remaining", "Dept", "Amount", "Person", "Date", "Cost Each", "Total Cost"]],
-      body: rows,
-      startY: 30
-    });
-
-    doc.save("sticker_usage_report.pdf");
-  }
-
-  function updateSelectors() {
-    const select = document.getElementById("selectSticker");
-    select.innerHTML = "";
-
-    inventory.forEach((item, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = item.name;
-      select.appendChild(option);
-    });
-  }
-
-  window.onload = () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("deductDate").value = today;
-  };
-</script>
-
-</body>
-</html>
+        document.getElementById("darkModeBtn").onclick = function() {
+            setDarkMode(!document.body.classList.contains('dark'));
+        };
+        if (localStorage.getItem('superb_darkmode') === '1') setDarkMode(true);
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.addEventListener('transitionend', () => toast.remove());
+            }, duration);
+        }
+        // JSONBin Settings
+        const JSONBIN_API = "https://api.jsonbin.io/v3/b/6863ec578a456b7966b98009";
+        const JSONBIN_KEY = "$2a$10$Mkbp5SHDbBHkeUNH6UVTOOF4GTRbr.8QsCCtQfdD6dQ4ZKXcVq4nm";
+        // UPDATED ASSET TYPES FOR STICKERS
+        const ASSET_TYPES = [
+            "Scale Labels (BW500)",
+            "CHICKEN",
+            "BEEF",
+            "MUTTON",
+            "MINCE",
+            "Special Offer (Green)",
+            "Special Offer (Orange)",
+            "Barcode Labels",
+            "Arrow Labels",
+            "Security Stickers",
+            "Security Tape",
+            "Colour Paper",
+            "Invoice/Reference Stickers"
+        ];
+        // NEW DEPARTMENT OPTIONS
+        const DEPARTMENT_OPTIONS = [
+            "INVENTORY", // Central storage for total sticker type stock
+            "Fruit & veg",
+            "Spice",
+            "Butchery",
+            "Online",
+            "Barcoding"
+        ];
+        let ALL_ASSETS = []; // Stores current aggregated stock levels
+        let TRANSACTION_HISTORY = []; // Stores individual add/deduct transactions
+        let CURRENT_TYPE = "All Stickers"; // Default to show all stickers
+        let CURRENT_VIEW = "all"; // 'all' or 'inventory' to control tab view
+        let assetTypeChartInstance = null;
+        let assetDepartmentChartInstance = null; // Updated chart instance name
+        // Utility to generate a simple unique ID
+        function generateUniqueId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+        // Finds an asset by its type and department combination in ALL_ASSETS
+        function findAssetByTypeIdDept(type, department) {
+            return ALL_ASSETS.find(a => a.Type === type && a.Department === department);
+        }
+        // Adds a new asset or updates an existing one (by Type and Department)
+        // quantityChange can be positive (add) or negative (deduct)
+        // newCostPerUnit is only relevant for 'add' operations
+        function updateAssetQuantity(type, department, quantityChange, notes = "", person = "", new...
