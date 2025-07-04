@@ -181,7 +181,6 @@
       margin-bottom: 5px;
       color: #5d667a;
     }
-    /* Usage report tab buttons and table */
     .report-tab-btn {
       background: #f7faff;
       color: var(--primary);
@@ -246,6 +245,32 @@
       .form-group {min-width: unset;}
       th, td {padding: 8px 4px;}
     }
+    /* Modal styles */
+    #addStockModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.18);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #addStockModal .modal-content {
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 8px 32px 0 #2223;
+      max-width: 350px;
+      padding: 34px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #addStockAmount {
+      margin-bottom: 18px;
+      padding: 9px 11px;
+      width: 150px;
+    }
   </style>
 </head>
 <body>
@@ -268,6 +293,26 @@
       <div class="form-group">
         <label for="stickerName">Sticker Name</label>
         <input type="text" id="stickerName" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="stickerLabel">Sticker Label</label>
+        <select id="stickerLabel">
+          <option value="">--Select Label--</option>
+          <option value="SCALE LABELS (BW500)">SCALE LABELS (BW500)</option>
+          <option value="CHICKEN LABELS">CHICKEN LABELS</option>
+          <option value="BEEF LABELS">BEEF LABELS</option>
+          <option value="MUTTON LABELS">MUTTON LABELS</option>
+          <option value="MINCE LABELS">MINCE LABELS</option>
+          <option value="SPECIAL OFFER (GREEN)">SPECIAL OFFER (GREEN)</option>
+          <option value="SPECIAL OFFER (ORANGE)">SPECIAL OFFER (ORANGE)</option>
+          <option value="BARCODE LABELS">BARCODE LABELS</option>
+          <option value="ARROW LABELS">ARROW LABELS</option>
+          <option value="SECURITY TAPE (RED)">SECURITY TAPE (RED)</option>
+          <option value="SECURITY TAPE (BLUE)">SECURITY TAPE (BLUE)</option>
+          <option value="SECURITY STICKERS">SECURITY STICKERS</option>
+          <option value="COLOUR PAPER">COLOUR PAPER</option>
+          <option value="INVOICE/REFERENCE STICKER">INVOICE/REFERENCE STICKER</option>
+        </select>
       </div>
       <div class="form-group">
         <label for="initialStock">Initial Stock</label>
@@ -324,6 +369,7 @@
       <thead>
         <tr>
           <th>Sticker Name</th>
+          <th>Label</th>
           <th>Total Stock</th>
           <th>Used By Departments</th>
           <th>Remaining Stock</th>
@@ -351,7 +397,6 @@
   </div>
   <canvas id="usageChart" height="100"></canvas>
 
-  <!-- Usage report breakdowns -->
   <div class="report-summary" style="margin-top:30px;">
     <h3>🗓 Usage Breakdown</h3>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
@@ -360,6 +405,19 @@
       <button type="button" class="report-tab-btn" id="monthlyTab" onclick="showUsageTab('monthly')">Monthly</button>
     </div>
     <div id="usageTabContent"></div>
+  </div>
+</div>
+
+<!-- Add Stock Modal -->
+<div id="addStockModal">
+  <div class="modal-content">
+    <h3>Add Stock</h3>
+    <p id="addStockStickerName"></p>
+    <input type="number" id="addStockAmount" placeholder="Enter amount" min="1">
+    <div>
+      <button onclick="addStockToSticker()" class="action-btn">Add</button>
+      <button onclick="hideAddStockModal()" class="action-btn del-btn">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -375,6 +433,7 @@
   let inventory = [];
   let editIndex = -1;
   let chartVisible = true;
+  let addStockIndex = -1; // For the modal
 
   function showLoader(show=true) {
     document.getElementById('loader').style.display = show ? 'flex' : 'none';
@@ -414,16 +473,18 @@
   }
   function addSticker() {
     const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
     const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
-    if (!name || isNaN(stock) || stock < 0) {
-      alert("Please enter valid sticker name and stock."); return;
+    if (!name || !label || isNaN(stock) || stock < 0) {
+      alert("Please enter valid sticker name, label and stock."); return;
     }
     if (inventory.some(s => s.name.toLowerCase() === name.toLowerCase())) {
       alert('Sticker with this name already exists.'); return;
     }
     inventory.push({
       name,
+      label,
       totalStock: stock,
       remainingStock: stock,
       costPerSticker: cost,
@@ -437,6 +498,7 @@
   }
   function clearStickerForm() {
     document.getElementById("stickerName").value = "";
+    document.getElementById("stickerLabel").value = "";
     document.getElementById("initialStock").value = "";
     document.getElementById("stickerCost").value = "";
     document.getElementById("addStickerBtn").disabled = true;
@@ -445,6 +507,7 @@
     editIndex = i;
     let s = inventory[i];
     document.getElementById("stickerName").value = s.name;
+    document.getElementById("stickerLabel").value = s.label || "";
     document.getElementById("initialStock").value = s.totalStock;
     document.getElementById("stickerCost").value = s.costPerSticker;
     document.getElementById("addStickerBtn").textContent = "Update Sticker";
@@ -454,16 +517,18 @@
   function updateSticker() {
     if (editIndex < 0) return;
     const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
     const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
-    if (!name || isNaN(stock) || stock < 0) {
-      alert("Please enter valid sticker name and stock."); return;
+    if (!name || !label || isNaN(stock) || stock < 0) {
+      alert("Please enter valid sticker name, label and stock."); return;
     }
     if (inventory.some((s, idx) => idx !== editIndex && s.name.toLowerCase() === name.toLowerCase())) {
       alert('Sticker with this name already exists.'); return;
     }
     let s = inventory[editIndex];
     s.name = name;
+    s.label = label;
     s.totalStock = stock;
     let used = s.totalStock - s.remainingStock;
     s.remainingStock = Math.max(0, stock - used);
@@ -522,27 +587,50 @@
       select.appendChild(option);
     });
   }
+
+  // ----- Add Stock Modal -----
+  function showAddStockModal(i) {
+    addStockIndex = i;
+    document.getElementById('addStockStickerName').textContent = inventory[i].name;
+    document.getElementById('addStockAmount').value = "";
+    document.getElementById('addStockModal').style.display = 'flex';
+  }
+  function hideAddStockModal() {
+    document.getElementById('addStockModal').style.display = 'none';
+    addStockIndex = -1;
+  }
+  function addStockToSticker() {
+    const amt = parseInt(document.getElementById('addStockAmount').value);
+    if (isNaN(amt) || amt <= 0) {
+      alert("Enter a valid amount.");
+      return;
+    }
+    inventory[addStockIndex].totalStock += amt;
+    inventory[addStockIndex].remainingStock += amt;
+    saveInventory().then(() => {
+      updateReport();
+      hideAddStockModal();
+    });
+  }
+
   // Usage breakdown tab functions
   function showUsageTab(tab) {
-    // Tab highlight
     ['daily','weekly','monthly'].forEach(x =>
       document.getElementById(x+'Tab').classList.remove('active'));
     document.getElementById(tab+'Tab').classList.add('active');
-    // Date range setup
     const now = new Date();
     let startDate, endDate;
     if (tab === "daily") {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
     } else if (tab === "weekly") {
-      const day = now.getDay() || 7; // Monday-start week
+      const day = now.getDay() || 7;
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
     } else if (tab === "monthly") {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
       endDate = new Date(now.getFullYear(), now.getMonth()+1, 1);
     }
-    // Collect usage for range
     let usageSummary = {};
     let usageCost = {};
     let totalUsed = 0, totalCost = 0;
@@ -557,7 +645,6 @@
         }
       });
     });
-    // Render
     let html = `<table class="usage-report-table"><thead>
       <tr><th>Department</th><th>Stickers Used</th><th>Total Cost</th></tr>
       </thead><tbody>`;
@@ -580,12 +667,10 @@
     html += "</tbody></table>";
     document.getElementById("usageTabContent").innerHTML = html;
   }
-  // Always refresh usage tabs after changes
   function refreshUsageTabs() {
     let active = document.querySelector('.report-tab-btn.active');
     showUsageTab(active ? active.id.replace('Tab','') : 'daily');
   }
-  // Main report update
   const origUpdateReport = updateReport;
   updateReport = function() {
     origUpdateReport.apply(this, arguments);
@@ -623,6 +708,7 @@
       else if (item.remainingStock <= 5) stockCellClass = "low-stock";
       tr.innerHTML = `
         <td>${item.name}</td>
+        <td>${item.label || ''}</td>
         <td>${item.totalStock}</td>
         <td>${usedBy}</td>
         <td class="${stockCellClass}">${item.remainingStock}</td>
@@ -630,6 +716,7 @@
         <td>R${totalUsedCost.toFixed(2)}</td>
         <td>${last}</td>
         <td>
+          <button class="action-btn" onclick="showAddStockModal(${inventory.indexOf(item)})">Add Stock</button>
           <button class="action-btn edit-btn" onclick="editSticker(${inventory.indexOf(item)})">Edit</button>
           <button class="action-btn del-btn" onclick="deleteSticker(${inventory.indexOf(item)})">Delete</button>
         </td>
@@ -702,14 +789,14 @@
     updateChart({});
   }
   function exportToCSV() {
-    let csv = "Sticker Name,Total Stock,Used By Departments,Remaining Stock,Cost per Sticker,Total Cost Used\n";
+    let csv = "Sticker Name,Label,Total Stock,Used By Departments,Remaining Stock,Cost per Sticker,Total Cost Used\n";
     inventory.forEach(item => {
       const usedBy = item.usage.map(u =>
         `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
       ).join(" | ") || "None";
       const used = item.totalStock - item.remainingStock;
       const totalUsedCost = used * item.costPerSticker;
-      csv += `"${item.name}",${item.totalStock},"${usedBy}",${item.remainingStock},R${item.costPerSticker.toFixed(2)},R${totalUsedCost.toFixed(2)}\n`;
+      csv += `"${item.name}","${item.label || ''}",${item.totalStock},"${usedBy}",${item.remainingStock},R${item.costPerSticker.toFixed(2)},R${totalUsedCost.toFixed(2)}\n`;
     });
     const blob = new Blob([csv], {type: 'text/csv'});
     const link = document.createElement('a');
@@ -730,6 +817,7 @@
       const totalUsedCost = used * item.costPerSticker;
       return [
         item.name,
+        item.label || '',
         item.totalStock,
         usedBy,
         item.remainingStock,
@@ -738,7 +826,7 @@
       ];
     });
     doc.autoTable({
-      head: [["Sticker Name", "Total Stock", "Used By Departments", "Remaining Stock", "Cost per Sticker", "Total Cost Used"]],
+      head: [["Sticker Name", "Label", "Total Stock", "Used By Departments", "Remaining Stock", "Cost per Sticker", "Total Cost Used"]],
       body: rows,
       startY: 18,
       styles: { fontSize: 8 }
@@ -785,9 +873,10 @@
   }
   function validateAddSticker() {
     const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
     const cost = parseFloat(document.getElementById("stickerCost").value);
-    document.getElementById("addStickerBtn").disabled = !(name && !isNaN(stock) && stock >= 0 && !isNaN(cost) && cost >= 0);
+    document.getElementById("addStickerBtn").disabled = !(name && label && !isNaN(stock) && stock >= 0 && !isNaN(cost) && cost >= 0);
   }
   function validateDeduct() {
     const dep = document.getElementById("department").value;
@@ -797,6 +886,7 @@
     document.getElementById("deductBtn").disabled = !(dep && per && date && !isNaN(amt) && amt > 0 && inventory.length > 0);
   }
   document.getElementById("stickerName").addEventListener("input", validateAddSticker);
+  document.getElementById("stickerLabel").addEventListener("change", validateAddSticker);
   document.getElementById("initialStock").addEventListener("input", validateAddSticker);
   document.getElementById("stickerCost").addEventListener("input", validateAddSticker);
   document.getElementById("department").addEventListener("change", validateDeduct);
@@ -813,7 +903,6 @@
     showLoader(false);
     validateAddSticker();
     validateDeduct();
-    // Show daily tab by default
     showUsageTab('daily');
   };
 </script>
