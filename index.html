@@ -239,37 +239,24 @@
       100% { transform: rotate(360deg);}
     }
     .hide { display: none !important;}
+    /* ---- NEW FOR SMALL USAGE TEXT ---- */
+    .usage-small {
+      font-size: 0.89em;
+      line-height: 1.25;
+      color: #444;
+      text-align: left;
+    }
+    .usage-divider {
+      margin: 4px 0;
+      border: 0;
+      border-top: 1px solid #e6eaf1;
+    }
     @media (max-width: 760px) {
       .container {padding: 13px;}
       .form-pair-group {flex-direction: column; gap: 0;}
       .form-group {min-width: unset;}
       th, td {padding: 8px 4px;}
-    }
-    /* Modal styles */
-    #addStockModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.18);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    #addStockModal .modal-content {
-      background: #fff;
-      border-radius: 13px;
-      box-shadow: 0 8px 32px 0 #2223;
-      max-width: 350px;
-      padding: 34px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #addStockAmount {
-      margin-bottom: 18px;
-      padding: 9px 11px;
-      width: 150px;
+      .usage-small { font-size: 0.8em; }
     }
   </style>
 </head>
@@ -676,6 +663,8 @@
     origUpdateReport.apply(this, arguments);
     refreshUsageTabs();
   }
+
+  // ------------- updateReport() FUNCTION ----------------
   function updateReport() {
     const tbody = document.querySelector("#reportTable tbody");
     tbody.innerHTML = "";
@@ -693,10 +682,24 @@
         deptUsage[u.department] = (deptUsage[u.department] || 0) + u.amount;
         deptCost[u.department] = (deptCost[u.department] || 0) + (u.amount * item.costPerSticker);
       });
-      const tr = document.createElement("tr");
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join("<br>") || "None";
+
+      // GROUP USAGE BY DEPARTMENT: Each department on a new line, small font, with a line between
+      const deptPersonMap = {};
+      item.usage.forEach(u => {
+        if (!deptPersonMap[u.department]) deptPersonMap[u.department] = [];
+        deptPersonMap[u.department].push(`${u.person} (${u.amount}, ${u.date})`);
+      });
+      let usedBy = "";
+      const depts = Object.entries(deptPersonMap);
+      if (depts.length) {
+        usedBy = '<div class="usage-small">' + depts.map(([dept, list], idx) =>
+          (idx > 0 ? '<hr class="usage-divider">' : '') +
+          `<b>${dept.charAt(0).toUpperCase() + dept.slice(1)}:</b> ${list.join(', ')}`
+        ).join('') + '</div>';
+      } else {
+        usedBy = "None";
+      }
+
       const totalUsedCost = used * item.costPerSticker;
       let last = "N/A";
       if (item.usage.length) {
@@ -706,6 +709,7 @@
       let stockCellClass = "";
       if (item.remainingStock === 0) stockCellClass = "out-stock";
       else if (item.remainingStock <= 5) stockCellClass = "low-stock";
+      const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${item.name}</td>
         <td>${item.label || ''}</td>
@@ -743,6 +747,8 @@
     document.getElementById("addStickerBtn").onclick = addSticker;
     editIndex = -1;
   }
+  // ------------- END updateReport() FUNCTION ----------------
+
   function getTotalCost() {
     return inventory.reduce((sum, item) => sum + (item.costPerSticker * (item.totalStock - item.remainingStock)), 0);
   }
@@ -791,9 +797,15 @@
   function exportToCSV() {
     let csv = "Sticker Name,Label,Total Stock,Used By Departments,Remaining Stock,Cost per Sticker,Total Cost Used\n";
     inventory.forEach(item => {
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join(" | ") || "None";
+      // Inline format for CSV (no html)
+      const deptPersonMap = {};
+      item.usage.forEach(u => {
+        if (!deptPersonMap[u.department]) deptPersonMap[u.department] = [];
+        deptPersonMap[u.department].push(`${u.person} (${u.amount}, ${u.date})`);
+      });
+      const usedBy = Object.entries(deptPersonMap)
+        .map(([dept, list]) => `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${list.join(', ')}`)
+        .join(' | ') || "None";
       const used = item.totalStock - item.remainingStock;
       const totalUsedCost = used * item.costPerSticker;
       csv += `"${item.name}","${item.label || ''}",${item.totalStock},"${usedBy}",${item.remainingStock},R${item.costPerSticker.toFixed(2)},R${totalUsedCost.toFixed(2)}\n`;
@@ -810,9 +822,15 @@
     const doc = new jsPDF();
     doc.text("Sticker Inventory Report", 14, 12);
     const rows = inventory.map(item => {
-      const usedBy = item.usage.map(u =>
-        `${u.department.charAt(0).toUpperCase() + u.department.slice(1)} (${u.amount}) - ${u.person} on ${u.date}`
-      ).join("; ") || "None";
+      // Inline format for PDF (no html)
+      const deptPersonMap = {};
+      item.usage.forEach(u => {
+        if (!deptPersonMap[u.department]) deptPersonMap[u.department] = [];
+        deptPersonMap[u.department].push(`${u.person} (${u.amount}, ${u.date})`);
+      });
+      const usedBy = Object.entries(deptPersonMap)
+        .map(([dept, list]) => `${dept.charAt(0).toUpperCase() + dept.slice(1)}: ${list.join(', ')}`)
+        .join(' | ') || "None";
       const used = item.totalStock - item.remainingStock;
       const totalUsedCost = used * item.costPerSticker;
       return [
