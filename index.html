@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sticker Inventory Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2870ea;
+      --primary-hover: #1c54b2;
+      --bg-main: linear-gradient(120deg,#f7faff 40%,#e8ecfa 100%);
+      --card-bg: #fff;
+      --border: #e2e8f0;
+      --text-main: #202635;
+      --text-light: #8792a2;
+      --accent: #23c181;
+      --danger: #e74c3c;
+      --warn: #ffa502;
+      --radius: 16px;
+      --shadow: 0 2px 32px 0 rgba(40,112,234,0.10);
+      --header-shadow: 0 1px 12px 0 #c7dbfa99;
+    }
+    html, body {
+      background: var(--bg-main);
+      min-height: 100%;
+      color: var(--text-main);
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      font-size: 15.7px;
+      scroll-behavior: smooth;
+      transition: background .32s, color .22s;
+    }
+    body { padding: 0; }
+    .container {
+      max-width: 950px;
+      margin: 38px auto 32px auto;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 34px 18px 24px 18px;
+      min-height: 81vh;
+      animation: fadeIn .7s cubic-bezier(.53,1.47,.57,.95);
+      transition: background .3s, box-shadow .24s;
+    }
+    @keyframes fadeIn {from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+    h1 {
+      font-family: 'Poppins',sans-serif;
+      font-size: 2.14rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+      color: var(--primary);
+      text-shadow: var(--header-shadow);
+      text-align:center;
+      transition: color .3s;
+    }
+    h2 {
+      font-size: 1.12rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 24px 0 12px 0;
+      letter-spacing: 0.02em;
+      transition: color .3s;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      justify-content: flex-end;
+      margin-bottom: 19px;
+    }
+    #darkToggleBtn {
+      position: absolute;
+      right: 36px;
+      top: 24px;
+      z-index: 99;
+      background: #eaf1fd;
+      border: 1.5px solid #b8c9e7;
+      color: #4c607d;
+      border-radius: 50%;
+      font-size: 1.6em;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px #cadbfa40;
+      cursor: pointer;
+      transition: background .22s, color .19s, border .22s;
+    }
+    #darkToggleBtn:hover { background: #d8e7fc; color: #1850a6; }
+    .action-btn, button, .reset-btn, .download-btn, .upload-btn {
+      font-family: 'Poppins', 'Inter', Arial, sans-serif;
+      font-size: 1rem;
+      border-radius: 9px;
+      border: none;
+      padding: 8px 18px;
+      font-weight: 500;
+      background: linear-gradient(90deg, var(--primary) 60%, #3982ff 100%);
+      color: #fff;
+      box-shadow: 0 2px 16px 0 #98b7ef22;
+      margin: 0 1px 0 0;
+      transition: background 0.15s, box-shadow 0.18s, transform 0.12s, color .25s;
+      outline:none;
+      cursor:pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-btn.eye-btn {
+      background: linear-gradient(90deg,#f7faff 80%,#eaf3fd 100%);
+      color: #2870ea;
+      border: 1.2px solid #bcd7fb;
+      padding: 7px 13px;
+      margin: 0 3px;
+      box-shadow: none;
+      transition: background .18s,color .18s,box-shadow .14s;
+    }
+    .action-btn.eye-btn:hover { color:#fff; background: var(--primary);}
+    .action-btn.edit-btn { background: linear-gradient(90deg,#7d5fff 60%,#5f27cd 100%);}
+    .action-btn.del-btn, .reset-btn { background: linear-gradient(90deg, var(--danger) 60%, #fb5b5b 100%);}
+    .download-btn { background: linear-gradient(90deg,var(--accent) 60%,#5ce6b6 100%);}
+    .upload-btn { background: linear-gradient(90deg,var(--warn) 65%,#ffd25b 100%); color: #473d12;}
+    .reset-btn:hover { background: #c91d19;}
+    .action-btn:active, button:active {transform:scale(.98);}
+    .action-btn:disabled { opacity: 0.6; cursor: not-allowed;}
+    .form-pair-group {display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 10px;}
+    .form-group {flex: 1; min-width: 170px; display: flex; flex-direction: column; margin-bottom: 9px;}
+    .form-group label {font-weight: 600; font-size: 1.01rem; margin-bottom: 5px; color: var(--text-light);}
+    .form-group input, .form-group select {
+      padding: 9px 13px;
+      border: 1.6px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.98rem;
+      background: #f8fbff;
+      transition: border 0.19s,box-shadow .14s,background .18s,color .17s;
+      box-shadow: 0 1px 5px #e8f2ff22;
+      margin-bottom: 1.5px;
+      color:var(--text-main);
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 2px 12px #cce2ff42;
+    }
+    .form-group select { cursor:pointer;}
+    .table-responsive { overflow-x: auto;}
+    table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      margin-top: 10px; font-size: 0.96rem; background: #fcfcff;
+      border-radius: 14px; overflow: hidden; box-shadow: 0 1px 14px 0 #eaf1fd66;
+      border:1.5px solid #eaf1fd;
+      transition: background .25s, box-shadow .2s;
+    }
+    th, td {
+      border: none;
+      padding: 11px 7px;
+      text-align: center;
+      font-size: 0.97em;
+      font-family:'Inter',sans-serif;
+      transition: background 0.10s, color .18s;
+    }
+    th {
+      background: linear-gradient(90deg, var(--primary) 75%, #68a8fc 100%);
+      color: #fff;
+      font-size: 1.04em;
+      font-weight: 700;
+      border-bottom: 2.5px solid #d3e4fa;
+      letter-spacing: .03em;
+      box-shadow: 0 1px 12px 0 #aac2e366;
+    }
+    tr:nth-child(even) td { background: #f5faff; }
+    tr:hover td { background: #eaf2ff;}
+    .out-stock { background: #ffd6d1 !important; color: var(--danger);}
+    .low-stock { background: #ffeab8 !important; color: #d28813;}
+    .total-col { color: #1557c0; font-weight: 600;}
+    #loader { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.7); justify-content: center; align-items: center;}
+    #loader span { font-size: 32px; color: var(--primary); border-radius: 50%; border: 5px solid #e2e8f0; border-top: 5px solid var(--primary); width: 58px; height: 58px; display: inline-block; animation: spin 1s linear infinite;}
+    @keyframes spin { 0% { transform: rotate(0);} 100% { transform: rotate(360deg);}}
+    #addStockModal, #usageModal, #statsModal {
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh; background: rgba(41,61,100,0.18);
+      z-index: 9999; align-items: center; justify-content: center;
+      animation: fadeIn .32s cubic-bezier(.52,1.7,.62,.93);
+    }
+    #addStockModal .modal-content, #usageModal .modal-content, #statsModal .modal-content {
+      background: rgba(255,255,255,0.97);
+      border-radius: 19px;
+      box-shadow: 0 8px 32px 0 #4468b155;
+      max-width: 390px; padding: 25px 16px;
+      display: flex; flex-direction: column; align-items: center;
+      animation: fadeIn .38s cubic-bezier(.52,1.7,.62,.93);
+    }
+    #addStockAmount {margin-bottom: 15px; padding: 8px 12px; width: 140px;}
+    #usageModal .modal-content, #statsModal .modal-content {width:355px;max-width:97vw;padding:19px;}
+    #usageModalClose, #statsModalClose {align-self:flex-end;background:none;color:#888;font-size:2em;border:none;cursor:pointer;line-height:.6;margin-top:-14px;}
+    #usageListTable {width:100%;margin-top:10px;border-collapse:collapse;}
+    #usageListTable th, #usageListTable td {padding:7px 2px;text-align:center;}
+    #usageListTable th {background:#eaf1fd;color:#2870ea;}
+    #usageListTable tr:nth-child(even) td {background:#f7fafe;}
+    #statsTabs {margin-bottom:12px;}
+    #statsTabs button {margin-right:5px; background: #f7faff; color: var(--primary); border:1.3px solid var(--primary); border-radius:8px; padding: 7px 13px; font-size:1em; cursor:pointer; transition: background .16s, color .13s;}
+    #statsTabs button.active, #statsTabs button:active {background: var(--primary); color:#fff;}
+    #statsTable th, #statsTable td {padding:8px 2px; text-align:center; font-size:0.96em;}
+    #statsTable th {background: #eaf1fd; color: #2870ea;}
+    #statsSummary {margin-top:6px; font-size:1.01em;}
+    .action-btn[title]::after, .eye-btn[title]::after {
+      content: attr(title); display: none; position: absolute; background: #233c70f2; color: #fff; font-size: .9em;
+      padding: 4px 10px; border-radius: 7px; white-space: nowrap; left: 110%; top: 50%; transform: translateY(-50%);
+      z-index: 5000; pointer-events:none; opacity:0; transition:.14s;
+    }
+    .action-btn[title]:hover::after, .eye-btn[title]:hover::after { display: block; opacity:1; }
+    @media (max-width: 760px) {
+      .container {padding: 5px;}
+      .form-pair-group {flex-direction: column; gap: 0;}
+      .form-group {min-width: unset;}
+      th, td {padding: 7px 2px; font-size: 0.89em;}
+      #usageModal .modal-content,#statsModal .modal-content {width:97vw;}
+      #darkToggleBtn {right:14px;top:12px;}
+    }
+    html.dark, body.dark {
+      --primary: #68a8fc;
+      --primary-hover: #2870ea;
+      --bg-main: linear-gradient(120deg,#18223a 40%,#243255 100%);
+      --card-bg: #19294a;
+      --border: #30436a;
+      --text-main: #e5eaf4;
+      --text-light: #94a5c7;
+      --accent: #23c181;
+      --danger: #e74c3c;
+      --warn: #fcb040;
+      --header-shadow: 0 2px 18px 0 #29395970;
+      --shadow: 0 4px 36px 0 #000e2c44;
+    }
+    html.dark, body.dark {
+      background: var(--bg-main) !important;
+      color: var(--text-main) !important;
+      transition: background .31s, color .23s;
+    }
+    html.dark .container, body.dark .container {
+      background: var(--card-bg) !important;
+      box-shadow: var(--shadow);
+    }
+    html.dark h1, html.dark h2, body.dark h1, body.dark h2 {
+      color: var(--primary) !important;
+      text-shadow: var(--header-shadow);
+    }
+    html.dark .action-btn, body.dark .action-btn,
+    html.dark button, body.dark button,
+    html.dark .download-btn, body.dark .download-btn,
+    html.dark .upload-btn, body.dark .upload-btn,
+    html.dark .reset-btn, body.dark .reset-btn {
+      color: #fff !important;
+      box-shadow: 0 1.5px 14px 0 #050b15af;
+    }
+    html.dark .action-btn.eye-btn, body.dark .action-btn.eye-btn {
+      background: #243255;
+      color: #68a8fc;
+      border: 1.4px solid #5068a2;
+    }
+    html.dark .action-btn.eye-btn:hover { background: var(--primary); color: #fff;}
+    html.dark .form-group input, html.dark .form-group select, body.dark .form-group input, body.dark .form-group select {
+      background: #1a2746;
+      color: var(--text-main);
+      border: 1.7px solid var(--border);
+    }
+    html.dark .form-group input:focus, html.dark .form-group select:focus {
+      background: #202f52; border-color: var(--primary);
+    }
+    html.dark table, body.dark table {
+      background: #232f4c;
+      box-shadow: 0 2px 16px #131a2b44;
+      border: 1.7px solid #334471;
+    }
+    html.dark th, body.dark th {
+      background: linear-gradient(90deg,#355ca2 85%, #507efc 100%) !important;
+      color: #fff !important;
+      border-bottom: 2.5px solid #193366;
+    }
+    html.dark tr:nth-child(even) td, body.dark tr:nth-child(even) td { background: #202f52; }
+    html.dark tr:hover td, body.dark tr:hover td { background: #21356a; }
+    html.dark .out-stock, body.dark .out-stock { background: #3b2031 !important; color: #ff7d90;}
+    html.dark .low-stock, body.dark .low-stock { background: #393a24 !important; color: #fff2a0;}
+    html.dark #addStockModal .modal-content,
+    html.dark #usageModal .modal-content,
+    html.dark #statsModal .modal-content,
+    body.dark #addStockModal .modal-content,
+    body.dark #usageModal .modal-content,
+    body.dark #statsModal .modal-content {
+      background: #232f4c !important;
+      color: #e3ebfa !important;
+      box-shadow: 0 10px 36px 0 #0d1126c7;
+    }
+    html.dark #usageListTable th, body.dark #usageListTable th,
+    html.dark #statsTable th, body.dark #statsTable th {
+      background: #273e6e !important; color: #7dc1ff !important;
+    }
+    html.dark #usageListTable td, body.dark #usageListTable td,
+    html.dark #statsTable td, body.dark #statsTable td {
+      color: #d3e5fa;
+    }
+    html.dark #statsTabs button, body.dark #statsTabs button {
+      background: #1a2746 !important; color: #7dc1ff !important; border-color: #365eb6 !important;
+    }
+    html.dark #statsTabs button.active, body.dark #statsTabs button.active { background: #4273d9 !important; color: #fff !important;}
+    html.dark #darkToggleBtn, body.dark #darkToggleBtn { background: #2c385a; color: #fff; border-color: #4d638c;}
+    html.dark #darkToggleBtn:hover { background: #39507d; color: #ffe484;}
+    /* Login Modal */
+    #loginModal {
+      position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;
+      background:#121b2bfa;display:flex;align-items:center;justify-content:center;
+    }
+    #loginForm {
+      background:#fff;padding:30px 28px 22px 28px;border-radius:14px;
+      box-shadow:0 3px 28px #0d193455;text-align:center;min-width:260px;
+    }
+    #loginForm input {
+      padding:9px 14px;width:100%;border-radius:8px;border:1.2px solid #e2e8f0;
+      font-size:1rem;
+    }
+    #loginForm button {
+      margin-top:4px;padding:8px 20px;border-radius:8px;background:#2870ea;
+      color:#fff;font-size:1rem;border:none;cursor:pointer;
+    }
+    #loginError {color:#e74c3c;margin-top:8px;display:none;}
+  </style>
+</head>
+<body>
+<!-- LOGIN MODAL -->
+<div id="loginModal">
+  <form id="loginForm">
+    <h2 style="margin-bottom:16px;color:#2870ea;">Login</h2>
+    <div style="margin-bottom:12px;">
+      <input id="loginPassword" type="password" placeholder="Enter password..." autofocus>
+    </div>
+    <button type="submit">Login</button>
+    <div id="loginError">Incorrect password</div>
+  </form>
+</div>
+<button id="darkToggleBtn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+<div class="container">
+  <h1>Sticker Inventory Management</h1>
+  <div id="loader"><span></span></div>
+  <div class="flex-row" style="justify-content:space-between;">
+    <div></div>
+    <div>
+      <button onclick="exportToCSV()" title="Export as CSV" class="admin-only">📥</button>
+      <button onclick="exportToPDF()" title="Export as PDF" class="admin-only">📄</button>
+      <button class="download-btn admin-only" onclick="downloadJSON()" title="Backup JSON">💾</button>
+      <button class="upload-btn admin-only" onclick="document.getElementById('fileInput').click()" title="Restore JSON">⬆</button>
+      <button class="reset-btn admin-only" onclick="resetAllData()" title="Delete ALL">🗑</button>
+      <button onclick="showStatsModal()" title="Usage Stats" class="admin-only">📊</button>
+      <input type="file" id="fileInput" accept=".json,.csv" style="display:none" onchange="uploadJSON(event)">
+    </div>
+  </div>
+  <h2 id="addStickerHeading">Add New Sticker</h2>
+  <form id="addStickerForm" onsubmit="event.preventDefault();">
+    <div class="form-pair-group">
+      <div class="form-group"><label for="stickerName">Sticker Name</label>
+        <input type="text" id="stickerName" autocomplete="off"></div>
+      <div class="form-group"><label for="stickerLabel">Sticker Label</label>
+        <select id="stickerLabel">
+          <option value="">--Select Label--</option>
+          <option value="SCALE LABELS (BW500)">SCALE LABELS (BW500)</option>
+          <option value="CHICKEN LABELS">CHICKEN LABELS</option>
+          <option value="BEEF LABELS">BEEF LABELS</option>
+          <option value="MUTTON LABELS">MUTTON LABELS</option>
+          <option value="MINCE LABELS">MINCE LABELS</option>
+          <option value="SPECIAL OFFER (GREEN)">SPECIAL OFFER (GREEN)</option>
+          <option value="SPECIAL OFFER (ORANGE)">SPECIAL OFFER (ORANGE)</option>
+          <option value="BARCODE LABELS">BARCODE LABELS</option>
+          <option value="ARROW LABELS">ARROW LABELS</option>
+          <option value="SECURITY TAPE (RED)">SECURITY TAPE (RED)</option>
+          <option value="SECURITY TAPE (BLUE)">SECURITY TAPE (BLUE)</option>
+          <option value="SECURITY STICKERS (GREEN)">SECURITY STICKERS (GREEN)</option>
+          <option value="SECURITY STICKERS (BLUE)">SECURITY STICKERS (BLUE)</option>
+          <option value="SECURITY STICKERS (RED)">SECURITY STICKERS (RED)</option>
+          <option value="COLOUR PAPER">COLOUR PAPER</option>
+          <option value="INVOICE/REFERENCE STICKER">INVOICE/REFERENCE STICKER</option>
+        </select>
+      </div>
+      <div class="form-group"><label for="initialStock">Initial Stock</label>
+        <input type="number" id="initialStock" min="0"></div>
+      <div class="form-group"><label for="stickerCost">Cost per Sticker (R)</label>
+        <input type="number" id="stickerCost" step="0.01" min="0"></div>
+    </div>
+    <button id="addStickerBtn" onclick="addSticker()" disabled>➕ Add Sticker</button>
+  </form>
+  <h2>Deduct Sticker Usage</h2>
+  <form onsubmit="event.preventDefault();">
+    <div class="form-pair-group">
+      <div class="form-group"><label for="selectSticker">Select Sticker</label>
+        <select id="selectSticker">
+          <option value="">--Select Sticker--</option>
+        </select></div>
+      <div class="form-group"><label for="department">Department</label>
+        <select id="department">
+          <option value="">--Select Department--</option>
+          <option value="butchery">Butchery</option>
+          <option value="spice">Spice</option>
+          <option value="fruit and veg">Fruit and Veg</option>
+          <option value="barcoding">Barcoding</option>
+          <option value="online">Online</option>
+        </select></div>
+      <div class="form-group"><label for="person">Person</label>
+        <input type="text" id="person"></div>
+      <div class="form-group"><label for="deductDate">Date of Use</label>
+        <input type="date" id="deductDate"></div>
+      <div class="form-group"><label for="deductAmount">Deduct Amount</label>
+        <input type="number" id="deductAmount" min="1"></div>
+    </div>
+    <button id="deductBtn" onclick="deductStock()" disabled>➖ Deduct Stock</button>
+  </form>
+  <div class="table-responsive">
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th>Sticker Label</th>
+          <th>Used</th>
+          <th>Remaining</th>
+          <th>Total</th>
+          <th class="admin-price">Cost Each</th>
+          <th class="admin-price">Total Cost</th>
+          <th>Last Use</th>
+          <th>Who</th>
+          <th class="admin-only">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows go here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Add Stock Modal -->
+<div id="addStockModal"><div class="modal-content">
+  <button id="addStockModalClose" onclick="hideAddStockModal()" title="Close">&times;</button>
+  <h3 style="margin-bottom:7px;">Add Stock</h3>
+  <p id="addStockStickerName" style="font-weight:600;"></p>
+  <input type="number" id="addStockAmount" placeholder="Enter amount" min="1">
+  <div style="margin-top:13px;">
+    <button onclick="addStockToSticker()" class="action-btn" style="margin-right:9px;">Add</button>
+    <button onclick="hideAddStockModal()" class="action-btn del-btn">Cancel</button>
+  </div>
+</div></div>
+<!-- Usage Modal 👁️ -->
+<div id="usageModal"><div class="modal-content">
+  <button id="usageModalClose" onclick="hideUsageModal()" title="Close">&times;</button>
+  <h3 style="margin-bottom:7px;">Sticker Usage Log</h3>
+  <div id="usageListContent"></div>
+</div></div>
+<!-- Stats Modal 📊 -->
+<div id="statsModal"><div class="modal-content">
+  <button id="statsModalClose" onclick="hideStatsModal()" title="Close">&times;</button>
+  <h3 style="margin-bottom:7px;">Usage Stats</h3>
+  <div id="statsTabs">
+    <button id="tab-daily" onclick="showStatsTab('daily')" class="active">Today</button>
+    <button id="tab-weekly" onclick="showStatsTab('weekly')">This Week</button>
+    <button id="tab-monthly" onclick="showStatsTab('monthly')">This Month</button>
+  </div>
+  <div id="statsContent"></div>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
+<script>
+  // --- USER/ADMIN CONTROL ---
+  let userRole = null; // "admin" or "user"
+  document.getElementById("loginForm").onsubmit = function(e) {
+    e.preventDefault();
+    const pass = document.getElementById("loginPassword").value;
+    if(pass === "Superb@123") setRole("admin");
+    else if(pass === "1234") setRole("user");
+    else {
+      document.getElementById("loginError").style.display = "block";
+      setTimeout(() => document.getElementById("loginError").style.display = "none", 1800);
+      document.getElementById("loginPassword").value = "";
+    }
+  };
+  function setRole(role) {
+    userRole = role;
+    document.getElementById("loginModal").style.display = "none";
+    applyRolePermissions();
+  }
+  function applyRolePermissions() {
+    const isAdmin = userRole === "admin";
+    document.querySelectorAll(".admin-only").forEach(btn => btn.style.display = isAdmin ? "" : "none");
+    document.querySelectorAll(".admin-price").forEach(col => col.style.display = isAdmin ? "" : "none");
+    ["stickerName","stickerLabel","initialStock","stickerCost"].forEach(id => {
+      document.getElementById(id).disabled = !isAdmin;
+    });
+    document.getElementById("addStickerHeading").style.display = isAdmin ? "" : "none";
+    document.getElementById("addStickerForm").style.display = isAdmin ? "" : "none";
+    const ths = document.querySelectorAll("#reportTable th");
+    if (ths.length > 8) ths[8].style.display = isAdmin ? "" : "none";
+    document.querySelectorAll("#reportTable tbody tr").forEach(row => {
+      if (row.children.length > 8) row.children[8].style.display = isAdmin ? "" : "none";
+      if (row.children.length > 4) {
+        row.children[4].style.display = isAdmin ? "" : "none";
+        row.children[5].style.display = isAdmin ? "" : "none";
+      }
+    });
+  }
+  // --- DARK MODE ---
+  function setDark(dark) {
+    if(dark) { document.documentElement.classList.add('dark'); document.body.classList.add('dark'); }
+    else { document.documentElement.classList.remove('dark'); document.body.classList.remove('dark'); }
+    localStorage.setItem("sticker-inv-dark", dark ? "1" : "0");
+    document.getElementById('darkToggleBtn').textContent = dark ? "☀️" : "🌙";
+    document.getElementById('darkToggleBtn').title = dark ? "Switch to Light mode" : "Switch to Dark mode";
+  }
+  document.getElementById('darkToggleBtn').onclick = function() {
+    setDark(!document.documentElement.classList.contains('dark'));
+  };
+  (function(){
+    let saved = localStorage.getItem("sticker-inv-dark");
+    if (saved === "1" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) setDark(true);
+    else setDark(false);
+  })();
+
+  // ====== JSONBin.io CONFIG ======
+  const JSONBIN_BIN_ID = '68667cf68a456b7966baa845';
+  const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exu';
+  const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+  let inventory = [];
+  let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
+  function showLoader(show=true) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+  async function loadInventory() {
+    showLoader(true);
+    try {
+      const response = await fetch(JSONBIN_URL + '/latest', {
+        method: 'GET',
+        headers: { 'X-Master-Key': JSONBIN_API_KEY }
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      inventory = data.record || [];
+    } catch (err) { inventory = []; alert('Could not load inventory data from server. Starting fresh.'); }
+    showLoader(false);
+  }
+  async function saveInventory() {
+    showLoader(true);
+    try {
+      const response = await fetch(JSONBIN_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_API_KEY,
+        },
+        body: JSON.stringify(inventory)
+      });
+      if (!response.ok) throw new Error('Could not save to JSONBin');
+    } catch (err) {
+      alert('Could not save inventory data to server.');
+    }
+    showLoader(false);
+  }
+  function addSticker() {
+    const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
+    const stock = parseInt(document.getElementById("initialStock").value);
+    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
+    if (!name || !label || isNaN(stock) || stock < 0) {
+      alert("Please enter valid sticker name, label and stock."); return;
+    }
+    if (inventory.some(s => s.name && s.name.toLowerCase() === name.toLowerCase())) {
+      alert('Sticker with this name already exists.'); return;
+    }
+    inventory.push({
+      name, label, totalStock: stock, remainingStock: stock,
+      costPerSticker: cost, usage: []
+    });
+    saveInventory().then(() => {
+      updateSelectors();
+      updateReport();
+      clearStickerForm();
+    });
+  }
+  function clearStickerForm() {
+    document.getElementById("stickerName").value = "";
+    document.getElementById("stickerLabel").value = "";
+    document.getElementById("initialStock").value = "";
+    document.getElementById("stickerCost").value = "";
+    document.getElementById("addStickerBtn").disabled = true;
+  }
+  function editSticker(i) {
+    editIndex = i;
+    let s = inventory[i];
+    document.getElementById("stickerName").value = s.name;
+    document.getElementById("stickerLabel").value = s.label || "";
+    document.getElementById("initialStock").value = s.totalStock;
+    document.getElementById("stickerCost").value = s.costPerSticker;
+    document.getElementById("addStickerBtn").textContent = "✏️ Update Sticker";
+    document.getElementById("addStickerBtn").onclick = updateSticker;
+    document.getElementById("addStickerBtn").disabled = false;
+  }
+  function updateSticker() {
+    if (editIndex < 0) return;
+    const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
+    const stock = parseInt(document.getElementById("initialStock").value);
+    const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
+    if (!name || !label || isNaN(stock) || stock < 0) {
+      alert("Please enter valid sticker name, label and stock."); return;
+    }
+    if (inventory.some((s, idx) => idx !== editIndex && s.name && s.name.toLowerCase() === name.toLowerCase())) {
+      alert('Sticker with this name already exists.'); return;
+    }
+    let s = inventory[editIndex];
+    s.name = name; s.label = label; s.totalStock = stock;
+    let used = s.totalStock - s.remainingStock;
+    s.remainingStock = Math.max(0, stock - used);
+    s.costPerSticker = cost;
+    saveInventory().then(() => {
+      editIndex = -1;
+      updateSelectors();
+      updateReport();
+      document.getElementById("addStickerBtn").textContent = "➕ Add Sticker";
+      document.getElementById("addStickerBtn").onclick = addSticker;
+      clearStickerForm();
+    });
+  }
+  function deleteSticker(i) {
+    if (!confirm("Delete sticker and ALL usage records?")) return;
+    inventory.splice(i, 1);
+    saveInventory().then(() => {
+      updateSelectors();
+      updateReport();
+    });
+  }
+  function deductStock() {
+    if (inventory.length === 0) { alert("No stickers in inventory."); return; }
+    const index = parseInt(document.getElementById("selectSticker").value);
+    const department = document.getElementById("department").value;
+    const person = document.getElementById("person").value.trim();
+    const date = document.getElementById("deductDate").value;
+    const amount = parseInt(document.getElementById("deductAmount").value);
+    if (isNaN(index) || !department || !person || !date || isNaN(amount) || amount <= 0) {
+      alert("Please fill in all fields correctly."); return;
+    }
+    const item = inventory[index];
+    if (amount > item.remainingStock) {
+      alert(`Not enough stock. Only ${item.remainingStock} left.`); return;
+    }
+    item.remainingStock -= amount;
+    item.usage.push({ department, amount, person, date });
+    saveInventory().then(() => {
+      updateReport();
+      document.getElementById("selectSticker").value = "";
+      document.getElementById("department").value = "";
+      document.getElementById("person").value = "";
+      document.getElementById("deductDate").value = new Date().toISOString().split('T')[0];
+      document.getElementById("deductAmount").value = "";
+      document.getElementById("deductBtn").disabled = true;
+    });
+  }
+  function updateSelectors() {
+    const select = document.getElementById("selectSticker");
+    select.innerHTML = "";
+    let placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "--Select Sticker--";
+    select.appendChild(placeholder);
+    inventory.forEach((item, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = item.label || item.name || 'Sticker';
+      select.appendChild(option);
+    });
+    applyRolePermissions();
+  }
+  function showAddStockModal(i) {
+    addStockIndex = i;
+    document.getElementById('addStockStickerName').textContent = inventory[i].label || inventory[i].name;
+    document.getElementById('addStockAmount').value = "";
+    document.getElementById('addStockModal').style.display = 'flex';
+    setTimeout(()=>{document.getElementById('addStockAmount').focus()},200);
+  }
+  function hideAddStockModal() { document.getElementById('addStockModal').style.display = 'none'; addStockIndex = -1; }
+  function addStockToSticker() {
+    const amt = parseInt(document.getElementById('addStockAmount').value);
+    if (isNaN(amt) || amt <= 0) { alert("Enter a valid amount."); return; }
+    inventory[addStockIndex].totalStock += amt;
+    inventory[addStockIndex].remainingStock += amt;
+    saveInventory().then(() => { updateReport(); hideAddStockModal(); });
+  }
+  function showUsageModal(idx) {
+    usageModalIndex = idx;
+    const sticker = inventory[idx];
+    let html = "";
+    if (sticker.usage && sticker.usage.length) {
+      html += `<table id="usageListTable"><thead><tr>
+        <th>Date</th><th>Person</th><th>Department</th><th>Amount</th>
+      </tr></thead><tbody>`;
+      sticker.usage.slice().reverse().forEach(u => {
+        html += `<tr>
+          <td>${u.date}</td>
+          <td>${u.person}</td>
+          <td>${u.department.charAt(0).toUpperCase() + u.department.slice(1)}</td>
+          <td>${u.amount}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+    } else {
+      html = "<p>No usage log found for this sticker.</p>";
+    }
+    document.getElementById('usageListContent').innerHTML = html;
+    document.getElementById('usageModal').style.display = 'flex';
+  }
+  function hideUsageModal() { document.getElementById('usageModal').style.display = 'none'; usageModalIndex = -1; }
+  function showStatsModal() {
+    document.getElementById('statsModal').style.display = 'flex';
+    showStatsTab('daily');
+  }
+  function hideStatsModal() { document.getElementById('statsModal').style.display = 'none'; }
+  function showStatsTab(tab) {
+    ['daily','weekly','monthly'].forEach(x=>document.getElementById('tab-'+x).classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    let now = new Date();
+    let startDate, endDate;
+    if (tab === "daily") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+    } else if (tab === "weekly") {
+      const day = now.getDay() || 7;
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+    } else if (tab === "monthly") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(now.getFullYear(), now.getMonth()+1, 1);
+    }
+    let usageRows = [];
+    let totalUsed = 0, totalCost = 0;
+    inventory.forEach(item => {
+      let itemTotal = 0, itemCost = 0;
+      item.usage.forEach(u => {
+        let d = new Date(u.date);
+        if (d >= startDate && d < endDate) {
+          itemTotal += u.amount;
+          itemCost += u.amount * (item.costPerSticker || 0);
+        }
+      });
+      if (itemTotal > 0) {
+        usageRows.push([
+          item.label || item.name || '',
+          itemTotal,
+          userRole === "admin" ? "R" + itemCost.toFixed(2) : null
+        ]);
+        totalUsed += itemTotal;
+        totalCost += itemCost;
+      }
+    });
+    let html;
+    if (userRole === "admin") {
+      html = `<table id="statsTable"><thead>
+        <tr><th>Sticker Label</th><th>Used</th><th>Total Cost</th></tr>
+        </thead><tbody>`;
+    } else {
+      html = `<table id="statsTable"><thead>
+        <tr><th>Sticker Label</th><th>Used</th></tr>
+        </thead><tbody>`;
+    }
+    if (usageRows.length === 0) {
+      html += `<tr><td colspan="${userRole === "admin" ? "3" : "2"}">No usage found for this period.</td></tr>`;
+    } else {
+      usageRows.forEach(row => {
+        html += `<tr><td>${row[0]}</td><td>${row[1]}</td>${userRole === "admin" ? `<td>${row[2]}</td>` : ""}</tr>`;
+      });
+      html += `<tr style="font-weight:600;">
+        <td class="total-col">Total</td>
+        <td class="total-col">${totalUsed}</td>
+        ${userRole === "admin" ? `<td class="total-col">R${totalCost.toFixed(2)}</td>` : ""}
+      </tr>`;
+    }
+    html += "</tbody></table>";
+    document.getElementById('statsContent').innerHTML = html;
+  }
+  function updateReport() {
+    const tbody = document.querySelector("#reportTable tbody");
+    tbody.innerHTML = "";
+    let sorted = [...inventory].sort((a, b) => {
+      let usedA = a.totalStock - a.remainingStock, usedB = b.totalStock - b.remainingStock;
+      return usedB - usedA;
+    });
+    sorted.forEach((item, i) => {
+      const used = item.totalStock - item.remainingStock;
+      const totalUsedCost = used * (item.costPerSticker || 0);
+      const last = (item.usage && item.usage.length)
+        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
+          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
+        : "N/A";
+      let stockCellClass = "";
+      if (item.remainingStock === 0) stockCellClass = "out-stock";
+      else if (item.remainingStock <= 5) stockCellClass = "low-stock";
+      const idx = inventory.indexOf(item);
+      let html = `
+        <td>${item.label || item.name || ''}</td>
+        <td>${used}</td>
+        <td class="${stockCellClass}">${item.remainingStock}</td>
+        <td>${item.totalStock}</td>
+        <td class="admin-price">R${(item.costPerSticker?.toFixed(2) || '0.00')}</td>
+        <td class="admin-price">R${totalUsedCost.toFixed(2)}</td>
+        <td>${last}</td>
+        <td>
+          <button class="action-btn eye-btn" onclick="showUsageModal(${idx})" title="Show who used 👁️">👁️</button>
+        </td>
+        <td>
+          <button class="action-btn" onclick="showAddStockModal(${idx})" title="Add Stock">➕</button>
+          <button class="action-btn edit-btn" onclick="editSticker(${idx})" title="Edit">✏️</button>
+          <button class="action-btn del-btn" onclick="deleteSticker(${idx})" title="Delete">🗑️</button>
+        </td>
+      `;
+      const tr = document.createElement("tr");
+      tr.innerHTML = html;
+      tbody.appendChild(tr);
+    });
+    applyRolePermissions();
+  }
+  function exportToCSV() {
+    let csv = "Sticker Label,Used,Remaining,Total,Cost Each,Total Cost,Last Use\n";
+    inventory.forEach(item => {
+      const used = item.totalStock - item.remainingStock;
+      const totalUsedCost = used * (item.costPerSticker || 0);
+      const last = (item.usage && item.usage.length)
+        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
+          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
+        : "N/A";
+      csv += `"${item.label || item.name || ''}",${used},${item.remainingStock},${item.totalStock},R${(item.costPerSticker?.toFixed(2) || '0.00')},"R${totalUsedCost.toFixed(2)}","${last}"\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = "sticker_inventory_report.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Sticker Inventory Report", 14, 12);
+    const rows = inventory.map(item => {
+      const used = item.totalStock - item.remainingStock;
+      const totalUsedCost = used * (item.costPerSticker || 0);
+      const last = (item.usage && item.usage.length)
+        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
+          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
+        : "N/A";
+      return [
+        item.label || item.name || '',
+        used,
+        item.remainingStock,
+        item.totalStock,
+        "R" + (item.costPerSticker?.toFixed(2) || '0.00'),
+        "R" + totalUsedCost.toFixed(2),
+        last
+      ];
+    });
+    doc.autoTable({
+      head: [["Sticker Label", "Used", "Remaining", "Total", "Cost Each", "Total Cost", "Last Use"]],
+      body: rows,
+      startY: 18,
+      styles: { fontSize: 8 }
+    });
+    doc.save('sticker_inventory_report.pdf');
+  }
+  function downloadJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory,null,2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "sticker_inventory_backup.json");
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    document.body.removeChild(dlAnchor);
+  }
+  function uploadJSON(evt) {
+    let file = evt.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        let data = JSON.parse(e.target.result);
+        if (Array.isArray(data)) {
+          if (confirm("This will replace ALL your current stickers and usage. Continue?")) {
+            inventory = data;
+            saveInventory().then(() => {
+              updateSelectors(); updateReport();
+              alert("Upload successful!");
+            });
+          }
+        } else { alert("Invalid file format."); }
+      } catch(err) { alert("Invalid file format."); }
+    };
+    reader.readAsText(file);
+    evt.target.value = "";
+  }
+  function resetAllData() {
+    if (!confirm("Are you sure you want to DELETE ALL inventory and usage data? This cannot be undone.")) return;
+    inventory = [];
+    saveInventory().then(() => {
+      updateSelectors();
+      updateReport();
+    });
+  }
+  function validateAddSticker() {
+    const name = document.getElementById("stickerName").value.trim();
+    const label = document.getElementById("stickerLabel").value;
+    const stock = parseInt(document.getElementById("initialStock").value);
+    const cost = parseFloat(document.getElementById("stickerCost").value);
+    document.getElementById("addStickerBtn").disabled = !(name && label && !isNaN(stock) && stock >= 0 && !isNaN(cost) && cost >= 0);
+  }
+  function validateDeduct() {
+    const stickerIdx = document.getElementById("selectSticker").value;
+    const dep = document.getElementById("department").value;
+    const per = document.getElementById("person").value.trim();
+    const date = document.getElementById("deductDate").value;
+    const amt = parseInt(document.getElementById("deductAmount").value);
+    document.getElementById("deductBtn").disabled = !(stickerIdx !== "" && dep && per && date && !isNaN(amt) && amt > 0 && inventory.length > 0);
+  }
+  document.getElementById("stickerName").addEventListener("input", validateAddSticker);
+  document.getElementById("stickerLabel").addEventListener("change", validateAddSticker);
+  document.getElementById("initialStock").addEventListener("input", validateAddSticker);
+  document.getElementById("stickerCost").addEventListener("input", validateAddSticker);
+  document.getElementById("selectSticker").addEventListener("change", validateDeduct);
+  document.getElementById("department").addEventListener("change", validateDeduct);
+  document.getElementById("person").addEventListener("input", validateDeduct);
+  document.getElementById("deductDate").addEventListener("input", validateDeduct);
+  document.getElementById("deductAmount").addEventListener("input", validateDeduct);
+  window.onload = async () => {
+    showLoader(true);
+    await loadInventory();
+    updateSelectors();
+    updateReport();
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("deductDate").value = today;
+    showLoader(false);
+    validateAddSticker();
+    validateDeduct();
+    document.getElementById("loginModal").style.display = "";
+    document.getElementById("loginPassword").focus();
+  };
+</script>
+</body>
+</html>
