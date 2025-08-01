@@ -363,6 +363,7 @@
     <div>
       <button onclick="showExportDateSelectionModal('csv')" title="Export as CSV" class="admin-only">📥</button>
       <button onclick="showExportDateSelectionModal('pdf')" title="Export as PDF" class="admin-only">📄</button>
+      <button onclick="showExportDateSelectionModal('labels_usage_csv')" title="Export Labels Usage CSV" class="admin-only">📊 CSV</button>
       <button class="download-btn admin-only" onclick="downloadJSON()" title="Backup JSON">💾</button>
       <button class="upload-btn admin-only" onclick="document.getElementById('fileInput').click()" title="Restore JSON">⬆</button>
       <button class="reset-btn admin-only" onclick="resetAllData()" title="Delete ALL">🗑</button>
@@ -573,7 +574,7 @@
 
   let inventory = [];
   let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
-  let exportType = ''; // 'csv' or 'pdf'
+  let exportType = ''; // 'csv', 'pdf', or 'labels_usage_csv'
   let exportOption = 'month'; // 'month', 'week', 'range', 'all'
 
   function showLoader(show=true) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
@@ -721,6 +722,59 @@
     });
     applyRolePermissions();
   }
+  function updateReport() {
+    const reportTableBody = document.querySelector("#reportTable tbody");
+    reportTableBody.innerHTML = ""; // Clear existing rows
+
+    if (inventory.length === 0) {
+      reportTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px;">No sticker data available. Please add a new sticker above.</td></tr>`;
+      return;
+    }
+
+    inventory.forEach((item, index) => {
+      const row = reportTableBody.insertRow();
+      let totalUsed = 0;
+      let lastUsedDate = "N/A";
+      let lastUsedPerson = "N/A";
+
+      if (item.usage && item.usage.length > 0) {
+        totalUsed = item.usage.reduce((sum, u) => sum + u.amount, 0);
+        const lastUsage = item.usage.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        lastUsedDate = lastUsage.date;
+        lastUsedPerson = lastUsage.person;
+      }
+
+      const totalCost = (totalUsed * item.costPerSticker).toFixed(2);
+      const remainingCost = (item.remainingStock * item.costPerSticker).toFixed(2);
+
+      let rowClass = "";
+      if (item.remainingStock === 0) {
+        rowClass = "out-stock";
+      } else if (item.remainingStock <= 5) { // Threshold for low stock
+        rowClass = "low-stock";
+      }
+      if (rowClass) row.classList.add(rowClass);
+
+      row.innerHTML = `
+        <td>${item.label || item.name || 'N/A'}</td>
+        <td>${totalUsed}</td>
+        <td>${item.remainingStock}</td>
+        <td>${item.totalStock}</td>
+        <td class="admin-price">R${item.costPerSticker ? item.costPerSticker.toFixed(2) : '0.00'}</td>
+        <td class="admin-price">R${(item.totalStock * (item.costPerSticker || 0)).toFixed(2)}</td>
+        <td>${lastUsedDate}</td>
+        <td>${lastUsedPerson}</td>
+        <td class="admin-only">
+          <button class="action-btn eye-btn" onclick="showUsageModal(${index})" title="View Usage">👁️</button>
+          <button class="action-btn" onclick="showAddStockModal(${index})" title="Add Stock">➕</button>
+          <button class="action-btn edit-btn" onclick="editSticker(${index})" title="Edit Sticker">✏️</button>
+          <button class="action-btn del-btn" onclick="deleteSticker(${index})" title="Delete Sticker">❌</button>
+        </td>
+      `;
+    });
+    applyRolePermissions();
+  }
+
   function showAddStockModal(i) {
     addStockIndex = i;
     document.getElementById('addStockStickerName').textContent = inventory[i].label || inventory[i].name;
@@ -890,47 +944,6 @@
 
     document.getElementById('statsContent').innerHTML = html;
   }
-  function updateReport() {
-    const tbody = document.querySelector("#reportTable tbody");
-    tbody.innerHTML = "";
-    let sorted = [...inventory].sort((a, b) => {
-      let usedA = a.totalStock - a.remainingStock, usedB = b.totalStock - b.remainingStock;
-      return usedB - usedA;
-    });
-    sorted.forEach((item, i) => {
-      const used = item.totalStock - item.remainingStock;
-      const totalUsedCost = used * (item.costPerSticker || 0);
-      const last = (item.usage && item.usage.length)
-        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
-          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
-        : "N/A";
-      let stockCellClass = "";
-      if (item.remainingStock === 0) stockCellClass = "out-stock";
-      else if (item.remainingStock <= 5) stockCellClass = "low-stock";
-      const idx = inventory.indexOf(item);
-      let html = `
-        <td>${item.label || item.name || ''}</td>
-        <td>${used}</td>
-        <td class="${stockCellClass}">${item.remainingStock}</td>
-        <td>${item.totalStock}</td>
-        <td class="admin-price">R${(item.costPerSticker?.toFixed(2) || '0.00')}</td>
-        <td class="admin-price">R${totalUsedCost.toFixed(2)}</td>
-        <td>${last}</td>
-        <td>
-          <button class="action-btn eye-btn" onclick="showUsageModal(${idx})" title="Show who used 👁️">👁️</button>
-        </td>
-        <td>
-          <button class="action-btn" onclick="showAddStockModal(${idx})" title="Add Stock">➕</button>
-          <button class="action-btn edit-btn" onclick="editSticker(${idx})" title="Edit">✏️</button>
-          <button class="action-btn del-btn" onclick="deleteSticker(${idx})" title="Delete">🗑️</button>
-        </td>
-      `;
-      const tr = document.createElement("tr");
-      tr.innerHTML = html;
-      tbody.appendChild(tr);
-    });
-    applyRolePermissions();
-  }
 
   function getFilteredUsageData(startDate, endDate) {
     const filteredData = [];
@@ -1031,6 +1044,49 @@
       }
     });
     doc.save(`sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.pdf`);
+  }
+
+  function exportLabelsUsageCSV(startDate, endDate) {
+    const labelUsage = {}; // To store total usage per label: { "LABEL_NAME": total_amount_used }
+
+    inventory.forEach(item => {
+        const label = item.label || item.name;
+        item.usage.forEach(u => {
+            let usageDate = new Date(u.date);
+            usageDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+            if (usageDate >= startDate && usageDate < endDate) {
+                if (!labelUsage[label]) {
+                    labelUsage[label] = 0;
+                }
+                labelUsage[label] += u.amount;
+            }
+        });
+    });
+
+    if (Object.keys(labelUsage).length === 0) {
+        alert("No label usage data found for the selected period.");
+        return;
+    }
+
+    let csv = "Sticker Label,Total Amount Used\n";
+    let grandTotalUsed = 0;
+
+    // Sort labels alphabetically for consistent output
+    Object.keys(labelUsage).sort().forEach(label => {
+        csv += `"${label}",${labelUsage[label]}\n`;
+        grandTotalUsed += labelUsage[label];
+    });
+
+    // Add a total row
+    csv += `\nTotal,,${grandTotalUsed}\n`;
+
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `sticker_labels_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
 
   function downloadJSON() {
@@ -1182,6 +1238,8 @@
       exportToCSV(startDate, endDate);
     } else if (exportType === 'pdf') {
       exportToPDF(startDate, endDate);
+    } else if (exportType === 'labels_usage_csv') { // New condition
+      exportLabelsUsageCSV(startDate, endDate);
     }
     hideExportDateSelectionModal();
   });
