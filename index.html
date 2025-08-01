@@ -185,6 +185,8 @@
       max-width: 390px; padding: 25px 16px;
       display: flex; flex-direction: column; align-items: center;
       animation: fadeIn .38s cubic-bezier(.52,1.7,.62,.93);
+      max-height: 90vh; /* Added max-height */
+      overflow-y: auto; /* Added scrollbar */
     }
     #addStockAmount {margin-bottom: 15px; padding: 8px 12px; width: 140px;}
     #usageModal .modal-content, #statsModal .modal-content {width:355px;max-width:97vw;padding:19px;}
@@ -199,6 +201,15 @@
     #statsTable th, #statsTable td {padding:8px 2px; text-align:center; font-size:0.96em;}
     #statsTable th {background: #eaf1fd; color: #2870ea;}
     #statsSummary {margin-top:6px; font-size:1.01em;}
+
+    /* New styles for detailed department stats */
+    .department-details { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
+    .department-details h4 { font-size: 1.05em; color: var(--primary); margin-bottom: 5px; text-align: left; margin-left: 5px; }
+    .department-details ul { list-style: none; padding: 0; margin: 0; text-align: left;}
+    .department-details li { margin-bottom: 3px; font-size: 0.9em; padding: 2px 5px; }
+    .department-details li:nth-child(odd) { background: #f7faff; }
+    html.dark .department-details li:nth-child(odd) { background: #202f52; }
+
     .action-btn[title]::after, .eye-btn[title]::after {
       content: attr(title); display: none; position: absolute; background: #233c70f2; color: #fff; font-size: .9em;
       padding: 4px 10px; border-radius: 7px; white-space: nowrap; left: 110%; top: 50%; transform: translateY(-50%);
@@ -512,7 +523,7 @@
 
   // ====== JSONBin.io CONFIG ======
   const JSONBIN_BIN_ID = '68667cf68a456b7966baa845';
-  const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exu';
+  const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exk';
   const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
   let inventory = [];
@@ -733,6 +744,7 @@
     }
 
     let departmentStats = {};
+    let detailedDepartmentStats = {}; // New object for detailed stats
     let totalUsed = 0;
     let totalCost = 0;
 
@@ -743,6 +755,15 @@
           if (!departmentStats[u.department]) {
             departmentStats[u.department] = { used: 0, cost: 0 };
           }
+          if (!detailedDepartmentStats[u.department]) {
+            detailedDepartmentStats[u.department] = {};
+          }
+          const label = item.label || item.name;
+          if (!detailedDepartmentStats[u.department][label]) {
+            detailedDepartmentStats[u.department][label] = 0;
+          }
+          detailedDepartmentStats[u.department][label] += u.amount;
+
           departmentStats[u.department].used += u.amount;
           departmentStats[u.department].cost += u.amount * (item.costPerSticker || 0);
           totalUsed += u.amount;
@@ -782,6 +803,23 @@
       </tr>`;
     }
     html += "</tbody></table>";
+
+    // Add detailed department stats
+    if (Object.keys(detailedDepartmentStats).length > 0) {
+      html += `<div class="department-details"><h2>Labels Used by Department</h2>`;
+      sortedDepartments.forEach(dept => {
+        const labels = detailedDepartmentStats[dept];
+        if (Object.keys(labels).length > 0) {
+          html += `<h4>${dept.charAt(0).toUpperCase() + dept.slice(1)}:</h4><ul>`;
+          Object.keys(labels).sort().forEach(label => {
+            html += `<li>${label}: ${labels[label]}</li>`;
+          });
+          html += `</ul>`;
+        }
+      });
+      html += `</div>`;
+    }
+
     document.getElementById('statsContent').innerHTML = html;
   }
   function updateReport() {
