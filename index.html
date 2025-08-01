@@ -172,13 +172,13 @@
     #loader { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.7); justify-content: center; align-items: center;}
     #loader span { font-size: 32px; color: var(--primary); border-radius: 50%; border: 5px solid #e2e8f0; border-top: 5px solid var(--primary); width: 58px; height: 58px; display: inline-block; animation: spin 1s linear infinite;}
     @keyframes spin { 0% { transform: rotate(0);} 100% { transform: rotate(360deg);} }
-    #addStockModal, #usageModal, #statsModal {
+    #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal {
       display: none; position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh; background: rgba(41,61,100,0.18);
       z-index: 9999; align-items: center; justify-content: center;
       animation: fadeIn .32s cubic-bezier(.52,1.7,.62,.93);
     }
-    #addStockModal .modal-content, #usageModal .modal-content, #statsModal .modal-content {
+    #addStockModal .modal-content, #usageModal .modal-content, #statsModal .modal-content, #exportDateSelectionModal .modal-content {
       background: rgba(255,255,255,0.97);
       border-radius: 19px;
       box-shadow: 0 8px 32px 0 #4468b155;
@@ -189,26 +189,26 @@
       overflow-y: auto; /* Added scrollbar */
     }
     #addStockAmount {margin-bottom: 15px; padding: 8px 12px; width: 140px;}
-    #usageModal .modal-content, #statsModal .modal-content {width:355px;max-width:97vw;padding:19px;}
-    #usageModalClose, #statsModalClose {align-self:flex-end;background:none;color:#888;font-size:2em;border:none;cursor:pointer;line-height:.6;margin-top:-14px;}
+    #usageModal .modal-content, #statsModal .modal-content, #exportDateSelectionModal .modal-content {width:355px;max-width:97vw;padding:19px;}
+    #usageModalClose, #statsModalClose, #exportDateSelectionModalClose {align-self:flex-end;background:none;color:#888;font-size:2em;border:none;cursor:pointer;line-height:.6;margin-top:-14px;}
     #usageListTable {width:100%;margin-top:10px;border-collapse:collapse;}
     #usageListTable th, #usageListTable td {padding:7px 2px;text-align:center;}
     #usageListTable th {background:#eaf1fd;color:#2870ea;}
     #usageListTable tr:nth-child(even) td {background:#f7fafe;}
     #statsTabs {margin-bottom:12px;}
-    #statsTabs button {margin-right:5px; background: #f7faff; color: var(--primary); border:1.3px solid var(--primary); border-radius:8px; padding: 7px 13px; font-size:1em; cursor:pointer; transition: background .16s, color .13s;}
-    #statsTabs button.active, #statsTabs button:active {background: var(--primary); color:#fff;}
+    #statsTabs button, #exportDateSelectionTabs button {margin-right:5px; background: #f7faff; color: var(--primary); border:1.3px solid var(--primary); border-radius:8px; padding: 7px 13px; font-size:1em; cursor:pointer; transition: background .16s, color .13s;}
+    #statsTabs button.active, #statsTabs button:active, #exportDateSelectionTabs button.active {background: var(--primary); color:#fff;}
     #statsTable th, #statsTable td {padding:8px 2px; text-align:center; font-size:0.96em;}
     #statsTable th {background: #eaf1fd; color: #2870ea;}
     #statsSummary {margin-top:6px; font-size:1.01em;}
 
     /* New styles for detailed department stats */
-    .department-details { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
-    .department-details h4 { font-size: 1.05em; color: var(--primary); margin-bottom: 5px; text-align: left; margin-left: 5px; }
-    .department-details ul { list-style: none; padding: 0; margin: 0; text-align: left;}
-    .department-details li { margin-bottom: 3px; font-size: 0.9em; padding: 2px 5px; }
-    .department-details li:nth-child(odd) { background: #f7faff; }
-    html.dark .department-details li:nth-child(odd) { background: #202f52; }
+    .department-details, .label-stats { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
+    .department-details h4, .label-stats h4 { font-size: 1.05em; color: var(--primary); margin-bottom: 5px; text-align: left; margin-left: 5px; }
+    .department-details ul, .label-stats ul { list-style: none; padding: 0; margin: 0; text-align: left;}
+    .department-details li, .label-stats li { margin-bottom: 3px; font-size: 0.9em; padding: 2px 5px; }
+    .department-details li:nth-child(odd), .label-stats li:nth-child(odd) { background: #f7faff; }
+    html.dark .department-details li:nth-child(odd), html.dark .label-stats li:nth-child(odd) { background: #202f52; }
 
     .action-btn[title]::after, .eye-btn[title]::after {
       content: attr(title); display: none; position: absolute; background: #233c70f2; color: #fff; font-size: .9em;
@@ -221,7 +221,7 @@
       .form-pair-group {flex-direction: column; gap: 0;}
       .form-group {min-width: unset;}
       th, td {padding: 7px 2px; font-size: 0.89em;}
-      #usageModal .modal-content,#statsModal .modal-content {width:97vw;}
+      #usageModal .modal-content,#statsModal .modal-content, #exportDateSelectionModal .modal-content {width:97vw;}
       #darkToggleBtn {right:14px;top:12px;}
     }
     html.dark, body.dark {
@@ -290,9 +290,11 @@
     html.dark #addStockModal .modal-content,
     html.dark #usageModal .modal-content,
     html.dark #statsModal .modal-content,
+    html.dark #exportDateSelectionModal .modal-content,
     body.dark #addStockModal .modal-content,
     body.dark #usageModal .modal-content,
-    body.dark #statsModal .modal-content {
+    body.dark #statsModal .modal-content,
+    body.dark #exportDateSelectionModal .modal-content {
       background: #232f4c !important;
       color: #e3ebfa !important;
       box-shadow: 0 10px 36px 0 #0d1126c7;
@@ -305,10 +307,12 @@
     html.dark #statsTable td, body.dark #statsTable td {
       color: #d3e5fa;
     }
-    html.dark #statsTabs button, body.dark #statsTabs button {
+    html.dark #statsTabs button, body.dark #statsTabs button,
+    html.dark #exportDateSelectionTabs button, body.dark #exportDateSelectionTabs button {
       background: #1a2746 !important; color: #7dc1ff !important; border-color: #365eb6 !important;
     }
-    html.dark #statsTabs button.active, body.dark #statsTabs button.active { background: #4273d9 !important; color: #fff !important;}
+    html.dark #statsTabs button.active, body.dark #statsTabs button.active,
+    html.dark #exportDateSelectionTabs button.active, body.dark #exportDateSelectionTabs button.active { background: #4273d9 !important; color: #fff !important;}
     html.dark #darkToggleBtn, body.dark #darkToggleBtn { background: #2c385a; color: #fff; border-color: #4d638c;}
     html.dark #darkToggleBtn:hover { background: #39507d; color: #ffe484;}
     /* Login Modal */
@@ -329,6 +333,14 @@
       color:#fff;font-size:1rem;border:none;cursor:pointer;
     }
     #loginError {color:#e74c3c;margin-top:8px;display:none;}
+    #exportDateSelectionContent label { display: block; margin-top: 10px; font-weight: 600;}
+    #exportDateSelectionContent input[type="date"], #exportDateSelectionContent input[type="month"] {
+      width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 5px; margin-bottom: 10px;
+    }
+    #exportDateSelectionContent button { margin-top: 10px; }
+    #exportDateSelectionModal .modal-footer {
+      display: flex; justify-content: space-around; width: 100%; margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -349,8 +361,8 @@
   <div class="flex-row" style="justify-content:space-between;">
     <div></div>
     <div>
-      <button onclick="exportToCSV()" title="Export as CSV" class="admin-only">📥</button>
-      <button onclick="exportToPDF()" title="Export as PDF" class="admin-only">📄</button>
+      <button onclick="showExportDateSelectionModal('csv')" title="Export as CSV" class="admin-only">📥</button>
+      <button onclick="showExportDateSelectionModal('pdf')" title="Export as PDF" class="admin-only">📄</button>
       <button class="download-btn admin-only" onclick="downloadJSON()" title="Backup JSON">💾</button>
       <button class="upload-btn admin-only" onclick="document.getElementById('fileInput').click()" title="Restore JSON">⬆</button>
       <button class="reset-btn admin-only" onclick="resetAllData()" title="Delete ALL">🗑</button>
@@ -464,6 +476,39 @@
   </div>
   <div id="statsContent"></div>
 </div></div>
+<div id="exportDateSelectionModal"><div class="modal-content">
+  <button id="exportDateSelectionModalClose" onclick="hideExportDateSelectionModal()" title="Close">&times;</button>
+  <h3 style="margin-bottom:7px;">Select Export Period</h3>
+  <div id="exportDateSelectionTabs" style="margin-bottom: 15px;">
+    <button id="export-tab-month" onclick="showExportOption('month')" class="active">By Month</button>
+    <button id="export-tab-week" onclick="showExportOption('week')">By Week</button>
+    <button id="export-tab-range" onclick="showExportOption('range')">By Date Range</button>
+    <button id="export-tab-all" onclick="showExportOption('all')">All Data</button>
+  </div>
+  <div id="exportDateSelectionContent" style="width: 100%;">
+    <div id="exportMonthOption">
+      <label for="exportMonth">Select Month:</label>
+      <input type="month" id="exportMonth">
+    </div>
+    <div id="exportWeekOption" style="display:none;">
+      <label for="exportWeekStart">Start Date (Week):</label>
+      <input type="date" id="exportWeekStart">
+      <label for="exportWeekEnd">End Date (Week):</label>
+      <input type="date" id="exportWeekEnd">
+    </div>
+    <div id="exportRangeOption" style="display:none;">
+      <label for="exportRangeStart">Start Date:</label>
+      <input type="date" id="exportRangeStart">
+      <label for="exportRangeEnd">End Date:</label>
+      <input type="date" id="exportRangeEnd">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button id="confirmExportBtn" class="action-btn">Export</button>
+    <button onclick="hideExportDateSelectionModal()" class="action-btn del-btn">Cancel</button>
+  </div>
+</div></div>
+
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
@@ -528,6 +573,9 @@
 
   let inventory = [];
   let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
+  let exportType = ''; // 'csv' or 'pdf'
+  let exportOption = 'month'; // 'month', 'week', 'range', 'all'
+
   function showLoader(show=true) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
   async function loadInventory() {
     showLoader(true);
@@ -745,6 +793,7 @@
 
     let departmentStats = {};
     let detailedDepartmentStats = {}; // New object for detailed stats
+    let labelUsedStats = {}; // New object for label-only stats
     let totalUsed = 0;
     let totalCost = 0;
 
@@ -752,6 +801,7 @@
       item.usage.forEach(u => {
         let d = new Date(u.date);
         if (d >= startDate && d < endDate) {
+          // Department stats
           if (!departmentStats[u.department]) {
             departmentStats[u.department] = { used: 0, cost: 0 };
           }
@@ -768,17 +818,24 @@
           departmentStats[u.department].cost += u.amount * (item.costPerSticker || 0);
           totalUsed += u.amount;
           totalCost += u.amount * (item.costPerSticker || 0);
+
+          // Label only stats
+          if (!labelUsedStats[label]) {
+            labelUsedStats[label] = 0;
+          }
+          labelUsedStats[label] += u.amount;
         }
       });
     });
 
     let html;
+    // Department Usage Summary
     if (userRole === "admin") {
-      html = `<table id="statsTable"><thead>
+      html = `<h3>Department Usage Summary</h3><table id="statsTable"><thead>
         <tr><th>Department</th><th>Used</th><th>Total Cost</th></tr>
         </thead><tbody>`;
     } else {
-      html = `<table id="statsTable"><thead>
+      html = `<h3>Department Usage Summary</h3><table id="statsTable"><thead>
         <tr><th>Department</th><th>Used</th></tr>
         </thead><tbody>`;
     }
@@ -804,13 +861,13 @@
     }
     html += "</tbody></table>";
 
-    // Add detailed department stats
+    // Detailed Department Stats
     if (Object.keys(detailedDepartmentStats).length > 0) {
-      html += `<div class="department-details"><h2>Labels Used by Department</h2>`;
+      html += `<div class="department-details"><h4>Labels Used by Department:</h4>`;
       sortedDepartments.forEach(dept => {
         const labels = detailedDepartmentStats[dept];
         if (Object.keys(labels).length > 0) {
-          html += `<h4>${dept.charAt(0).toUpperCase() + dept.slice(1)}:</h4><ul>`;
+          html += `<h5>${dept.charAt(0).toUpperCase() + dept.slice(1)}:</h5><ul>`;
           Object.keys(labels).sort().forEach(label => {
             html += `<li>${label}: ${labels[label]}</li>`;
           });
@@ -819,6 +876,17 @@
       });
       html += `</div>`;
     }
+
+    // Label Only Stats
+    const sortedLabels = Object.keys(labelUsedStats).sort();
+    if (sortedLabels.length > 0) {
+      html += `<div class="label-stats"><h4>Total Labels Used:</h4><ul>`;
+      sortedLabels.forEach(label => {
+        html += `<li>${label}: ${labelUsedStats[label]}</li>`;
+      });
+      html += `</ul></div>`;
+    }
+
 
     document.getElementById('statsContent').innerHTML = html;
   }
@@ -863,53 +931,108 @@
     });
     applyRolePermissions();
   }
-  function exportToCSV() {
-    let csv = "Sticker Label,Used,Remaining,Total,Cost Each,Total Cost,Last Use\n";
+
+  function getFilteredUsageData(startDate, endDate) {
+    const filteredData = [];
     inventory.forEach(item => {
-      const used = item.totalStock - item.remainingStock;
-      const totalUsedCost = used * (item.costPerSticker || 0);
-      const last = (item.usage && item.usage.length)
-        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
-          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
-        : "N/A";
-      csv += `"${item.label || item.name || ''}",${used},${item.remainingStock},${item.totalStock},R${(item.costPerSticker?.toFixed(2) || '0.00')},"R${totalUsedCost.toFixed(2)}","${last}"\n`;
+      item.usage.forEach(u => {
+        let usageDate = new Date(u.date);
+        // Normalize usageDate to start of day for accurate comparison
+        usageDate.setHours(0, 0, 0, 0);
+
+        if (usageDate >= startDate && usageDate < endDate) {
+          filteredData.push({
+            stickerName: item.label || item.name || '',
+            department: u.department,
+            person: u.person,
+            date: u.date,
+            amount: u.amount,
+            costPerSticker: item.costPerSticker || 0
+          });
+        }
+      });
     });
+    return filteredData;
+  }
+
+  function exportToCSV(startDate, endDate) {
+    const dataToExport = getFilteredUsageData(startDate, endDate);
+    if (dataToExport.length === 0) {
+      alert("No data found for the selected period.");
+      return;
+    }
+
+    let totalAmount = 0;
+    let totalOverallCost = 0;
+
+    let csv = "Sticker Label,Date,Department,Person,Amount,Cost Each,Total Cost\n";
+    dataToExport.forEach(row => {
+      const totalCost = row.amount * row.costPerSticker;
+      csv += `"${row.stickerName}",${row.date},"${row.department.charAt(0).toUpperCase() + row.department.slice(1)}","${row.person}",${row.amount},R${row.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\n`;
+      totalAmount += row.amount;
+      totalOverallCost += totalCost;
+    });
+
+    // Add totals row
+    csv += `\nTotal,,,,,${totalAmount},R${totalOverallCost.toFixed(2)}\n`;
+
+
     const blob = new Blob([csv], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = "sticker_inventory_report.csv";
+    link.download = `sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
   }
-  function exportToPDF() {
+
+  function exportToPDF(startDate, endDate) {
+    const dataToExport = getFilteredUsageData(startDate, endDate);
+    if (dataToExport.length === 0) {
+      alert("No data found for the selected period.");
+      return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("Sticker Inventory Report", 14, 12);
-    const rows = inventory.map(item => {
-      const used = item.totalStock - item.remainingStock;
-      const totalUsedCost = used * (item.costPerSticker || 0);
-      const last = (item.usage && item.usage.length)
-        ? item.usage.reduce((a, b) => a.date > b.date ? a : b).date + " by " +
-          item.usage.reduce((a, b) => a.date > b.date ? a : b).person
-        : "N/A";
+    doc.text(`Sticker Usage Report: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`, 14, 12);
+
+    let totalAmount = 0;
+    let totalOverallCost = 0;
+
+    const rows = dataToExport.map(row => {
+      const totalCost = row.amount * row.costPerSticker;
+      totalAmount += row.amount;
+      totalOverallCost += totalCost;
       return [
-        item.label || item.name || '',
-        used,
-        item.remainingStock,
-        item.totalStock,
-        "R" + (item.costPerSticker?.toFixed(2) || '0.00'),
-        "R" + totalUsedCost.toFixed(2),
-        last
+        row.stickerName,
+        row.date,
+        row.department.charAt(0).toUpperCase() + row.department.slice(1),
+        row.person,
+        row.amount,
+        "R" + row.costPerSticker.toFixed(2),
+        "R" + totalCost.toFixed(2)
       ];
     });
+
+    // Add totals row to the PDF data
+    rows.push(
+      ["", "", "", "Total", totalAmount, "", `R${totalOverallCost.toFixed(2)}`]
+    );
+
     doc.autoTable({
-      head: [["Sticker Label", "Used", "Remaining", "Total", "Cost Each", "Total Cost", "Last Use"]],
+      head: [["Sticker Label", "Date", "Department", "Person", "Amount", "Cost Each", "Total Cost"]],
       body: rows,
       startY: 18,
-      styles: { fontSize: 8 }
+      styles: { fontSize: 8 },
+      didParseCell: function(data) {
+        // Apply styling to the total row if needed
+        if (data.row.index === rows.length - 1) { // Check if it's the last row (totals row)
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
     });
-    doc.save('sticker_inventory_report.pdf');
+    doc.save(`sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.pdf`);
   }
+
   function downloadJSON() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory,null,2));
     const dlAnchor = document.createElement('a');
@@ -972,6 +1095,97 @@
   document.getElementById("person").addEventListener("input", validateDeduct);
   document.getElementById("deductDate").addEventListener("input", validateDeduct);
   document.getElementById("deductAmount").addEventListener("input", validateDeduct);
+
+  // Export Date Selection Modal Functions
+  function showExportDateSelectionModal(type) {
+    exportType = type;
+    document.getElementById('exportDateSelectionModal').style.display = 'flex';
+    // Set default values for dates
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    document.getElementById('exportMonth').value = `${year}-${month}`;
+    document.getElementById('exportWeekStart').value = new Date().toISOString().split('T')[0];
+    document.getElementById('exportWeekEnd').value = new Date().toISOString().split('T')[0];
+    document.getElementById('exportRangeStart').value = new Date().toISOString().split('T')[0];
+    document.getElementById('exportRangeEnd').value = new Date().toISOString().split('T')[0];
+    showExportOption('month'); // Default to month view
+  }
+
+  function hideExportDateSelectionModal() {
+    document.getElementById('exportDateSelectionModal').style.display = 'none';
+    exportType = '';
+    exportOption = 'month';
+  }
+
+  function showExportOption(option) {
+    exportOption = option;
+    // Hide all options first
+    document.getElementById('exportMonthOption').style.display = 'none';
+    document.getElementById('exportWeekOption').style.display = 'none';
+    document.getElementById('exportRangeOption').style.display = 'none';
+
+    // Remove active class from all tabs
+    document.querySelectorAll('#exportDateSelectionTabs button').forEach(btn => btn.classList.remove('active'));
+
+    // Show the selected option and set active tab
+    if (option === 'month') {
+      document.getElementById('exportMonthOption').style.display = 'block';
+      document.getElementById('export-tab-month').classList.add('active');
+    } else if (option === 'week') {
+      document.getElementById('exportWeekOption').style.display = 'block';
+      document.getElementById('export-tab-week').classList.add('active');
+    } else if (option === 'range') {
+      document.getElementById('exportRangeOption').style.display = 'block';
+      document.getElementById('export-tab-range').classList.add('active');
+    } else if (option === 'all') {
+      document.getElementById('export-tab-all').classList.add('active');
+      // No date inputs needed for 'all'
+    }
+  }
+
+  document.getElementById('confirmExportBtn').addEventListener('click', () => {
+    let startDate, endDate;
+    const now = new Date();
+
+    if (exportOption === 'month') {
+      const monthInput = document.getElementById('exportMonth').value;
+      if (!monthInput) { alert("Please select a month."); return; }
+      const [year, month] = monthInput.split('-').map(Number);
+      startDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 1); // First day of next month
+    } else if (exportOption === 'week') {
+      const weekStartStr = document.getElementById('exportWeekStart').value;
+      const weekEndStr = document.getElementById('exportWeekEnd').value;
+      if (!weekStartStr || !weekEndStr) { alert("Please select both start and end dates for the week."); return; }
+      startDate = new Date(weekStartStr);
+      endDate = new Date(weekEndStr);
+      endDate.setDate(endDate.getDate() + 1); // Include the end date
+    } else if (exportOption === 'range') {
+      const rangeStartStr = document.getElementById('exportRangeStart').value;
+      const rangeEndStr = document.getElementById('exportRangeEnd').value;
+      if (!rangeStartStr || !rangeEndStr) { alert("Please select both start and end dates for the range."); return; }
+      startDate = new Date(rangeStartStr);
+      endDate = new Date(rangeEndStr);
+      endDate.setDate(endDate.getDate() + 1); // Include the end date
+    } else if (exportOption === 'all') {
+      startDate = new Date(0); // Epoch
+      endDate = new Date(); // Current date
+      endDate.setDate(endDate.getDate() + 1); // Ensure all today's data is included
+    }
+
+    // Normalize start and end dates to start of day for consistent filtering
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    if (exportType === 'csv') {
+      exportToCSV(startDate, endDate);
+    } else if (exportType === 'pdf') {
+      exportToPDF(startDate, endDate);
+    }
+    hideExportDateSelectionModal();
+  });
+
   window.onload = async () => {
     showLoader(true);
     await loadInventory();
