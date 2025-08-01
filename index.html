@@ -171,7 +171,7 @@
     .total-col { color: #1557c0; font-weight: 600;}
     #loader { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.7); justify-content: center; align-items: center;}
     #loader span { font-size: 32px; color: var(--primary); border-radius: 50%; border: 5px solid #e2e8f0; border-top: 5px solid var(--primary); width: 58px; height: 58px; display: inline-block; animation: spin 1s linear infinite;}
-    @keyframes spin { 0% { transform: rotate(0);} 100% { transform: rotate(360deg);}}
+    @keyframes spin { 0% { transform: rotate(0);} 100% { transform: rotate(360deg);} }
     #addStockModal, #usageModal, #statsModal {
       display: none; position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh; background: rgba(41,61,100,0.18);
@@ -707,20 +707,22 @@
   }
   function hideStatsModal() { document.getElementById('statsModal').style.display = 'none'; }
   function showStatsTab(tab) {
-    ['daily','weekly','monthly','last-month','last-week'].forEach(x=>document.getElementById('tab-'+x).classList.remove('active'));
-    document.getElementById('tab-'+tab).classList.add('active');
+    ['daily', 'weekly', 'monthly', 'last-month', 'last-week'].forEach(x => document.getElementById('tab-' + x).classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+
     let now = new Date();
     let startDate, endDate;
+
     if (tab === "daily") {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     } else if (tab === "weekly") {
       const day = now.getDay() || 7;
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
-      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     } else if (tab === "monthly") {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      endDate = new Date(now.getFullYear(), now.getMonth()+1, 1);
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     } else if (tab === "last-month") {
       startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       endDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -729,42 +731,49 @@
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1 - 7); // Start of last week
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1); // End of last week
     }
-    let usageRows = [];
-    let totalUsed = 0, totalCost = 0;
+
+    let departmentStats = {};
+    let totalUsed = 0;
+    let totalCost = 0;
+
     inventory.forEach(item => {
-      let itemTotal = 0, itemCost = 0;
       item.usage.forEach(u => {
         let d = new Date(u.date);
         if (d >= startDate && d < endDate) {
-          itemTotal += u.amount;
-          itemCost += u.amount * (item.costPerSticker || 0);
+          if (!departmentStats[u.department]) {
+            departmentStats[u.department] = { used: 0, cost: 0 };
+          }
+          departmentStats[u.department].used += u.amount;
+          departmentStats[u.department].cost += u.amount * (item.costPerSticker || 0);
+          totalUsed += u.amount;
+          totalCost += u.amount * (item.costPerSticker || 0);
         }
       });
-      if (itemTotal > 0) {
-        usageRows.push([
-          item.label || item.name || '',
-          itemTotal,
-          userRole === "admin" ? "R" + itemCost.toFixed(2) : null
-        ]);
-        totalUsed += itemTotal;
-        totalCost += itemCost;
-      }
     });
+
     let html;
     if (userRole === "admin") {
       html = `<table id="statsTable"><thead>
-        <tr><th>Sticker Label</th><th>Used</th><th>Total Cost</th></tr>
+        <tr><th>Department</th><th>Used</th><th>Total Cost</th></tr>
         </thead><tbody>`;
     } else {
       html = `<table id="statsTable"><thead>
-        <tr><th>Sticker Label</th><th>Used</th></tr>
+        <tr><th>Department</th><th>Used</th></tr>
         </thead><tbody>`;
     }
-    if (usageRows.length === 0) {
+
+    const sortedDepartments = Object.keys(departmentStats).sort();
+
+    if (sortedDepartments.length === 0) {
       html += `<tr><td colspan="${userRole === "admin" ? "3" : "2"}">No usage found for this period.</td></tr>`;
     } else {
-      usageRows.forEach(row => {
-        html += `<tr><td>${row[0]}</td><td>${row[1]}</td>${userRole === "admin" ? `<td>${row[2]}</td>` : ""}</tr>`;
+      sortedDepartments.forEach(dept => {
+        const stats = departmentStats[dept];
+        html += `<tr>
+          <td>${dept.charAt(0).toUpperCase() + dept.slice(1)}</td>
+          <td>${stats.used}</td>
+          ${userRole === "admin" ? `<td>R${stats.cost.toFixed(2)}</td>` : ""}
+        </tr>`;
       });
       html += `<tr style="font-weight:600;">
         <td class="total-col">Total</td>
