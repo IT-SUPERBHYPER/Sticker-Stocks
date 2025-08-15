@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sticker Inventory Management</title>
+  <title>Enhanced Sticker Inventory Management</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAIABwAABwAAAICAIAAwMDAAEAAAACAAIAAwMDAAEAAAADAAPAAABAAADwAAAAAA" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <style>
+    /* ===== Enhanced CSS with Animations and 3D Effects ===== */
     :root {
       --primary: #2870ea;
       --primary-hover: #1c54b2;
@@ -20,7 +22,9 @@
       --radius: 16px;
       --shadow: 0 2px 32px 0 rgba(40,112,234,0.10);
       --header-shadow: 0 1px 12px 0 #c7dbfa99;
+      --transition-speed: 0.3s;
     }
+
     html, body {
       background: var(--bg-main);
       min-height: 100%;
@@ -29,9 +33,35 @@
       margin: 0;
       font-size: 15.7px;
       scroll-behavior: smooth;
-      transition: background .32s, color .22s;
+      transition: background var(--transition-speed), color var(--transition-speed);
+      /* Add a subtle animated background texture */
+      background-image: radial-gradient(#d0ddf8 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-attachment: fixed;
     }
     body { padding: 0; }
+
+    /* Floating particles background effect */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: -1;
+        background-image:
+            radial-gradient(ellipse at 10% 20%, rgba(104, 168, 252, 0.15) 0%, transparent 20%),
+            radial-gradient(ellipse at 90% 80%, rgba(35, 193, 129, 0.15) 0%, transparent 20%);
+        animation: floatBackground 20s ease-in-out infinite;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    @keyframes floatBackground {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(-10px, 5px); }
+        50% { transform: translate(5px, -10px); }
+        75% { transform: translate(10px, 10px); }
+    }
+
     .container {
       max-width: 950px;
       margin: 38px auto 32px auto;
@@ -40,10 +70,37 @@
       box-shadow: var(--shadow);
       padding: 34px 18px 24px 18px;
       min-height: 81vh;
-      animation: fadeIn .7s cubic-bezier(.53,1.47,.57,.95);
-      transition: background .3s, box-shadow .24s;
+      animation: fadeInUp 0.7s cubic-bezier(.53,1.47,.57,.95);
+      transition: background var(--transition-speed), box-shadow var(--transition-speed);
+      position: relative;
+      overflow: hidden;
+      /* Add a subtle 3D tilt effect on hover */
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
-    @keyframes fadeIn {from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+    .container::before {
+        content: "";
+        position: absolute;
+        top: -10px; left: -10px;
+        right: -10px; bottom: -10px;
+        background: linear-gradient(45deg, var(--primary), var(--accent), var(--warn), var(--primary));
+        background-size: 400% 400%;
+        z-index: -1;
+        border-radius: calc(var(--radius) + 5px);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        animation: gradientShift 10s ease infinite;
+    }
+    .container:hover::before {
+        opacity: 0.1;
+    }
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+
     h1 {
       font-family: 'Poppins',sans-serif;
       font-size: 2.14rem;
@@ -53,16 +110,54 @@
       color: var(--primary);
       text-shadow: var(--header-shadow);
       text-align:center;
-      transition: color .3s;
+      transition: color var(--transition-speed);
+      position: relative;
+      display: inline-block;
+      margin: 0 auto 15px;
+      /* Add a subtle 3D text effect */
+      text-shadow:
+        0 1px 0 #ccc, 0 2px 0 #c9c9c9,
+        0 3px 0 #bbb, 0 4px 0 #b9b9b9,
+        0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1),
+        0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3),
+        0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25),
+        0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+      animation: textPopIn 1s ease-out;
     }
+    @keyframes textPopIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        70% { transform: scale(1.05); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
     h2 {
       font-size: 1.12rem;
       font-weight: 600;
       color: var(--primary);
       margin: 24px 0 12px 0;
       letter-spacing: 0.02em;
-      transition: color .3s;
+      transition: color var(--transition-speed);
+      position: relative;
+      /* Add a line accent */
+      padding-left: 15px;
     }
+    h2::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 50%;
+        transform: translateY(-50%);
+        width: 8px; height: 8px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--primary);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(40, 112, 234, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(40, 112, 234, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(40, 112, 234, 0); }
+    }
+
     .flex-row {
       display: flex;
       flex-wrap: wrap;
@@ -70,6 +165,7 @@
       justify-content: flex-end;
       margin-bottom: 19px;
     }
+
     #darkToggleBtn {
       position: absolute;
       right: 36px;
@@ -84,9 +180,17 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 2px 8px #cadbfa40;
       cursor: pointer;
-      transition: background .22s, color .19s, border .22s;
+      transition: background 0.22s, color 0.19s, border 0.22s, transform 0.3s;
     }
-    #darkToggleBtn:hover { background: #d8e7fc; color: #1850a6; }
+    #darkToggleBtn:hover {
+        background: #d8e7fc;
+        color: #1850a6;
+        transform: rotate(15deg) scale(1.1);
+    }
+    #darkToggleBtn:active {
+        transform: rotate(0deg) scale(0.95);
+    }
+
     .action-btn, button, .reset-btn, .download-btn, .upload-btn {
       font-family: 'Poppins', 'Inter', Arial, sans-serif;
       font-size: 1rem;
@@ -96,13 +200,26 @@
       font-weight: 500;
       background: linear-gradient(90deg, var(--primary) 60%, #3982ff 100%);
       color: #fff;
-      box-shadow: 0 2px 16px 0 #98b7ef22;
+      box-shadow: 0 4px 15px rgba(40, 112, 234, 0.3);
       margin: 0 1px 0 0;
-      transition: background 0.15s, box-shadow 0.18s, transform 0.12s, color .25s;
+      transition: all 0.3s ease;
       outline:none;
       cursor:pointer;
       position: relative;
       overflow: hidden;
+      /* Add 3D button effect */
+      transform: translateZ(0); /* For hardware acceleration */
+    }
+    .action-btn::before, button::before, .reset-btn::before, .download-btn::before, .upload-btn::before {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: all 0.6s;
+    }
+    .action-btn:hover::before, button:hover::before, .reset-btn:hover::before, .download-btn:hover::before, .upload-btn:hover::before {
+        left: 100%;
     }
     .action-btn.eye-btn {
       background: linear-gradient(90deg,#f7faff 80%,#eaf3fd 100%);
@@ -111,41 +228,132 @@
       padding: 7px 13px;
       margin: 0 3px;
       box-shadow: none;
-      transition: background .18s,color .18s,box-shadow .14s;
+      transition: background 0.18s,color 0.18s,box-shadow 0.14s;
     }
-    .action-btn.eye-btn:hover { color:#fff; background: var(--primary);}
-    .action-btn.edit-btn { background: linear-gradient(90deg,#7d5fff 60%,#5f27cd 100%);}
-    .action-btn.del-btn, .reset-btn { background: linear-gradient(90deg, var(--danger) 60%, #fb5b5b 100%);}
-    .download-btn { background: linear-gradient(90deg,var(--accent) 60%,#5ce6b6 100%);}
-    .upload-btn { background: linear-gradient(90deg,var(--warn) 65%,#ffd25b 100%); color: #473d12;}
-    .reset-btn:hover { background: #c91d19;}
-    .action-btn:active, button:active {transform:scale(.98);}
-    .action-btn:disabled { opacity: 0.6; cursor: not-allowed;}
-    .form-pair-group {display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 10px;}
-    .form-group {flex: 1; min-width: 170px; display: flex; flex-direction: column; margin-bottom: 9px;}
-    .form-group label {font-weight: 600; font-size: 1.01rem; margin-bottom: 5px; color: var(--text-light);}
+    .action-btn.eye-btn:hover {
+        color:#fff;
+        background: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(40, 112, 234, 0.4);
+    }
+    .action-btn.edit-btn {
+        background: linear-gradient(90deg,#7d5fff 60%,#5f27cd 100%);
+        box-shadow: 0 4px 15px rgba(125, 95, 255, 0.3);
+    }
+    .action-btn.del-btn, .reset-btn {
+        background: linear-gradient(90deg, var(--danger) 60%, #fb5b5b 100%);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+    .download-btn {
+        background: linear-gradient(90deg,var(--accent) 60%,#5ce6b6 100%);
+        box-shadow: 0 4px 15px rgba(35, 193, 129, 0.3);
+    }
+    .upload-btn {
+        background: linear-gradient(90deg,var(--warn) 65%,#ffd25b 100%);
+        color: #473d12;
+        box-shadow: 0 4px 15px rgba(255, 165, 2, 0.3);
+    }
+    .reset-btn:hover, .action-btn.del-btn:hover {
+        background: linear-gradient(90deg, #c0392b, #e74c3c);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
+    }
+    .action-btn:hover, button:hover:not(.eye-btn) {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(40, 112, 234, 0.4);
+    }
+    .action-btn:active, button:active {
+        transform: translateY(1px) scale(0.98);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .action-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .form-pair-group {
+        display: flex;
+        gap: 22px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+        animation: slideInLeft 0.5s ease-out;
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: 170px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 9px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .form-group label {
+        font-weight: 600;
+        font-size: 1.01rem;
+        margin-bottom: 5px;
+        color: var(--text-light);
+        transition: color var(--transition-speed);
+    }
     .form-group input, .form-group select {
       padding: 9px 13px;
       border: 1.6px solid var(--border);
       border-radius: 8px;
       font-size: 0.98rem;
       background: #f8fbff;
-      transition: border 0.19s,box-shadow .14s,background .18s,color .17s;
+      transition: border 0.19s, box-shadow 0.14s, background 0.18s, color 0.17s;
       box-shadow: 0 1px 5px #e8f2ff22;
       margin-bottom: 1.5px;
-      color:var(--text-main);
+      color: var(--text-main);
+      /* Add subtle focus animation */
+      position: relative;
     }
     .form-group input:focus, .form-group select:focus {
-      outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 2px 12px #cce2ff42;
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 2px 12px #cce2ff42, 0 0 0 3px rgba(40, 112, 234, 0.2);
+      animation: pulseBorder 1.5s infinite;
     }
-    .form-group select { cursor:pointer;}
-    .table-responsive { overflow-x: auto;}
+    @keyframes pulseBorder {
+        0% { box-shadow: 0 2px 12px #cce2ff42, 0 0 0 0 rgba(40, 112, 234, 0.4); }
+        70% { box-shadow: 0 2px 12px #cce2ff42, 0 0 0 10px rgba(40, 112, 234, 0); }
+        100% { box-shadow: 0 2px 12px #cce2ff42, 0 0 0 0 rgba(40, 112, 234, 0); }
+    }
+    .form-group select { cursor:pointer; }
+
+    .table-responsive {
+        overflow-x: auto;
+        animation: slideInUp 0.6s ease-out;
+        margin-top: 15px;
+    }
+    @keyframes slideInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     table {
-      width: 100%; border-collapse: separate; border-spacing: 0;
-      margin-top: 10px; font-size: 0.96rem; background: #fcfcff;
-      border-radius: 14px; overflow: hidden; box-shadow: 0 1px 14px 0 #eaf1fd66;
-      border:1.5px solid #eaf1fd;
-      transition: background .25s, box-shadow .2s;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 10px;
+      font-size: 0.96rem;
+      background: #fcfcff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 14px 0 #eaf1fd66;
+      border: 1.5px solid #eaf1fd;
+      transition: background var(--transition-speed), box-shadow var(--transition-speed);
     }
     th, td {
       border: none;
@@ -153,7 +361,7 @@
       text-align: center;
       font-size: 0.97em;
       font-family:'Inter',sans-serif;
-      transition: background 0.10s, color .18s;
+      transition: background 0.10s, color var(--transition-speed);
     }
     th {
       background: linear-gradient(90deg, var(--primary) 75%, #68a8fc 100%);
@@ -163,67 +371,339 @@
       border-bottom: 2.5px solid #d3e4fa;
       letter-spacing: .03em;
       box-shadow: 0 1px 12px 0 #aac2e366;
+      position: relative;
+      overflow: hidden;
     }
+    /* Animated stripes on table header */
+    th::after {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        animation: shine 3s infinite;
+    }
+    @keyframes shine {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
     tr:nth-child(even) td { background: #f5faff; }
-    tr:hover td { background: #eaf2ff;}
-    .out-stock { background: #ffd6d1 !important; color: var(--danger);}
-    .low-stock { background: #ffeab8 !important; color: #d28813;}
-    .total-col { color: #1557c0; font-weight: 600;}
-    #loader { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.7); justify-content: center; align-items: center;}
-    #loader span { font-size: 32px; color: var(--primary); border-radius: 50%; border: 5px solid #e2e8f0; border-top: 5px solid var(--primary); width: 58px; height: 58px; display: inline-block; animation: spin 1s linear infinite;}
-    @keyframes spin { 0% { transform: rotate(0);} 100% { transform: rotate(360deg);} }
-    #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal {
-      display: none; position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh; background: rgba(41,61,100,0.18);
-      z-index: 9999; align-items: center; justify-content: center;
-      animation: fadeIn .32s cubic-bezier(.52,1.7,.62,.93);
+    tr:hover td {
+        background: #eaf2ff;
+        transform: scale(1.01);
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        z-index: 2;
+        position: relative;
     }
-    #addStockModal .modal-content, #usageModal .modal-content, #statsModal .modal-content, #exportDateSelectionModal .modal-content {
+    /* Add a subtle 3D lift to rows on hover */
+    tr {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .out-stock { background: #ffd6d1 !important; color: var(--danger); }
+    .low-stock { background: #ffeab8 !important; color: #d28813; }
+    .total-col { color: #1557c0; font-weight: 600; }
+
+    #loader {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(255,255,255,0.7);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+    #loader span {
+        font-size: 32px;
+        color: var(--primary);
+        border-radius: 50%;
+        border: 5px solid #e2e8f0;
+        border-top: 5px solid var(--primary);
+        width: 58px;
+        height: 58px;
+        display: inline-block;
+        animation: spin 1s linear infinite, pulseLoader 1.5s ease-in-out infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0); }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes pulseLoader {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    /* Modal Styles with Enhanced Animations */
+    #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(41,61,100,0.3); /* Lighter overlay */
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+      /* Add a subtle blur to the background when modal is open */
+      backdrop-filter: blur(2px);
+    }
+    #addStockModal .modal-content,
+    #usageModal .modal-content,
+    #statsModal .modal-content,
+    #exportDateSelectionModal .modal-content {
       background: rgba(255,255,255,0.97);
       border-radius: 19px;
-      box-shadow: 0 8px 32px 0 #4468b155;
-      max-width: 390px; padding: 25px 16px;
-      display: flex; flex-direction: column; align-items: center;
-      animation: fadeIn .38s cubic-bezier(.52,1.7,.62,.93);
-      max-height: 90vh; /* Added max-height */
-      overflow-y: auto; /* Added scrollbar */
+      box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+      max-width: 390px;
+      padding: 25px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      /* Add 3D depth to modal */
+      transform-style: preserve-3d;
     }
-    #addStockAmount {margin-bottom: 15px; padding: 8px 12px; width: 140px;}
-    #usageModal .modal-content, #statsModal .modal-content, #exportDateSelectionModal .modal-content {width:355px;max-width:97vw;padding:19px;}
-    #usageModalClose, #statsModalClose, #exportDateSelectionModalClose {align-self:flex-end;background:none;color:#888;font-size:2em;border:none;cursor:pointer;line-height:.6;margin-top:-14px;}
-    #usageListTable {width:100%;margin-top:10px;border-collapse:collapse;}
-    #usageListTable th, #usageListTable td {padding:7px 2px;text-align:center;}
-    #usageListTable th {background:#eaf1fd;color:#2870ea;}
-    #usageListTable tr:nth-child(even) td {background:#f7fafe;}
-    #statsTabs {margin-bottom:12px;}
-    #statsTabs button, #exportDateSelectionTabs button {margin-right:5px; background: #f7faff; color: var(--primary); border:1.3px solid var(--primary); border-radius:8px; padding: 7px 13px; font-size:1em; cursor:pointer; transition: background .16s, color .13s;}
-    #statsTabs button.active, #statsTabs button:active, #exportDateSelectionTabs button.active {background: var(--primary); color:#fff;}
-    #statsTable th, #statsTable td {padding:8px 2px; text-align:center; font-size:0.96em;}
-    #statsTable th {background: #eaf1fd; color: #2870ea;}
-    #statsSummary {margin-top:6px; font-size:1.01em;}
+    @keyframes zoomIn {
+        0% { opacity: 0; transform: scale(0.8) translateZ(0); }
+        100% { opacity: 1; transform: scale(1) translateZ(0); }
+    }
+    /* Close button animation */
+    #usageModalClose, #statsModalClose, #exportDateSelectionModalClose, #addStockModalClose {
+        align-self: flex-end;
+        background: none;
+        color: #888;
+        font-size: 2em;
+        border: none;
+        cursor: pointer;
+        line-height: .6;
+        margin-top: -14px;
+        transition: all 0.2s ease;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    #usageModalClose:hover, #statsModalClose:hover, #exportDateSelectionModalClose:hover, #addStockModalClose:hover {
+        background-color: #f0f0f0;
+        color: #e74c3c;
+        transform: rotate(90deg);
+    }
 
-    /* New styles for detailed department stats */
-    .department-details, .label-stats { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
-    .department-details h4, .label-stats h4 { font-size: 1.05em; color: var(--primary); margin-bottom: 5px; text-align: left; margin-left: 5px; }
-    .department-details ul, .label-stats ul { list-style: none; padding: 0; margin: 0; text-align: left;}
-    .department-details li, .label-stats li { margin-bottom: 3px; font-size: 0.9em; padding: 2px 5px; }
-    .department-details li:nth-child(odd), .label-stats li:nth-child(odd) { background: #f7faff; }
-    html.dark .department-details li:nth-child(odd), html.dark .label-stats li:nth-child(odd) { background: #202f52; }
+    #addStockAmount {
+        margin-bottom: 15px;
+        padding: 8px 12px;
+        width: 140px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #addStockAmount:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(40, 112, 234, 0.2);
+    }
 
+    #usageModal .modal-content,
+    #statsModal .modal-content,
+    #exportDateSelectionModal .modal-content {
+        width: 355px;
+        max-width: 97vw;
+        padding: 19px;
+    }
+
+    #usageListTable {
+        width: 100%;
+        margin-top: 10px;
+        border-collapse: collapse;
+        animation: fadeIn 0.5s ease-in;
+    }
+    #usageListTable th, #usageListTable td {
+        padding: 7px 2px;
+        text-align: center;
+    }
+    #usageListTable th {
+        background: #eaf1fd;
+        color: #2870ea;
+    }
+    #usageListTable tr:nth-child(even) td {
+        background: #f7fafe;
+    }
+
+    #statsTabs {
+        margin-bottom: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    #statsTabs button,
+    #exportDateSelectionTabs button {
+        margin: 5px;
+        background: #f7faff;
+        color: var(--primary);
+        border: 1.3px solid var(--primary);
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    #statsTabs button::after,
+    #exportDateSelectionTabs button::after {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 0; height: 0;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    #statsTabs button:active::after,
+    #exportDateSelectionTabs button:active::after {
+        width: 300px; height: 300px;
+    }
+    #statsTabs button.active,
+    #statsTabs button:active,
+    #exportDateSelectionTabs button.active {
+        background: var(--primary);
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    #statsTabs button:hover,
+    #exportDateSelectionTabs button:hover {
+        background: #e0e9ff;
+        transform: translateY(-2px);
+    }
+
+    #statsTable th, #statsTable td {
+        padding: 8px 2px;
+        text-align: center;
+        font-size: 0.96em;
+    }
+    #statsTable th {
+        background: #eaf1fd;
+        color: #2870ea;
+    }
+    #statsSummary {
+        margin-top: 6px;
+        font-size: 1.01em;
+    }
+
+    .department-details, .label-stats {
+        margin-top: 15px;
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
+        animation: slideInUp 0.5s ease-out 0.2s both; /* Delayed animation */
+    }
+    .department-details h4, .label-stats h4 {
+        font-size: 1.05em;
+        color: var(--primary);
+        margin-bottom: 5px;
+        text-align: left;
+        margin-left: 5px;
+    }
+    .department-details ul, .label-stats ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+    .department-details li, .label-stats li {
+        margin-bottom: 3px;
+        font-size: 0.9em;
+        padding: 2px 5px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    .department-details li:hover, .label-stats li:hover {
+        background-color: #eef5ff !important;
+    }
+    .department-details li:nth-child(odd), .label-stats li:nth-child(odd) {
+        background: #f7faff;
+    }
+
+    html.dark .department-details li:nth-child(odd),
+    html.dark .label-stats li:nth-child(odd) {
+        background: #202f52;
+    }
+
+    /* Tooltip animation */
     .action-btn[title]::after, .eye-btn[title]::after {
-      content: attr(title); display: none; position: absolute; background: #233c70f2; color: #fff; font-size: .9em;
-      padding: 4px 10px; border-radius: 7px; white-space: nowrap; left: 110%; top: 50%; transform: translateY(-50%);
-      z-index: 5000; pointer-events:none; opacity:0; transition:.14s;
+      content: attr(title);
+      display: none;
+      position: absolute;
+      background: #233c70f2;
+      color: #fff;
+      font-size: .9em;
+      padding: 4px 10px;
+      border-radius: 7px;
+      white-space: nowrap;
+      left: 110%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    .action-btn[title]:hover::after, .eye-btn[title]:hover::after { display: block; opacity:1; }
+    .action-btn[title]:hover::after, .eye-btn[title]:hover::after {
+        display: block;
+        opacity: 1;
+        transform: translate(10px, -50%); /* Slight movement on appear */
+    }
+
+    /* Responsive adjustments */
     @media (max-width: 760px) {
-      .container {padding: 5px;}
-      .form-pair-group {flex-direction: column; gap: 0;}
-      .form-group {min-width: unset;}
-      th, td {padding: 7px 2px; font-size: 0.89em;}
-      #usageModal .modal-content,#statsModal .modal-content, #exportDateSelectionModal .modal-content {width:97vw;}
-      #darkToggleBtn {right:14px;top:12px;}
+      .container { padding: 5px; }
+      .form-pair-group { flex-direction: column; gap: 0; }
+      .form-group { min-width: unset; }
+      th, td { padding: 7px 2px; font-size: 0.89em; }
+      #usageModal .modal-content,
+      #statsModal .modal-content,
+      #exportDateSelectionModal .modal-content {
+          width: 97vw;
+      }
+      #darkToggleBtn {
+          right: 14px;
+          top: 12px;
+      }
+      h1 {
+          font-size: 1.8rem;
+          /* Simplify 3D text effect on mobile */
+          text-shadow:
+            0 1px 0 #ccc, 0 2px 0 #c9c9c9,
+            0 3px 0 #bbb, 0 4px 0 #b9b9b9,
+            0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1),
+            0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.2);
+      }
     }
+
+    /* Dark mode enhancements */
     html.dark, body.dark {
       --primary: #68a8fc;
       --primary-hover: #2870ea;
@@ -237,11 +717,12 @@
       --warn: #fcb040;
       --header-shadow: 0 2px 18px 0 #29395970;
       --shadow: 0 4px 36px 0 #000e2c44;
+      background-image: radial-gradient(#2a3a5a 1px, transparent 1px);
     }
     html.dark, body.dark {
       background: var(--bg-main) !important;
       color: var(--text-main) !important;
-      transition: background .31s, color .23s;
+      transition: background var(--transition-speed), color var(--transition-speed);
     }
     html.dark .container, body.dark .container {
       background: var(--card-bg) !important;
@@ -257,21 +738,27 @@
     html.dark .upload-btn, body.dark .upload-btn,
     html.dark .reset-btn, body.dark .reset-btn {
       color: #fff !important;
-      box-shadow: 0 1.5px 14px 0 #050b15af;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
     html.dark .action-btn.eye-btn, body.dark .action-btn.eye-btn {
       background: #243255;
       color: #68a8fc;
       border: 1.4px solid #5068a2;
     }
-    html.dark .action-btn.eye-btn:hover { background: var(--primary); color: #fff;}
-    html.dark .form-group input, html.dark .form-group select, body.dark .form-group input, body.dark .form-group select {
+    html.dark .action-btn.eye-btn:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+    html.dark .form-group input, html.dark .form-group select,
+    body.dark .form-group input, body.dark .form-group select {
       background: #1a2746;
       color: var(--text-main);
       border: 1.7px solid var(--border);
     }
-    html.dark .form-group input:focus, html.dark .form-group select:focus {
-      background: #202f52; border-color: var(--primary);
+    html.dark .form-group input:focus, html.dark .form-group select:focus,
+    body.dark .form-group input:focus, body.dark .form-group select:focus {
+      background: #202f52;
+      border-color: var(--primary);
     }
     html.dark table, body.dark table {
       background: #232f4c;
@@ -283,10 +770,20 @@
       color: #fff !important;
       border-bottom: 2.5px solid #193366;
     }
-    html.dark tr:nth-child(even) td, body.dark tr:nth-child(even) td { background: #202f52; }
-    html.dark tr:hover td, body.dark tr:hover td { background: #21356a; }
-    html.dark .out-stock, body.dark .out-stock { background: #3b2031 !important; color: #ff7d90;}
-    html.dark .low-stock, body.dark .low-stock { background: #393a24 !important; color: #fff2a0;}
+    html.dark tr:nth-child(even) td, body.dark tr:nth-child(even) td {
+        background: #202f52;
+    }
+    html.dark tr:hover td, body.dark tr:hover td {
+        background: #21356a;
+    }
+    html.dark .out-stock, body.dark .out-stock {
+        background: #3b2031 !important;
+        color: #ff7d90;
+    }
+    html.dark .low-stock, body.dark .low-stock {
+        background: #393a24 !important;
+        color: #fff2a0;
+    }
     html.dark #addStockModal .modal-content,
     html.dark #usageModal .modal-content,
     html.dark #statsModal .modal-content,
@@ -297,11 +794,15 @@
     body.dark #exportDateSelectionModal .modal-content {
       background: #232f4c !important;
       color: #e3ebfa !important;
-      box-shadow: 0 10px 36px 0 #0d1126c7;
+      box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.3),
+        0 10px 10px -5px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
     }
     html.dark #usageListTable th, body.dark #usageListTable th,
     html.dark #statsTable th, body.dark #statsTable th {
-      background: #273e6e !important; color: #7dc1ff !important;
+      background: #273e6e !important;
+      color: #7dc1ff !important;
     }
     html.dark #usageListTable td, body.dark #usageListTable td,
     html.dark #statsTable td, body.dark #statsTable td {
@@ -309,37 +810,123 @@
     }
     html.dark #statsTabs button, body.dark #statsTabs button,
     html.dark #exportDateSelectionTabs button, body.dark #exportDateSelectionTabs button {
-      background: #1a2746 !important; color: #7dc1ff !important; border-color: #365eb6 !important;
+      background: #1a2746 !important;
+      color: #7dc1ff !important;
+      border-color: #365eb6 !important;
     }
     html.dark #statsTabs button.active, body.dark #statsTabs button.active,
-    html.dark #exportDateSelectionTabs button.active, body.dark #exportDateSelectionTabs button.active { background: #4273d9 !important; color: #fff !important;}
-    html.dark #darkToggleBtn, body.dark #darkToggleBtn { background: #2c385a; color: #fff; border-color: #4d638c;}
-    html.dark #darkToggleBtn:hover { background: #39507d; color: #ffe484;}
+    html.dark #exportDateSelectionTabs button.active, body.dark #exportDateSelectionTabs button.active {
+        background: #4273d9 !important;
+        color: #fff !important;
+    }
+    html.dark #darkToggleBtn, body.dark #darkToggleBtn {
+        background: #2c385a;
+        color: #fff;
+        border-color: #4d638c;
+    }
+    html.dark #darkToggleBtn:hover, body.dark #darkToggleBtn:hover {
+        background: #39507d;
+        color: #ffe484;
+    }
     /* Login Modal */
     #loginModal {
-      position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;
-      background:#121b2bfa;display:flex;align-items:center;justify-content:center;
+      position: fixed;
+      z-index: 99999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #121b2bfa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.5s ease-out;
     }
     #loginForm {
-      background:#fff;padding:30px 28px 22px 28px;border-radius:14px;
-      box-shadow:0 3px 28px #0d193455;text-align:center;min-width:260px;
+      background: #fff;
+      padding: 30px 28px 22px 28px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px #0d193488;
+      text-align: center;
+      min-width: 260px;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.7); }
+        100% { opacity: 1; transform: scale(1); }
     }
     #loginForm input {
-      padding:9px 14px;width:100%;border-radius:8px;border:1.2px solid #e2e8f0;
-      font-size:1rem;
+      padding: 9px 14px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1.2px solid #e2e8f0;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #loginForm input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(40, 112, 234, 0.2);
     }
     #loginForm button {
-      margin-top:4px;padding:8px 20px;border-radius:8px;background:#2870ea;
-      color:#fff;font-size:1rem;border:none;cursor:pointer;
+      margin-top: 4px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      background: #2870ea;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
     }
-    #loginError {color:#e74c3c;margin-top:8px;display:none;}
-    #exportDateSelectionContent label { display: block; margin-top: 10px; font-weight: 600;}
-    #exportDateSelectionContent input[type="date"], #exportDateSelectionContent input[type="month"] {
-      width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 5px; margin-bottom: 10px;
+    #loginForm button:hover {
+        background: #1c54b2;
+        transform: translateY(-2px);
     }
-    #exportDateSelectionContent button { margin-top: 10px; }
+    #loginForm button:active {
+        transform: translateY(1px);
+    }
+    #loginError {
+        color: #e74c3c;
+        margin-top: 8px;
+        display: none;
+        animation: shake 0.5s;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+
+    #exportDateSelectionContent label {
+        display: block;
+        margin-top: 10px;
+        font-weight: 600;
+    }
+    #exportDateSelectionContent input[type="date"],
+    #exportDateSelectionContent input[type="month"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      transition: border-color 0.3s;
+    }
+    #exportDateSelectionContent input[type="date"]:focus,
+    #exportDateSelectionContent input[type="month"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(40, 112, 234, 0.2);
+    }
+    #exportDateSelectionContent button {
+        margin-top: 10px;
+    }
     #exportDateSelectionModal .modal-footer {
-      display: flex; justify-content: space-around; width: 100%; margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -356,7 +943,7 @@
 </div>
 <button id="darkToggleBtn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
 <div class="container">
-  <h1>Sticker Inventory Management</h1>
+  <h1>Enhanced Sticker Inventory Management</h1>
   <div id="loader"><span></span></div>
   <div class="flex-row" style="justify-content:space-between;">
     <div></div>
@@ -402,7 +989,7 @@
       <div class="form-group"><label for="stickerCost">Cost per Sticker (R)</label>
         <input type="number" id="stickerCost" step="0.01" min="0"></div>
     </div>
-    <button id="addStickerBtn" onclick="addSticker()" disabled>➕ Add Sticker</button>
+    <button type="button" id="addStickerBtn" onclick="addSticker()" disabled>➕ Add Sticker</button>
   </form>
   <h2>Deduct Sticker Usage</h2>
   <form onsubmit="event.preventDefault();">
@@ -428,7 +1015,7 @@
       <div class="form-group"><label for="deductAmount">Deduct Amount</label>
         <input type="number" id="deductAmount" min="1"></div>
     </div>
-    <button id="deductBtn" onclick="deductStock()" disabled>➖ Deduct Stock</button>
+    <button type="button" id="deductBtn" onclick="deductStock()" disabled>➖ Deduct Stock</button>
   </form>
   <div class="table-responsive">
     <table id="reportTable">
@@ -440,7 +1027,7 @@
           <th>Total</th>
           <th class="admin-price">Cost Each</th>
           <th class="admin-price">Total Cost</th>
-          <th>Last Use</th>
+          <th>Last Use<br><small>Time</small></th>
           <th>Who</th>
           <th class="admin-only">Actions</th>
         </tr>
@@ -509,7 +1096,6 @@
     <button onclick="hideExportDateSelectionModal()" class="action-btn del-btn">Cancel</button>
   </div>
 </div></div>
-
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
@@ -566,17 +1152,14 @@
     if (saved === "1" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) setDark(true);
     else setDark(false);
   })();
-
   // ====== JSONBin.io CONFIG ======
   const JSONBIN_BIN_ID = '68667cf68a456b7966baa845';
   const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exu'; // Corrected API Key
   const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-
   let inventory = [];
   let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
   let exportType = ''; // 'csv', 'pdf', or 'labels_usage_csv'
   let exportOption = 'month'; // 'month', 'week', 'range', 'all'
-
   function showLoader(show=true) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
   async function loadInventory() {
     showLoader(true);
@@ -681,32 +1264,74 @@
       updateReport();
     });
   }
+  // --- FIXED deductStock function ---
   function deductStock() {
-    if (inventory.length === 0) { alert("No stickers in inventory."); return; }
+    // --- Prevent multiple clicks by disabling the button ---
+    const deductBtn = document.getElementById("deductBtn");
+    if (deductBtn.disabled) {
+        console.log("Deduct button is already processing or disabled.");
+        return;
+    }
+    deductBtn.disabled = true; // Disable immediately
+
+    if (inventory.length === 0) {
+      alert("No stickers in inventory.");
+      deductBtn.disabled = false; // Re-enable on error
+      return;
+    }
     const index = parseInt(document.getElementById("selectSticker").value);
     const department = document.getElementById("department").value;
     const person = document.getElementById("person").value.trim();
     const date = document.getElementById("deductDate").value;
     const amount = parseInt(document.getElementById("deductAmount").value);
-    if (isNaN(index) || !department || !person || !date || isNaN(amount) || amount <= 0) {
-      alert("Please fill in all fields correctly."); return;
+
+    // Add more detailed validation
+    if (isNaN(index) || index < 0 || index >= inventory.length || !department || !person || !date || isNaN(amount) || amount <= 0) {
+      alert("Please fill in all fields correctly.");
+      deductBtn.disabled = false; // Re-enable on error
+      return;
     }
+
     const item = inventory[index];
     if (amount > item.remainingStock) {
-      alert(`Not enough stock. Only ${item.remainingStock} left.`); return;
+      alert(`Not enough stock. Only ${item.remainingStock} left.`);
+      deductBtn.disabled = false; // Re-enable on error
+      return;
     }
+
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
     item.remainingStock -= amount;
-    item.usage.push({ department, amount, person, date });
+    // This push should now only happen once per click
+    item.usage.push({ department, amount, person, date, time: timeString });
+
     saveInventory().then(() => {
       updateReport();
+      // Reset form
       document.getElementById("selectSticker").value = "";
       document.getElementById("department").value = "";
       document.getElementById("person").value = "";
       document.getElementById("deductDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("deductAmount").value = "";
-      document.getElementById("deductBtn").disabled = true;
+      // Note: We don't re-enable the button here because the form is now invalid,
+      // and validation will keep it disabled until the user starts filling it again.
+      console.log(`Deducted ${amount} of ${item.label || item.name} for ${person} (${department}) on ${date} at ${timeString}`);
+    }).catch(error => {
+      console.error("Error saving inventory after deduction:", error);
+      alert("An error occurred while saving the deduction. The stock deduction might not have been saved.");
+       // Optional: Restore stock if save fails
+       // item.remainingStock += amount;
+       // item.usage.pop(); // Remove the last added item
+    }).finally(() => {
+      // Re-enable the button after the operation completes (success or error)
+      // Let the validation listeners handle disabling it again if the form is incomplete.
+      deductBtn.disabled = false;
+      validateDeduct(); // Trigger validation to set the button state correctly
     });
   }
+  // --- End of fixed deductStock function ---
+
   function updateSelectors() {
     const select = document.getElementById("selectSticker");
     select.innerHTML = "";
@@ -725,28 +1350,39 @@
   function updateReport() {
     const reportTableBody = document.querySelector("#reportTable tbody");
     reportTableBody.innerHTML = ""; // Clear existing rows
-
     if (inventory.length === 0) {
       reportTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px;">No sticker data available. Please add a new sticker above.</td></tr>`;
       return;
     }
-
     inventory.forEach((item, index) => {
       const row = reportTableBody.insertRow();
       let totalUsed = 0;
       let lastUsedDate = "N/A";
       let lastUsedPerson = "N/A";
-
+      let lastUsedTime = "N/A";
       if (item.usage && item.usage.length > 0) {
         totalUsed = item.usage.reduce((sum, u) => sum + u.amount, 0);
-        const lastUsage = item.usage.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        // FIXED: Create a copy to avoid modifying original array and handle time properly
+        const sortedUsage = [...item.usage].sort((a, b) => {
+          // Handle cases where time might not exist (backward compatibility)
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          if (dateA.getTime() !== dateB.getTime()) {
+            return dateB.getTime() - dateA.getTime(); // Most recent date first
+          }
+          // If dates are the same, sort by time if available, otherwise by amount
+          if (a.time && b.time) {
+            return b.time.localeCompare(a.time); // Newest time first
+          }
+          return b.amount - a.amount; // If no time, sort by amount
+        });
+        const lastUsage = sortedUsage[0];
         lastUsedDate = lastUsage.date;
         lastUsedPerson = lastUsage.person;
+        lastUsedTime = lastUsage.time || "N/A";
       }
-
       const totalCost = (totalUsed * item.costPerSticker).toFixed(2);
       const remainingCost = (item.remainingStock * item.costPerSticker).toFixed(2);
-
       let rowClass = "";
       if (item.remainingStock === 0) {
         rowClass = "out-stock";
@@ -754,7 +1390,6 @@
         rowClass = "low-stock";
       }
       if (rowClass) row.classList.add(rowClass);
-
       row.innerHTML = `
         <td>${item.label || item.name || 'N/A'}</td>
         <td>${totalUsed}</td>
@@ -762,7 +1397,7 @@
         <td>${item.totalStock}</td>
         <td class="admin-price">R${item.costPerSticker ? item.costPerSticker.toFixed(2) : '0.00'}</td>
         <td class="admin-price">R${(item.totalStock * (item.costPerSticker || 0)).toFixed(2)}</td>
-        <td>${lastUsedDate}</td>
+        <td>${lastUsedDate}<br><small>${lastUsedTime}</small></td>
         <td>${lastUsedPerson}</td>
         <td class="admin-only">
           <button class="action-btn eye-btn" onclick="showUsageModal(${index})" title="View Usage">👁️</button>
@@ -774,7 +1409,6 @@
     });
     applyRolePermissions();
   }
-
   function showAddStockModal(i) {
     addStockIndex = i;
     document.getElementById('addStockStickerName').textContent = inventory[i].label || inventory[i].name;
@@ -796,14 +1430,19 @@
     let html = "";
     if (sticker.usage && sticker.usage.length) {
       html += `<table id="usageListTable"><thead><tr>
-        <th>Date</th><th>Person</th><th>Department</th><th>Amount</th>
+        <th>Date</th><th>Time</th><th>Person</th><th>Department</th><th>Amount</th>
+        <th class="admin-only">Actions</th>
       </tr></thead><tbody>`;
       sticker.usage.slice().reverse().forEach(u => {
         html += `<tr>
           <td>${u.date}</td>
+          <td>${u.time || 'N/A'}</td>
           <td>${u.person}</td>
           <td>${u.department.charAt(0).toUpperCase() + u.department.slice(1)}</td>
           <td>${u.amount}</td>
+          <td class="admin-only">
+            <button class="action-btn del-btn" onclick="deleteUsage(${idx}, '${u.date}', '${u.time || ''}', '${u.person}', '${u.department}', ${u.amount})" title="Delete Usage">🗑</button>
+          </td>
         </tr>`;
       });
       html += "</tbody></table>";
@@ -814,6 +1453,33 @@
     document.getElementById('usageModal').style.display = 'flex';
   }
   function hideUsageModal() { document.getElementById('usageModal').style.display = 'none'; usageModalIndex = -1; }
+  function deleteUsage(stickerIndex, date, time, person, department, amount) {
+    if (!confirm("Delete this usage record?")) return;
+    // Check if user is admin
+    if (userRole !== "admin") {
+      alert("Only admins can delete usage records.");
+      return;
+    }
+    const sticker = inventory[stickerIndex];
+    // Find and remove the specific usage record
+    const usageIndex = sticker.usage.findIndex(u =>
+      u.date === date &&
+      u.time === time &&
+      u.person === person &&
+      u.department === department &&
+      u.amount === amount
+    );
+    if (usageIndex !== -1) {
+      // Remove the usage record
+      sticker.usage.splice(usageIndex, 1);
+      // Restore stock
+      sticker.remainingStock += amount;
+      saveInventory().then(() => {
+        updateReport();
+        showUsageModal(stickerIndex); // Refresh the modal
+      });
+    }
+  }
   function showStatsModal() {
     document.getElementById('statsModal').style.display = 'flex';
     showStatsTab('daily');
@@ -822,10 +1488,8 @@
   function showStatsTab(tab) {
     ['daily', 'weekly', 'monthly', 'last-month', 'last-week'].forEach(x => document.getElementById('tab-' + x).classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-
     let now = new Date();
     let startDate, endDate;
-
     if (tab === "daily") {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -844,13 +1508,11 @@
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1 - 7); // Start of last week
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1); // End of last week
     }
-
     let departmentStats = {};
     let detailedDepartmentStats = {}; // New object for detailed stats
     let labelUsedStats = {}; // New object for label-only stats
     let totalUsed = 0;
     let totalCost = 0;
-
     inventory.forEach(item => {
       item.usage.forEach(u => {
         let d = new Date(u.date);
@@ -867,12 +1529,10 @@
             detailedDepartmentStats[u.department][label] = 0;
           }
           detailedDepartmentStats[u.department][label] += u.amount;
-
           departmentStats[u.department].used += u.amount;
           departmentStats[u.department].cost += u.amount * (item.costPerSticker || 0);
           totalUsed += u.amount;
           totalCost += u.amount * (item.costPerSticker || 0);
-
           // Label only stats
           if (!labelUsedStats[label]) {
             labelUsedStats[label] = 0;
@@ -881,7 +1541,6 @@
         }
       });
     });
-
     let html;
     // Department Usage Summary
     if (userRole === "admin") {
@@ -893,9 +1552,7 @@
         <tr><th>Department</th><th>Used</th></tr>
         </thead><tbody>`;
     }
-
     const sortedDepartments = Object.keys(departmentStats).sort();
-
     if (sortedDepartments.length === 0) {
       html += `<tr><td colspan="${userRole === "admin" ? "3" : "2"}">No usage found for this period.</td></tr>`;
     } else {
@@ -914,7 +1571,6 @@
       </tr>`;
     }
     html += "</tbody></table>";
-
     // Detailed Department Stats
     if (Object.keys(detailedDepartmentStats).length > 0) {
       html += `<div class="department-details"><h4>Labels Used by Department:</h4>`;
@@ -930,7 +1586,6 @@
       });
       html += `</div>`;
     }
-
     // Label Only Stats
     const sortedLabels = Object.keys(labelUsedStats).sort();
     if (sortedLabels.length > 0) {
@@ -940,11 +1595,8 @@
       });
       html += `</ul></div>`;
     }
-
-
     document.getElementById('statsContent').innerHTML = html;
   }
-
   function getFilteredUsageData(startDate, endDate) {
     const filteredData = [];
     inventory.forEach(item => {
@@ -952,7 +1604,6 @@
         let usageDate = new Date(u.date);
         // Normalize usageDate to start of day for accurate comparison
         usageDate.setHours(0, 0, 0, 0);
-
         if (usageDate >= startDate && usageDate < endDate) {
           filteredData.push({
             stickerName: item.label || item.name || '',
@@ -960,36 +1611,31 @@
             person: u.person,
             date: u.date,
             amount: u.amount,
-            costPerSticker: item.costPerSticker || 0
+            costPerSticker: item.costPerSticker || 0,
+            time: u.time
           });
         }
       });
     });
     return filteredData;
   }
-
   function exportToCSV(startDate, endDate) {
     const dataToExport = getFilteredUsageData(startDate, endDate);
     if (dataToExport.length === 0) {
       alert("No data found for the selected period.");
       return;
     }
-
     let totalAmount = 0;
     let totalOverallCost = 0;
-
-    let csv = "Sticker Label,Date,Department,Person,Amount,Cost Each,Total Cost\n";
+    let csv = "Sticker Label,Date,Time,Department,Person,Amount,Cost Each,Total Cost\r\n";
     dataToExport.forEach(row => {
       const totalCost = row.amount * row.costPerSticker;
-      csv += `"${row.stickerName}",${row.date},"${row.department.charAt(0).toUpperCase() + row.department.slice(1)}","${row.person}",${row.amount},R${row.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\n`;
+      csv += `"${row.stickerName}",${row.date},${row.time || ''},"${row.department.charAt(0).toUpperCase() + row.department.slice(1)}","${row.person}",${row.amount},R${row.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\r\n`;
       totalAmount += row.amount;
       totalOverallCost += totalCost;
     });
-
     // Add totals row
-    csv += `\nTotal,,,,,${totalAmount},R${totalOverallCost.toFixed(2)}\n`;
-
-
+    csv += `\r\nTotal,,,,,,${totalAmount},R${totalOverallCost.toFixed(2)}\r\n`;
     const blob = new Blob([csv], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -997,7 +1643,6 @@
     link.click();
     URL.revokeObjectURL(link.href);
   }
-
   function exportToPDF(startDate, endDate) {
     const dataToExport = getFilteredUsageData(startDate, endDate);
     if (dataToExport.length === 0) {
@@ -1007,10 +1652,8 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text(`Sticker Usage Report: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`, 14, 12);
-
     let totalAmount = 0;
     let totalOverallCost = 0;
-
     const rows = dataToExport.map(row => {
       const totalCost = row.amount * row.costPerSticker;
       totalAmount += row.amount;
@@ -1018,6 +1661,7 @@
       return [
         row.stickerName,
         row.date,
+        row.time || '',
         row.department.charAt(0).toUpperCase() + row.department.slice(1),
         row.person,
         row.amount,
@@ -1025,14 +1669,12 @@
         "R" + totalCost.toFixed(2)
       ];
     });
-
     // Add totals row to the PDF data
     rows.push(
-      ["", "", "", "Total", totalAmount, "", `R${totalOverallCost.toFixed(2)}`]
+      ["", "", "", "", "", "Total", totalAmount, `R${totalOverallCost.toFixed(2)}`]
     );
-
     doc.autoTable({
-      head: [["Sticker Label", "Date", "Department", "Person", "Amount", "Cost Each", "Total Cost"]],
+      head: [["Sticker Label", "Date", "Time", "Department", "Person", "Amount", "Cost Each", "Total Cost"]],
       body: rows,
       startY: 18,
       styles: { fontSize: 8 },
@@ -1045,16 +1687,13 @@
     });
     doc.save(`sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.pdf`);
   }
-
   function exportLabelsUsageCSV(startDate, endDate) {
     const labelUsage = {}; // To store total usage per label: { "LABEL_NAME": total_amount_used }
-
     inventory.forEach(item => {
         const label = item.label || item.name;
         item.usage.forEach(u => {
             let usageDate = new Date(u.date);
             usageDate.setHours(0, 0, 0, 0); // Normalize to start of day
-
             if (usageDate >= startDate && usageDate < endDate) {
                 if (!labelUsage[label]) {
                     labelUsage[label] = 0;
@@ -1063,24 +1702,19 @@
             }
         });
     });
-
     if (Object.keys(labelUsage).length === 0) {
         alert("No label usage data found for the selected period.");
         return;
     }
-
-    let csv = "Sticker Label,Total Amount Used\n";
+    let csv = "Sticker Label,Total Amount Used\r\n";
     let grandTotalUsed = 0;
-
     // Sort labels alphabetically for consistent output
     Object.keys(labelUsage).sort().forEach(label => {
-        csv += `"${label}",${labelUsage[label]}\n`;
+        csv += `"${label}",${labelUsage[label]}\r\n`;
         grandTotalUsed += labelUsage[label];
     });
-
     // Add a total row
-    csv += `\nTotal,,${grandTotalUsed}\n`;
-
+    csv += `\r\nTotal,,${grandTotalUsed}\r\n`;
     const blob = new Blob([csv], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -1088,7 +1722,6 @@
     link.click();
     URL.revokeObjectURL(link.href);
   }
-
   function downloadJSON() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory,null,2));
     const dlAnchor = document.createElement('a');
@@ -1151,7 +1784,6 @@
   document.getElementById("person").addEventListener("input", validateDeduct);
   document.getElementById("deductDate").addEventListener("input", validateDeduct);
   document.getElementById("deductAmount").addEventListener("input", validateDeduct);
-
   // Export Date Selection Modal Functions
   function showExportDateSelectionModal(type) {
     exportType = type;
@@ -1167,23 +1799,19 @@
     document.getElementById('exportRangeEnd').value = new Date().toISOString().split('T')[0];
     showExportOption('month'); // Default to month view
   }
-
   function hideExportDateSelectionModal() {
     document.getElementById('exportDateSelectionModal').style.display = 'none';
     exportType = '';
     exportOption = 'month';
   }
-
   function showExportOption(option) {
     exportOption = option;
     // Hide all options first
     document.getElementById('exportMonthOption').style.display = 'none';
     document.getElementById('exportWeekOption').style.display = 'none';
     document.getElementById('exportRangeOption').style.display = 'none';
-
     // Remove active class from all tabs
     document.querySelectorAll('#exportDateSelectionTabs button').forEach(btn => btn.classList.remove('active'));
-
     // Show the selected option and set active tab
     if (option === 'month') {
       document.getElementById('exportMonthOption').style.display = 'block';
@@ -1199,11 +1827,9 @@
       // No date inputs needed for 'all'
     }
   }
-
   document.getElementById('confirmExportBtn').addEventListener('click', () => {
     let startDate, endDate;
     const now = new Date();
-
     if (exportOption === 'month') {
       const monthInput = document.getElementById('exportMonth').value;
       if (!monthInput) { alert("Please select a month."); return; }
@@ -1229,11 +1855,9 @@
       endDate = new Date(); // Current date
       endDate.setDate(endDate.getDate() + 1); // Ensure all today's data is included
     }
-
     // Normalize start and end dates to start of day for consistent filtering
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
-
     if (exportType === 'csv') {
       exportToCSV(startDate, endDate);
     } else if (exportType === 'pdf') {
@@ -1243,7 +1867,15 @@
     }
     hideExportDateSelectionModal();
   });
-
+  // Add final safety checks
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ensure event handlers are attached properly
+    document.getElementById("deductBtn").addEventListener("click", function() {
+      // The check `if (!this.disabled)` is now redundant due to the check inside deductStock,
+      // but it's kept for extra safety.
+      if (!this.disabled) deductStock();
+    });
+  });
   window.onload = async () => {
     showLoader(true);
     await loadInventory();
