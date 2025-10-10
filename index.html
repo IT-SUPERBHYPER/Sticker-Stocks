@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Superb Sticker Inventory </title>
-  <link rel="icon" type="image/svg+xml" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏷️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-9c8JxqK9/Y4lS5t7VJt9F0aG2f8Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y5R5p5Y8V0Y......">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     /* ===== ULTRA HIGH-RES & EYE-POPPING THEME ===== */
     :root {
@@ -23,7 +23,6 @@
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
       --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-
       /* Ultra-Vibrant Accent Colors */
       --accent-primary: #4338ca; /* Vibrant Indigo */
       --accent-primary-hover: #3730a3;
@@ -31,13 +30,11 @@
       --accent-tertiary: #d97706; /* Vibrant Amber */
       --accent-danger: #dc2626; /* Vibrant Red */
       --accent-info: #0ea5e9; /* Vibrant Sky Blue */
-
       /* Status Colors */
       --status-out: #fecaca; /* Red-200 */
       --status-out-text: #7f1d1d; /* Red-900 */
       --status-low: #fde68a; /* Amber-200 */
       --status-low-text: #78350f; /* Amber-900 */
-
       /* Radii & Transitions */
       --radius-xs: 4px;
       --radius-sm: 6px;
@@ -48,7 +45,6 @@
       --transition-all: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       --transition-fast: all 0.2s ease-in-out;
     }
-
     /* Dark Theme Overrides */
     html.dark {
       --bg-primary: #0f172a;
@@ -57,13 +53,11 @@
       --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
       --border-color: #334155;
-
       --status-out: #7f1d1d; /* Red-900 */
       --status-out-text: #fecaca; /* Red-200 */
       --status-low: #78350f; /* Amber-900 */
       --status-low-text: #fde68a; /* Amber-200 */
     }
-
     /* ===== BASE STYLES & HIGH-RES ===== */
     * {
         box-sizing: border-box;
@@ -71,11 +65,11 @@
         padding: 0;
     }
     html {
-        font-size: 17px; /* Slightly larger base font for better readability */
+        font-size: 17px;
         scroll-behavior: smooth;
     }
     @media (min-resolution: 2dppx) {
-        html { font-size: 18px; } /* Even larger for high-DPI screens */
+        html { font-size: 18px; }
     }
     body {
         background-color: var(--bg-primary);
@@ -95,7 +89,6 @@
             radial-gradient(circle at 10% 20%, rgba(67, 56, 202, 0.15) 0%, transparent 25%),
             radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.15) 0%, transparent 25%);
     }
-
     .container {
       max-width: 1100px;
       margin: 25px auto;
@@ -140,7 +133,6 @@
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
-
     /* Animations */
     @keyframes fadeInScale {
         from { opacity: 0; transform: translateY(30px) scale(0.97); }
@@ -167,7 +159,6 @@
         0% { background-position: -1000px 0; }
         100% { background-position: 1000px 0; }
     }
-
     /* Headings */
     h1 {
       font-family: 'Montserrat', sans-serif;
@@ -210,7 +201,6 @@
         font-size: 1.3em;
         flex-shrink: 0;
     }
-
     /* Layout & Controls */
     .flex-row {
       display: flex;
@@ -220,7 +210,6 @@
       margin-bottom: 25px;
       animation: slideInFromRight 0.7s ease-out;
     }
-
     #darkToggleBtn {
       position: absolute;
       right: 20px;
@@ -247,7 +236,6 @@
     html.dark #darkToggleBtn {
         background: var(--bg-secondary);
     }
-
     /* Buttons - Eye-Popping */
     .action-btn, button, .reset-btn, .download-btn, .upload-btn {
       font-family: 'Inter', sans-serif;
@@ -292,7 +280,6 @@
         transform: none;
         box-shadow: var(--shadow-xs);
     }
-
     /* Specific Button Styles */
     button, .action-btn:not(.eye-btn, .edit-btn, .del-btn) {
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
@@ -356,7 +343,6 @@
         box-shadow: var(--shadow-lg);
         transform: translateY(-3px);
     }
-
     /* Forms - High-Res & Friendly */
     .form-pair-group {
         display: flex;
@@ -390,7 +376,7 @@
         color: var(--text-primary);
         transition: var(--transition-all);
         box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-        min-height: 50px; /* Better touch targets */
+        min-height: 50px;
     }
     .form-group input:focus, .form-group select:focus {
         outline: none;
@@ -401,7 +387,6 @@
     html.dark .form-group input, html.dark .form-group select {
         background-color: var(--bg-primary);
     }
-
     /* Table - High-Res & Friendly */
     .table-responsive {
         overflow-x: auto;
@@ -416,7 +401,7 @@
         border-collapse: separate;
         border-spacing: 0;
         background-color: var(--bg-card);
-        min-width: 800px; /* Forces horizontal scroll on small screens if needed */
+        min-width: 800px;
     }
     th {
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
@@ -478,7 +463,6 @@
         font-weight: 700;
         color: var(--accent-primary);
     }
-
     /* Modals - High-Res & Friendly with Scrollable Content */
     #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal {
       display: none;
@@ -490,7 +474,7 @@
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.4s ease-out;
-      backdrop-filter: blur(8px); /* Stronger blur */
+      backdrop-filter: blur(8px);
     }
     .modal-content {
       background-color: var(--bg-card);
@@ -498,26 +482,22 @@
       box-shadow: var(--shadow-2xl);
       width: 92%;
       max-width: 550px;
-      /* Make the modal content itself scrollable if needed */
       max-height: 90vh;
       display: flex;
       flex-direction: column;
-      position: relative; /* Needed for absolute positioning of close button */
+      position: relative;
       animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: 1px solid var(--border-color);
     }
-    /* Make the main content area inside the modal scrollable */
     .modal-content > div:not(.modal-header) {
         overflow-y: auto;
-        /* Flex-grow allows it to fill available space */
         flex-grow: 1;
-        padding: 0 20px 20px 20px; /* Add padding inside the scrollable area */
+        padding: 0 20px 20px 20px;
     }
-    /* Style the modal header if you create one, or target h3 */
     .modal-content h3 {
-        margin: 0; /* Remove default margin */
-        padding: 25px 20px 15px 20px; /* Add padding to header */
-        flex-shrink: 0; /* Prevent header from shrinking */
+        margin: 0;
+        padding: 25px 20px 15px 20px;
+        flex-shrink: 0;
         font-size: 1.8rem;
         font-weight: 800;
         color: var(--accent-primary);
@@ -530,7 +510,7 @@
         100% { opacity: 1; transform: scale(1); }
     }
     .modal-close {
-        position: absolute; /* Absolute positioning relative to .modal-content */
+        position: absolute;
         top: 18px;
         right: 18px;
         background: none;
@@ -545,7 +525,7 @@
         align-items: center;
         justify-content: center;
         transition: var(--transition-all);
-        z-index: 10; /* Ensure it's above the scrollable content */
+        z-index: 10;
     }
     .modal-close:hover {
         background-color: var(--border-color);
@@ -553,33 +533,31 @@
         transform: rotate(90deg) scale(1.1);
         box-shadow: var(--shadow-sm);
     }
-
     #usageListTable {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
-        /* Ensure the table itself doesn't cause horizontal overflow issues */
         display: block;
         max-width: 100%;
-        overflow-x: auto; /* Allow horizontal scroll for very wide tables */
+        overflow-x: auto;
     }
     #usageListTable thead, #usageListTable tbody {
         display: table;
         width: 100%;
-        table-layout: fixed; /* Can help with column width consistency */
+        table-layout: fixed;
     }
     #usageListTable th, #usageListTable td {
         padding: 14px 10px;
         text-align: center;
         border-bottom: 1px solid var(--border-color);
         font-size: 0.95rem;
-        word-wrap: break-word; /* Break long words */
+        word-wrap: break-word;
     }
     #usageListTable th {
         background-color: var(--bg-primary);
         color: var(--accent-primary);
         font-weight: 700;
-        position: sticky; /* Optional: Make header sticky if needed */
+        position: sticky;
         top: 0;
     }
     #usageListTable tr:last-child td {
@@ -591,14 +569,13 @@
     html.dark #usageListTable tr:nth-child(even) {
         background-color: rgba(255, 255, 255, 0.04);
     }
-
     /* Stats & Export Tabs */
     #statsTabs, #exportDateSelectionTabs {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin: 25px 20px 25px 20px; /* Add margin to tabs container */
-        flex-shrink: 0; /* Prevent tabs from shrinking */
+        margin: 25px 20px 25px 20px;
+        flex-shrink: 0;
     }
     #statsTabs button, #exportDateSelectionTabs button {
         background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
@@ -613,7 +590,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        white-space: nowrap; /* Prevent button text from wrapping */
+        white-space: nowrap;
     }
     #statsTabs button.active, #exportDateSelectionTabs button.active,
     #statsTabs button:hover, #exportDateSelectionTabs button:hover {
@@ -626,32 +603,30 @@
     #statsTable {
         width: 100%;
         border-collapse: collapse;
-        /* Ensure the table itself doesn't cause horizontal overflow issues */
         display: block;
         max-width: 100%;
-        overflow-x: auto; /* Allow horizontal scroll for very wide tables */
-        margin-bottom: 20px; /* Add space below the table */
+        overflow-x: auto;
+        margin-bottom: 20px;
     }
     #statsTable thead, #statsTable tbody {
         display: table;
         width: 100%;
-        table-layout: fixed; /* Can help with column width consistency */
+        table-layout: fixed;
     }
     #statsTable th, #statsTable td {
         padding: 14px 12px;
         text-align: center;
         border-bottom: 1px solid var(--border-color);
         font-size: 0.95rem;
-        word-wrap: break-word; /* Break long words */
+        word-wrap: break-word;
     }
     #statsTable th {
         background-color: var(--bg-primary);
         color: var(--accent-primary);
         font-weight: 700;
-        position: sticky; /* Optional: Make header sticky if needed */
+        position: sticky;
         top: 0;
     }
-
     /* Loader */
     #loader {
         display: none;
@@ -680,7 +655,6 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
-
     /* Login Modal */
     #loginModal {
         position: fixed;
@@ -750,13 +724,11 @@
         25% { transform: translateX(-7px); }
         75% { transform: translateX(7px); }
     }
-
     /* Utility Classes */
     .text-center { text-align: center; }
     .mt-10 { margin-top: 10px; }
     .mb-10 { margin-bottom: 10px; }
     .ml-5 { margin-left: 5px; }
-
     /* Responsive - Mobile Friendly */
     @media (max-width: 1100px) {
         .container { max-width: 95%; }
@@ -810,10 +782,10 @@
             font-size: 1.3em;
         }
         .modal-content {
-            padding: 0; /* Remove padding, let internal elements handle it */
+            padding: 0;
             width: 95%;
             max-width: none;
-            max-height: 95vh; /* Slightly larger on mobile */
+            max-height: 95vh;
         }
         .modal-content h3 {
             font-size: 1.6rem;
@@ -832,7 +804,7 @@
             font-size: 0.85rem;
         }
         #statsTabs, #exportDateSelectionTabs {
-             margin: 20px 15px; /* Adjust margin for mobile */
+             margin: 20px 15px;
         }
         #statsTabs button, #exportDateSelectionTabs button {
              padding: 8px 12px;
@@ -888,8 +860,8 @@
              font-size: 0.8rem;
         }
         #statsTabs, #exportDateSelectionTabs {
-             margin: 15px 10px; /* Further adjust margin for small mobile */
-             gap: 6px; /* Reduce gap between tabs */
+             margin: 15px 10px;
+             gap: 6px;
         }
         #statsTabs button, #exportDateSelectionTabs button {
              padding: 7px 10px;
@@ -908,21 +880,17 @@
     <div id="loginError"><i class="fas fa-exclamation-triangle"></i> Incorrect password. Please try again.</div>
   </form>
 </div>
-
 <!-- Dark Mode Toggle -->
 <button id="darkToggleBtn" title="Toggle Theme" aria-label="Toggle Dark/Light Mode">
     <i class="fas fa-moon"></i>
 </button>
-
 <!-- Main Container -->
 <div class="container">
   <h1><i class="fas fa-tags"></i> Superb Sticker Inventory </h1>
-
   <!-- Loader -->
   <div id="loader">
     <div class="loader-spinner"></div>
   </div>
-
   <!-- Action Buttons -->
   <div class="flex-row">
     <button onclick="showExportDateSelectionModal('csv')" title="Export Detailed Report (CSV)"><i class="fas fa-file-csv"></i> CSV</button>
@@ -934,7 +902,6 @@
     <button onclick="showStatsModal()" title="View Usage Statistics"><i class="fas fa-chart-pie"></i> Stats</button>
     <input type="file" id="fileInput" accept=".json,.csv" style="display:none" onchange="uploadJSON(event)">
   </div>
-
   <!-- Add Sticker Form -->
   <h2><i class="fas fa-plus-circle"></i> Add New Sticker</h2>
   <form id="addStickerForm" onsubmit="event.preventDefault();">
@@ -976,7 +943,6 @@
     </div>
     <button type="button" id="addStickerBtn" onclick="addSticker()" disabled><i class="fas fa-plus"></i> Add Sticker</button>
   </form>
-
   <!-- Deduct Sticker Form -->
   <h2><i class="fas fa-minus-circle"></i> Deduct Sticker Usage</h2>
   <form onsubmit="event.preventDefault();">
@@ -1012,10 +978,8 @@
         <input type="number" id="deductAmount" min="1" placeholder="e.g., 50">
       </div>
     </div>
-    <!-- Removed inline onclick to attach via JS -->
     <button type="button" id="deductBtn" disabled><i class="fas fa-minus"></i> Deduct Stock</button>
   </form>
-
   <!-- Inventory Report Table -->
   <div class="table-responsive">
     <table id="reportTable">
@@ -1038,14 +1002,12 @@
     </table>
   </div>
 </div> <!-- End .container -->
-
 <!-- Modals -->
-<!-- Add Stock Modal -->
 <div id="addStockModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideAddStockModal()" aria-label="Close Add Stock Modal">&times;</button>
     <h3><i class="fas fa-plus-square"></i> Add Stock</h3>
-    <div> <!-- Scrollable content wrapper -->
+    <div>
         <p id="addStockStickerName" style="font-weight:600; margin: 15px 0; font-size: 1.2rem;"></p>
         <div class="form-group">
             <label for="addStockAmount"><i class="fas fa-sort-numeric-up"></i> Amount to Add</label>
@@ -1058,8 +1020,6 @@
     </div>
   </div>
 </div>
-
-<!-- Usage Log Modal -->
 <div id="usageModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideUsageModal()" aria-label="Close Usage Log Modal">&times;</button>
@@ -1069,8 +1029,6 @@
     </div>
   </div>
 </div>
-
-<!-- Statistics Modal -->
 <div id="statsModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideStatsModal()" aria-label="Close Statistics Modal">&times;</button>
@@ -1087,8 +1045,6 @@
     </div>
   </div>
 </div>
-
-<!-- Export Date Selection Modal -->
 <div id="exportDateSelectionModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideExportDateSelectionModal()" aria-label="Close Export Modal">&times;</button>
@@ -1117,16 +1073,39 @@
         <input type="date" id="exportRangeEnd" style="width: 100%; padding: 12px; margin-top: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
       </div>
     </div>
-    <div style="display: flex; gap: 12px; margin: 30px 20px 20px 20px;"> <!-- Add margin to buttons container -->
+    <div style="display: flex; gap: 12px; margin: 30px 20px 20px 20px;">
       <button id="confirmExportBtn" style="flex:1;"><i class="fas fa-file-export"></i> Export</button>
       <button onclick="hideExportDateSelectionModal()" class="action-btn del-btn" style="flex:1;"><i class="fas fa-times"></i> Cancel</button>
     </div>
   </div>
 </div>
 
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDak-WfWfFGZG4TCrIsN0fS-2UFkKmmx8M",
+    authDomain: "sticker-stocks.firebaseapp.com",
+    projectId: "sticker-stocks",
+    storageBucket: "sticker-stocks.firebasestorage.app",
+    messagingSenderId: "641798479255",
+    appId: "1:641798479255:web:ccb1fc59f930cc934e78d2",
+    measurementId: "G-7TDVLLRFCV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Expose to global scope for non-module script
+  window.firebaseApp = app;
+  window.firestore = { db, doc, getDoc, setDoc };
+</script>
+
 <!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha256-2Un8l94y7ZN5zJFzgy4jZbBfZC1Njyd6X0K+nA1m4=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js" integrity="sha256-XP98qXjvXqmdc4zJNu5GG3lQ0D8I3QwDBE0wA4aOOY=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
   // --- USER/ADMIN CONTROL ---
   let userRole = null;
@@ -1156,10 +1135,6 @@
         const el = document.getElementById(id);
         if (el) el.disabled = !isAdmin;
     });
-    const addStickerHeading = document.getElementById("addStickerHeading");
-    const addStickerForm = document.getElementById("addStickerForm");
-    if (addStickerHeading) addStickerHeading.style.display = isAdmin ? "" : "none";
-    if (addStickerForm) addStickerForm.style.display = isAdmin ? "" : "none";
     const ths = document.querySelectorAll("#reportTable th");
     if (ths.length > 8 && ths[8]) ths[8].style.display = isAdmin ? "" : "none";
     document.querySelectorAll("#reportTable tbody tr").forEach(row => {
@@ -1170,7 +1145,6 @@
       }
     });
   }
-
   // --- DARK MODE ---
   function setDark(dark) {
     if(dark) {
@@ -1194,11 +1168,7 @@
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark(saved === "1" || (!saved && prefersDark));
   })();
-
-  // ====== JSONBin.io CONFIG ======
-  const JSONBIN_BIN_ID = '68667cf68a456b7966baa845';
-  const JSONBIN_API_KEY = '$2a$10$bB1IBj9WSxtFv8ueIC2FVuD60I3VYAsTardsW0hv4AiIU.KY77exu';
-  const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+  // ====== FIREBASE DATA LAYER ======
   let inventory = [];
   let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
   let exportType = '';
@@ -1211,15 +1181,11 @@
   async function loadInventory() {
     showLoader(true);
     try {
-      const response = await fetch(`${JSONBIN_URL}/latest`, {
-        method: 'GET',
-        headers: { 'X-Master-Key': JSONBIN_API_KEY }
-      });
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      inventory = data.record || [];
+      const docRef = window.firestore.doc(window.firestore.db, "inventory", "main");
+      const docSnap = await window.firestore.getDoc(docRef);
+      inventory = docSnap.exists() ? docSnap.data().items || [] : [];
     } catch (err) {
-      console.error("Load error:", err);
+      console.error("Load from Firebase failed:", err);
       inventory = [];
       alert('Could not load inventory data. Starting fresh.');
     } finally {
@@ -1230,26 +1196,19 @@
   async function saveInventory() {
     showLoader(true);
     try {
-      const response = await fetch(JSONBIN_URL, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': JSONBIN_API_KEY,
-        },
-        body: JSON.stringify(inventory)
-      });
-      if (!response.ok) throw new Error('Could not save to JSONBin');
+      const docRef = window.firestore.doc(window.firestore.db, "inventory", "main");
+      await window.firestore.setDoc(docRef, { items: inventory });
     } catch (err) {
-      console.error("Save error:", err);
+      console.error("Save to Firebase failed:", err);
       alert('Could not save inventory data.');
     } finally {
       showLoader(false);
     }
   }
 
-  // --- INVENTORY FUNCTIONS ---
+  // --- INVENTORY FUNCTIONS (UNCHANGED) ---
   function addSticker() {
-     const name = document.getElementById("stickerName").value.trim();
+    const name = document.getElementById("stickerName").value.trim();
     const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
     const cost = parseFloat(document.getElementById("stickerCost").value) || 0;
@@ -1269,17 +1228,15 @@
       clearStickerForm();
     });
   }
-
   function clearStickerForm() {
-     document.getElementById("stickerName").value = "";
+    document.getElementById("stickerName").value = "";
     document.getElementById("stickerLabel").value = "";
     document.getElementById("initialStock").value = "";
     document.getElementById("stickerCost").value = "";
     document.getElementById("addStickerBtn").disabled = true;
   }
-
   function editSticker(i) {
-     editIndex = i;
+    editIndex = i;
     let s = inventory[i];
     document.getElementById("stickerName").value = s.name;
     document.getElementById("stickerLabel").value = s.label || "";
@@ -1289,9 +1246,8 @@
     document.getElementById("addStickerBtn").onclick = updateSticker;
     document.getElementById("addStickerBtn").disabled = false;
   }
-
   function updateSticker() {
-     if (editIndex < 0) return;
+    if (editIndex < 0) return;
     const name = document.getElementById("stickerName").value.trim();
     const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
@@ -1316,25 +1272,18 @@
       clearStickerForm();
     });
   }
-
   function deleteSticker(i) {
-     if (!confirm("⚠️ Delete sticker and ALL usage records?")) return;
+    if (!confirm("⚠️ Delete sticker and ALL usage records?")) return;
     inventory.splice(i, 1);
     saveInventory().then(() => {
       updateSelectors();
       updateReport();
     });
   }
-
-  // --- FIXED deductStock function to prevent duplication ---
   function deductStock() {
     const deductBtn = document.getElementById("deductBtn");
-    if (!deductBtn || deductBtn.disabled) {
-        console.log("Deduct button is already processing or disabled.");
-        return;
-    }
+    if (!deductBtn || deductBtn.disabled) return;
     deductBtn.disabled = true;
-
     if (inventory.length === 0) {
       alert("No stickers in inventory.");
       deductBtn.disabled = false;
@@ -1345,26 +1294,21 @@
     const person = document.getElementById("person").value.trim();
     const date = document.getElementById("deductDate").value;
     const amount = parseInt(document.getElementById("deductAmount").value);
-
     if (isNaN(index) || index < 0 || index >= inventory.length || !department || !person || !date || isNaN(amount) || amount <= 0) {
       alert("Please fill in all fields correctly.");
       deductBtn.disabled = false;
       return;
     }
-
     const item = inventory[index];
     if (amount > item.remainingStock) {
       alert(`Not enough stock. Only ${item.remainingStock} left.`);
       deductBtn.disabled = false;
       return;
     }
-
     const now = new Date();
     const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-
     item.remainingStock -= amount;
     item.usage.push({ department, amount, person, date, time: timeString });
-
     saveInventory().then(() => {
       updateReport();
       document.getElementById("selectSticker").value = "";
@@ -1372,7 +1316,6 @@
       document.getElementById("person").value = "";
       document.getElementById("deductDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("deductAmount").value = "";
-      console.log(`Deducted ${amount} of ${item.label || item.name} for ${person} (${department}) on ${date} at ${timeString}`);
     }).catch(error => {
         console.error("Error saving deduction:", error);
         alert("An error occurred. The deduction might not have been saved.");
@@ -1383,9 +1326,8 @@
         }
     });
   }
-
   function updateSelectors() {
-     const select = document.getElementById("selectSticker");
+    const select = document.getElementById("selectSticker");
     select.innerHTML = "";
     let placeholder = document.createElement("option");
     placeholder.value = "";
@@ -1399,9 +1341,8 @@
     });
     applyRolePermissions();
   }
-
   function updateReport() {
-     const reportTableBody = document.querySelector("#reportTable tbody");
+    const reportTableBody = document.querySelector("#reportTable tbody");
     reportTableBody.innerHTML = "";
     if (inventory.length === 0) {
       reportTableBody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 40px; font-size: 1.2rem;">No sticker data available. Please add a new sticker.</td></tr>`;
@@ -1427,12 +1368,10 @@
         lastUsedPerson = lastUsage.person;
         lastUsedTime = lastUsage.time || "N/A";
       }
-
       let rowClass = "";
       if (item.remainingStock === 0) rowClass = "out-stock";
       else if (item.remainingStock <= 5) rowClass = "low-stock";
       if (rowClass) row.classList.add(rowClass);
-
       row.innerHTML = `
         <td style="font-weight: 500;">${item.label || item.name || 'N/A'}</td>
         <td>${totalUsed}</td>
@@ -1452,22 +1391,19 @@
     });
     applyRolePermissions();
   }
-
   function showAddStockModal(i) {
-     addStockIndex = i;
+    addStockIndex = i;
     document.getElementById('addStockStickerName').textContent = inventory[i].label || inventory[i].name;
     document.getElementById('addStockAmount').value = "";
     document.getElementById('addStockModal').style.display = 'flex';
     setTimeout(()=>{document.getElementById('addStockAmount').focus()},250);
   }
-
   function hideAddStockModal() {
-     document.getElementById('addStockModal').style.display = 'none';
+    document.getElementById('addStockModal').style.display = 'none';
     addStockIndex = -1;
   }
-
   function addStockToSticker() {
-     const amt = parseInt(document.getElementById('addStockAmount').value);
+    const amt = parseInt(document.getElementById('addStockAmount').value);
     if (isNaN(amt) || amt <= 0) { alert("Enter a valid amount."); return; }
     inventory[addStockIndex].totalStock += amt;
     inventory[addStockIndex].remainingStock += amt;
@@ -1476,9 +1412,8 @@
         hideAddStockModal();
     });
   }
-
   function showUsageModal(idx) {
-     usageModalIndex = idx;
+    usageModalIndex = idx;
     const sticker = inventory[idx];
     let html = "";
     if (sticker.usage && sticker.usage.length) {
@@ -1505,14 +1440,12 @@
     document.getElementById('usageListContent').innerHTML = html;
     document.getElementById('usageModal').style.display = 'flex';
   }
-
   function hideUsageModal() {
-     document.getElementById('usageModal').style.display = 'none';
+    document.getElementById('usageModal').style.display = 'none';
     usageModalIndex = -1;
   }
-
   function deleteUsage(stickerIndex, date, time, person, department, amount) {
-     if (!confirm("Delete this usage record?")) return;
+    if (!confirm("Delete this usage record?")) return;
     if (userRole !== "admin") {
       alert("Only admins can delete usage records.");
       return;
@@ -1534,18 +1467,15 @@
       });
     }
   }
-
   function showStatsModal() {
-     document.getElementById('statsModal').style.display = 'flex';
+    document.getElementById('statsModal').style.display = 'flex';
     showStatsTab('daily');
   }
-
   function hideStatsModal() {
-     document.getElementById('statsModal').style.display = 'none';
+    document.getElementById('statsModal').style.display = 'none';
   }
-
   function showStatsTab(tab) {
-     ['daily', 'weekly', 'monthly', 'last-month', 'last-week'].forEach(x => document.getElementById('tab-' + x).classList.remove('active'));
+    ['daily', 'weekly', 'monthly', 'last-month', 'last-week'].forEach(x => document.getElementById('tab-' + x).classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     let now = new Date();
     let startDate, endDate;
@@ -1567,13 +1497,11 @@
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1 - 7);
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
     }
-
     let departmentStats = {};
     let detailedDepartmentStats = {};
     let labelUsedStats = {};
     let totalUsed = 0;
     let totalCost = 0;
-
     inventory.forEach(item => {
       item.usage.forEach(u => {
         let d = new Date(u.date);
@@ -1592,11 +1520,9 @@
         }
       });
     });
-
     let html = `<h4 style="margin-bottom:20px; font-size: 1.4rem;"><i class="fas fa-chart-bar"></i> Department Usage Summary</h4><table id="statsTable"><thead>
         <tr><th>Department</th><th>Used</th>${userRole === "admin" ? '<th>Total Cost</th>' : ''}</tr>
         </thead><tbody>`;
-
     const sortedDepartments = Object.keys(departmentStats).sort();
     if (sortedDepartments.length === 0) {
       html += `<tr><td colspan="${userRole === "admin" ? "3" : "2"}" class="text-center" style="padding: 25px;">No usage found for this period.</td></tr>`;
@@ -1616,7 +1542,6 @@
       </tr>`;
     }
     html += "</tbody></table>";
-
     if (Object.keys(detailedDepartmentStats).length > 0) {
       html += `<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);"><h4 style="margin-bottom:15px; font-size: 1.3rem;"><i class="fas fa-list"></i> Labels Used by Department</h4>`;
       sortedDepartments.forEach(dept => {
@@ -1631,7 +1556,6 @@
       });
       html += `</div>`;
     }
-
     const sortedLabels = Object.keys(labelUsedStats).sort();
     if (sortedLabels.length > 0) {
       html += `<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);"><h4 style="margin-bottom:15px; font-size: 1.3rem;"><i class="fas fa-tags"></i> Total Labels Used</h4><ul style="list-style-type: none; padding-left: 20px;">`;
@@ -1642,8 +1566,7 @@
     }
     document.getElementById('statsContent').innerHTML = html;
   }
-
-  // --- EXPORT FUNCTIONS ---
+  // --- EXPORT FUNCTIONS (UNCHANGED) ---
   function getFilteredUsageData(startDate, endDate) {
     const filteredData = [];
     inventory.forEach(item => {
@@ -1730,7 +1653,7 @@
       didParseCell: function(data) {
         if (data.row.index === rows.length - 1) {
           data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.fillColor = [224, 231, 255]; // Light indigo for total row
+          data.cell.styles.fillColor = [224, 231, 255];
         }
       }
     });
@@ -1767,9 +1690,8 @@
     link.click();
     URL.revokeObjectURL(link.href);
   }
-
   function downloadJSON() {
-     const dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
+    const dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
     const dlAnchor = document.createElement('a');
     dlAnchor.setAttribute("href", dataStr);
     dlAnchor.setAttribute("download", "sticker_inventory_backup.json");
@@ -1777,9 +1699,8 @@
     dlAnchor.click();
     document.body.removeChild(dlAnchor);
   }
-
   function uploadJSON(evt) {
-     let file = evt.target.files[0];
+    let file = evt.target.files[0];
     if (!file) return;
     let reader = new FileReader();
     reader.onload = function(e) {
@@ -1800,34 +1721,30 @@
     reader.readAsText(file);
     evt.target.value = "";
   }
-
   function resetAllData() {
-     if (!confirm("⚠️ DELETE ALL data permanently? This cannot be undone.")) return;
+    if (!confirm("⚠️ DELETE ALL data permanently? This cannot be undone.")) return;
     inventory = [];
     saveInventory().then(() => {
       updateSelectors();
       updateReport();
     });
   }
-
   // --- FORM VALIDATION ---
   function validateAddSticker() {
-     const name = document.getElementById("stickerName").value.trim();
+    const name = document.getElementById("stickerName").value.trim();
     const label = document.getElementById("stickerLabel").value;
     const stock = parseInt(document.getElementById("initialStock").value);
     const cost = parseFloat(document.getElementById("stickerCost").value);
     document.getElementById("addStickerBtn").disabled = !(name && label && !isNaN(stock) && stock >= 0 && !isNaN(cost) && cost >= 0);
   }
-
   function validateDeduct() {
-     const stickerIdx = document.getElementById("selectSticker").value;
+    const stickerIdx = document.getElementById("selectSticker").value;
     const dep = document.getElementById("department").value;
     const per = document.getElementById("person").value.trim();
     const date = document.getElementById("deductDate").value;
     const amt = parseInt(document.getElementById("deductAmount").value);
     document.getElementById("deductBtn").disabled = !(stickerIdx !== "" && dep && per && date && !isNaN(amt) && amt > 0 && inventory.length > 0);
   }
-
   ["stickerName", "stickerLabel", "initialStock", "stickerCost"].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -1842,10 +1759,9 @@
         el.addEventListener("change", validateDeduct);
     }
   });
-
   // --- MODAL CONTROLLERS ---
   function showExportDateSelectionModal(type) {
-     exportType = type;
+    exportType = type;
     document.getElementById('exportDateSelectionModal').style.display = 'flex';
     const today = new Date();
     const year = today.getFullYear();
@@ -1858,20 +1774,17 @@
     document.getElementById('exportRangeEnd').value = todayStr;
     showExportOption('month');
   }
-
   function hideExportDateSelectionModal() {
-     document.getElementById('exportDateSelectionModal').style.display = 'none';
+    document.getElementById('exportDateSelectionModal').style.display = 'none';
     exportType = '';
     exportOption = 'month';
   }
-
   function showExportOption(option) {
-     exportOption = option;
+    exportOption = option;
     document.getElementById('exportMonthOption').style.display = 'none';
     document.getElementById('exportWeekOption').style.display = 'none';
     document.getElementById('exportRangeOption').style.display = 'none';
     document.querySelectorAll('#exportDateSelectionTabs button').forEach(btn => btn.classList.remove('active'));
-
     if (option === 'month') {
       document.getElementById('exportMonthOption').style.display = 'block';
       document.getElementById('export-tab-month').classList.add('active');
@@ -1885,9 +1798,8 @@
       document.getElementById('export-tab-all').classList.add('active');
     }
   }
-
   document.getElementById('confirmExportBtn').addEventListener('click', () => {
-     let startDate, endDate;
+    let startDate, endDate;
     if (exportOption === 'month') {
       const monthInput = document.getElementById('exportMonth').value;
       if (!monthInput) { alert("Please select a month."); return; }
@@ -1913,10 +1825,8 @@
       endDate = new Date();
       endDate.setDate(endDate.getDate() + 1);
     }
-
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
-
     if (exportType === 'csv') {
       exportToCSV(startDate, endDate);
     } else if (exportType === 'pdf') {
@@ -1926,7 +1836,6 @@
     }
     hideExportDateSelectionModal();
   });
-
   // --- INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', function() {
     const deductBtn = document.getElementById("deductBtn");
@@ -1934,11 +1843,8 @@
         deductBtn.addEventListener("click", function() {
             if (!this.disabled) deductStock();
         });
-    } else {
-        console.error("Deduct button not found in DOMContentLoaded");
     }
   });
-
   window.onload = async () => {
     showLoader(true);
     await loadInventory();
