@@ -237,7 +237,7 @@
         background: var(--bg-secondary);
     }
     /* Buttons - Eye-Popping */
-    .action-btn, button, .reset-btn, .download-btn, .upload-btn {
+    .action-btn, button, .reset-btn, .download-btn, .upload-btn, .audit-btn {
       font-family: 'Inter', sans-serif;
       font-weight: 600;
       border-radius: var(--radius-md);
@@ -340,6 +340,16 @@
     }
     .upload-btn:hover {
         background: linear-gradient(135deg, #b45309, var(--accent-tertiary));
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
+    }
+    .audit-btn {
+        background: linear-gradient(135deg, var(--accent-info), #0284c7);
+        color: white;
+        border: 1px solid #0284c7;
+    }
+    .audit-btn:hover {
+        background: linear-gradient(135deg, #0284c7, var(--accent-info));
         box-shadow: var(--shadow-lg);
         transform: translateY(-3px);
     }
@@ -464,7 +474,7 @@
         color: var(--accent-primary);
     }
     /* Modals - High-Res & Friendly with Scrollable Content */
-    #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal {
+    #addStockModal, #usageModal, #statsModal, #exportDateSelectionModal, #transactionHistoryModal {
       display: none;
       position: fixed;
       top: 0; left: 0;
@@ -481,7 +491,7 @@
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-2xl);
       width: 92%;
-      max-width: 550px;
+      max-width: 700px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
@@ -533,7 +543,7 @@
         transform: rotate(90deg) scale(1.1);
         box-shadow: var(--shadow-sm);
     }
-    #usageListTable {
+    #usageListTable, #transactionTable {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
@@ -541,32 +551,37 @@
         max-width: 100%;
         overflow-x: auto;
     }
-    #usageListTable thead, #usageListTable tbody {
+    #usageListTable thead, #usageListTable tbody,
+    #transactionTable thead, #transactionTable tbody {
         display: table;
         width: 100%;
         table-layout: fixed;
     }
-    #usageListTable th, #usageListTable td {
+    #usageListTable th, #usageListTable td,
+    #transactionTable th, #transactionTable td {
         padding: 14px 10px;
         text-align: center;
         border-bottom: 1px solid var(--border-color);
         font-size: 0.95rem;
         word-wrap: break-word;
     }
-    #usageListTable th {
+    #usageListTable th, #transactionTable th {
         background-color: var(--bg-primary);
         color: var(--accent-primary);
         font-weight: 700;
         position: sticky;
         top: 0;
     }
-    #usageListTable tr:last-child td {
+    #usageListTable tr:last-child td,
+    #transactionTable tr:last-child td {
         border-bottom: none;
     }
-    #usageListTable tr:nth-child(even) {
+    #usageListTable tr:nth-child(even),
+    #transactionTable tr:nth-child(even) {
         background-color: rgba(0, 0, 0, 0.02);
     }
-    html.dark #usageListTable tr:nth-child(even) {
+    html.dark #usageListTable tr:nth-child(even),
+    html.dark #transactionTable tr:nth-child(even) {
         background-color: rgba(255, 255, 255, 0.04);
     }
     /* Stats & Export Tabs */
@@ -765,7 +780,7 @@
             gap: 8px;
             justify-content: center;
         }
-        .action-btn, button, .reset-btn, .download-btn, .upload-btn {
+        .action-btn, button, .reset-btn, .download-btn, .upload-btn, .audit-btn {
             padding: 10px 14px;
             font-size: 0.95rem;
             gap: 6px;
@@ -799,7 +814,8 @@
              font-size: 1.8rem;
         }
         #usageListTable th, #usageListTable td,
-        #statsTable th, #statsTable td {
+        #statsTable th, #statsTable td,
+        #transactionTable th, #transactionTable td {
             padding: 10px 6px;
             font-size: 0.85rem;
         }
@@ -835,7 +851,7 @@
             padding: 10px 5px;
             font-size: 0.82rem;
         }
-        .action-btn, button, .reset-btn, .download-btn, .upload-btn {
+        .action-btn, button, .reset-btn, .download-btn, .upload-btn, .audit-btn {
             padding: 9px 12px;
             font-size: 0.9rem;
         }
@@ -855,7 +871,8 @@
              font-size: 1.7rem;
         }
         #usageListTable th, #usageListTable td,
-        #statsTable th, #statsTable td {
+        #statsTable th, #statsTable td,
+        #transactionTable th, #transactionTable td {
              padding: 8px 4px;
              font-size: 0.8rem;
         }
@@ -899,6 +916,7 @@
     <button class="download-btn" onclick="downloadJSON()" title="Backup Data Locally"><i class="fas fa-download"></i> Backup</button>
     <button class="upload-btn" onclick="document.getElementById('fileInput').click()" title="Restore Data from Backup"><i class="fas fa-upload"></i> Restore</button>
     <button class="reset-btn" onclick="resetAllData()" title="⚠️ Delete All Data Permanently"><i class="fas fa-trash-alt"></i> Reset</button>
+    <button class="audit-btn admin-only" onclick="showTransactionHistoryModal()" title="View Full Transaction Log"><i class="fas fa-clipboard-list"></i> Audit Log</button>
     <button onclick="showStatsModal()" title="View Usage Statistics"><i class="fas fa-chart-pie"></i> Stats</button>
     <input type="file" id="fileInput" accept=".json,.csv" style="display:none" onchange="uploadJSON(event)">
   </div>
@@ -1003,6 +1021,7 @@
     </table>
   </div>
 </div> <!-- End .container -->
+
 <!-- Modals -->
 <div id="addStockModal">
   <div class="modal-content">
@@ -1029,6 +1048,7 @@
     </div>
   </div>
 </div>
+
 <div id="usageModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideUsageModal()" aria-label="Close Usage Log Modal">&times;</button>
@@ -1038,6 +1058,7 @@
     </div>
   </div>
 </div>
+
 <div id="statsModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideStatsModal()" aria-label="Close Statistics Modal">&times;</button>
@@ -1054,6 +1075,7 @@
     </div>
   </div>
 </div>
+
 <div id="exportDateSelectionModal">
   <div class="modal-content">
     <button class="modal-close" onclick="hideExportDateSelectionModal()" aria-label="Close Export Modal">&times;</button>
@@ -1088,6 +1110,42 @@
     </div>
   </div>
 </div>
+
+<!-- Transaction History Modal -->
+<div id="transactionHistoryModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="hideTransactionHistoryModal()" aria-label="Close Transaction Log Modal">&times;</button>
+    <h3><i class="fas fa-clipboard-list"></i> Transaction History (Audit Log)</h3>
+    
+    <!-- Date Filter -->
+    <div style="margin: 20px 20px 0;">
+      <div class="form-group" style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 150px;">
+          <label for="txStartDate"><i class="fas fa-calendar-start"></i> Start Date</label>
+          <input type="date" id="txStartDate" style="width: 100%;">
+        </div>
+        <div style="flex: 1; min-width: 150px;">
+          <label for="txEndDate"><i class="fas fa-calendar-end"></i> End Date</label>
+          <input type="date" id="txEndDate" style="width: 100%;">
+        </div>
+        <div style="display: flex; align-items: end;">
+          <button class="action-btn" onclick="renderTransactionHistory()" style="height: 48px; padding: 0 16px;"><i class="fas fa-filter"></i> Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Button -->
+    <div style="margin: 15px 20px 0; display: flex; justify-content: flex-end;">
+      <button class="download-btn" onclick="exportTransactionHistoryCSV()" title="Export Audit Log to CSV"><i class="fas fa-file-csv"></i> Export CSV</button>
+    </div>
+
+    <!-- Transaction Table -->
+    <div id="transactionHistoryContent" style="margin-top: 20px; max-height: 50vh; overflow-y: auto;">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
@@ -1678,52 +1736,66 @@
     document.getElementById('statsContent').innerHTML = html;
   }
   // --- EXPORT FUNCTIONS ---
-  function getFilteredUsageData(startDate, endDate) {
+  function getFilteredTransactions(startDate, endDate) {
     const filteredData = [];
     inventory.forEach(item => {
-      item.usage.forEach(u => {
-        let usageDate = new Date(u.date);
-        usageDate.setHours(0, 0, 0, 0);
-        if (usageDate >= startDate && usageDate < endDate) {
+      item.transactions.forEach(tx => {
+        let txDate = new Date(tx.date);
+        txDate.setHours(0, 0, 0, 0);
+        if (txDate >= startDate && txDate < endDate) {
           filteredData.push({
             stickerName: item.label || item.name || '',
-            department: u.department,
-            person: u.person,
-            date: u.date,
-            amount: u.amount,
-            costPerSticker: item.costPerSticker || 0,
-            time: u.time
+            type: tx.type,
+            amount: tx.amount,
+            balance: tx.balance,
+            date: tx.date,
+            time: tx.time,
+            person: tx.person,
+            invoice: tx.invoice || '',
+            department: tx.department || '',
+            costPerSticker: item.costPerSticker || 0
           });
         }
       });
     });
-    return filteredData;
+    // Sort by date/time descending
+    return filteredData.sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}`);
+      const dateB = new Date(`${b.date}T${b.time}`);
+      return dateB - dateA;
+    });
   }
   function exportToCSV(startDate, endDate) {
-    const dataToExport = getFilteredUsageData(startDate, endDate);
+    const dataToExport = getFilteredTransactions(startDate, endDate);
     if (dataToExport.length === 0) {
       alert("No data found for the selected period.");
       return;
     }
-    let totalAmount = 0;
+    let totalAmountAdded = 0;
+    let totalAmountDeducted = 0;
     let totalOverallCost = 0;
-    let csv = "Sticker Label,Date,Time,Department,Person,Amount,Cost Each,Total Cost\r\n";
+    let csv = "Sticker Label,Date,Time,Type,Amount,Balance After,Person,Invoice,Department,Cost Each,Total Cost\r\n";
     dataToExport.forEach(row => {
-      const totalCost = row.amount * row.costPerSticker;
-      csv += `"${row.stickerName}",${row.date},${row.time || ''},"${row.department.charAt(0).toUpperCase() + row.department.slice(1)}","${row.person}",${row.amount},R${row.costPerSticker.toFixed(2)},R${totalCost.toFixed(2)}\r\n`;
-      totalAmount += row.amount;
-      totalOverallCost += totalCost;
+      const isAdd = row.type === "add";
+      const totalCost = isAdd ? row.amount * row.costPerSticker : 0;
+      csv += `"${row.stickerName}",${row.date},${row.time || ''},"${row.type.toUpperCase()}","${row.amount}","${row.balance}","${row.person}","${row.invoice}","${row.department}","R${row.costPerSticker.toFixed(2)}","R${totalCost.toFixed(2)}"\r\n`;
+      if (isAdd) {
+        totalAmountAdded += row.amount;
+        totalOverallCost += totalCost;
+      } else {
+        totalAmountDeducted += row.amount;
+      }
     });
-    csv += `\r\nTotal,,,,,,${totalAmount},R${totalOverallCost.toFixed(2)}\r\n`;
+    csv += `\r\nTotals,,,,${totalAmountAdded - totalAmountDeducted},${dataToExport.length > 0 ? dataToExport[0].balance : 0},,,,${totalAmountAdded},${totalOverallCost.toFixed(2)}\r\n`;
     const blob = new Blob([csv], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.csv`;
+    link.download = `sticker_audit_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
   }
   function exportToPDF(startDate, endDate) {
-    const dataToExport = getFilteredUsageData(startDate, endDate);
+    const dataToExport = getFilteredTransactions(startDate, endDate);
     if (dataToExport.length === 0) {
       alert("No data found for the selected period.");
       return;
@@ -1731,44 +1803,65 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.setFontSize(18);
-    doc.text(`Sticker Usage Report`, 14, 15);
+    doc.text(`Sticker Audit Report`, 14, 15);
     doc.setFontSize(12);
     doc.text(`Period: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`, 14, 25);
-    let totalAmount = 0;
+    let totalAmountAdded = 0;
+    let totalAmountDeducted = 0;
     let totalOverallCost = 0;
     const rows = dataToExport.map(row => {
-      const totalCost = row.amount * row.costPerSticker;
-      totalAmount += row.amount;
-      totalOverallCost += totalCost;
+      const isAdd = row.type === "add";
+      const totalCost = isAdd ? row.amount * row.costPerSticker : 0;
+      if (isAdd) {
+        totalAmountAdded += row.amount;
+        totalOverallCost += totalCost;
+      } else {
+        totalAmountDeducted += row.amount;
+      }
       return [
         row.stickerName,
         row.date,
         row.time || '',
-        row.department.charAt(0).toUpperCase() + row.department.slice(1),
-        row.person,
+        row.type.toUpperCase(),
         row.amount.toString(),
+        row.balance.toString(),
+        row.person,
+        row.invoice || '',
+        row.department || '',
         "R" + row.costPerSticker.toFixed(2),
         "R" + totalCost.toFixed(2)
       ];
     });
-    rows.push(
-      ["", "", "", "", "Total", totalAmount.toString(), "", `R${totalOverallCost.toFixed(2)}`]
-    );
     doc.autoTable({
-      head: [["Sticker Label", "Date", "Time", "Department", "Person", "Amount", "Cost Each", "Total Cost"]],
+      head: [["Sticker Label", "Date", "Time", "Type", "Amt", "Balance", "Person", "Invoice", "Dept", "Cost Each", "Total Cost"]],
       body: rows,
       startY: 35,
-      styles: { fontSize: 9, cellPadding: 3 },
+      styles: { fontSize: 7, cellPadding: 2 },
       headStyles: { fillColor: [67, 56, 202], textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [248, 250, 252] },
-      didParseCell: function(data) {
-        if (data.row.index === rows.length - 1) {
-          data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.fillColor = [224, 231, 255];
-        }
+      columnStyles: {
+        0: { cellWidth: 30 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 15 },
+        3: { cellWidth: 18 },
+        4: { cellWidth: 15 },
+        5: { cellWidth: 18 },
+        6: { cellWidth: 20 },
+        7: { cellWidth: 25 },
+        8: { cellWidth: 20 },
+        9: { cellWidth: 20 },
+        10: { cellWidth: 20 }
+      },
+      didDrawPage: function (data) {
+        // Footer with totals
+        const finalY = data.cursor.y + 10;
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.text(`Summary: Added ${totalAmountAdded}, Deducted ${totalAmountDeducted}, Net Change: ${totalAmountAdded - totalAmountDeducted}`, 14, finalY);
+        doc.text(`Total Cost (Additions): R${totalOverallCost.toFixed(2)}`, 14, finalY + 5);
       }
     });
-    doc.save(`sticker_usage_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.pdf`);
+    doc.save(`sticker_audit_report_${startDate.toISOString().split('T')[0]}_to_${endDate.toISOString().split('T')[0]}.pdf`);
   }
   function exportLabelsUsageCSV(startDate, endDate) {
     const labelUsage = {};
@@ -1947,6 +2040,151 @@
     }
     hideExportDateSelectionModal();
   });
+
+  // === TRANSACTION HISTORY MODAL ===
+  function showTransactionHistoryModal() {
+    if (userRole !== "admin") return;
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const last30Days = new Date(now.setDate(now.getDate() - 30)).toISOString().split('T')[0];
+
+    document.getElementById('txStartDate').value = last30Days;
+    document.getElementById('txEndDate').value = todayStr;
+    renderTransactionHistory();
+    document.getElementById('transactionHistoryModal').style.display = 'flex';
+  }
+
+  function hideTransactionHistoryModal() {
+    document.getElementById('transactionHistoryModal').style.display = 'none';
+  }
+
+  function getAllTransactions() {
+    const allTx = [];
+    inventory.forEach(item => {
+      const label = item.label || item.name || 'Unknown';
+      if (Array.isArray(item.transactions)) {
+        item.transactions.forEach(tx => {
+          allTx.push({
+            sticker: label,
+            type: tx.type,
+            amount: tx.amount,
+            balance: tx.balance,
+            date: tx.date,
+            time: tx.time,
+            person: tx.person || 'N/A',
+            invoice: tx.invoice || '',
+            department: tx.department || ''
+          });
+        });
+      }
+    });
+    // Sort newest first
+    return allTx.sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}`);
+      const dateB = new Date(`${b.date}T${b.time}`);
+      return dateB - dateA;
+    });
+  }
+
+  function renderTransactionHistory() {
+    const startDateStr = document.getElementById('txStartDate').value;
+    const endDateStr = document.getElementById('txEndDate').value;
+
+    if (!startDateStr || !endDateStr) {
+      alert("Please select both start and end dates.");
+      return;
+    }
+
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    endDate.setDate(endDate.getDate() + 1); // include end date
+
+    const allTx = getAllTransactions();
+    const filteredTx = allTx.filter(tx => {
+      const txDate = new Date(tx.date);
+      return txDate >= startDate && txDate < endDate;
+    });
+
+    let html = '';
+    if (filteredTx.length === 0) {
+      html = `<p class="text-center" style="font-size: 1.1rem; padding: 25px;">No transactions found in selected period.</p>`;
+    } else {
+      html = `<table id="transactionTable" style="width:100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Sticker</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance</th>
+            <th>Person</th>
+            <th>Invoice</th>
+            <th>Department</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      filteredTx.forEach(tx => {
+        html += `<tr>
+          <td>${tx.date}</td>
+          <td>${tx.time}</td>
+          <td>${tx.sticker}</td>
+          <td style="font-weight: 600; color: ${tx.type === 'add' ? 'var(--accent-secondary)' : 'var(--accent-danger)'};">
+            ${tx.type === 'add' ? 'ADD' : 'DEDUCT'}
+          </td>
+          <td style="font-weight: 500;">${tx.amount}</td>
+          <td style="font-weight: 600;">${tx.balance}</td>
+          <td>${tx.person}</td>
+          <td>${tx.invoice || '—'}</td>
+          <td>${tx.department ? tx.department.charAt(0).toUpperCase() + tx.department.slice(1) : '—'}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+    }
+
+    document.getElementById('transactionHistoryContent').innerHTML = html;
+  }
+
+  function exportTransactionHistoryCSV() {
+    const startDateStr = document.getElementById('txStartDate').value;
+    const endDateStr = document.getElementById('txEndDate').value;
+    if (!startDateStr || !endDateStr) {
+      alert("Please apply a date filter first.");
+      return;
+    }
+
+    const allTx = getAllTransactions();
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    endDate.setDate(endDate.getDate() + 1);
+
+    const filteredTx = allTx.filter(tx => {
+      const txDate = new Date(tx.date);
+      return txDate >= startDate && txDate < endDate;
+    });
+
+    if (filteredTx.length === 0) {
+      alert("No transactions to export.");
+      return;
+    }
+
+    let csv = "Date,Time,Sticker,Type,Amount,Balance,Person,Invoice,Department\n";
+    filteredTx.forEach(tx => {
+      csv += `"${tx.date}","${tx.time}","${tx.sticker}","${tx.type.toUpperCase()}","${tx.amount}","${tx.balance}","${tx.person}","${tx.invoice}","${tx.department}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `audit_log_${startDateStr}_to_${endDateStr}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   // --- INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', function() {
     const deductBtn = document.getElementById("deductBtn");
