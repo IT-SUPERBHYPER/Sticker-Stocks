@@ -964,7 +964,6 @@
           <option value="online">Online</option>
           <option value="freezer">Freezer</option>
           <option value="retail">Retail</option>
-
         </select>
       </div>
       <div class="form-group">
@@ -1014,6 +1013,14 @@
         <div class="form-group">
             <label for="addStockAmount"><i class="fas fa-sort-numeric-up"></i> Amount to Add</label>
             <input type="number" id="addStockAmount" placeholder="Enter amount" min="1">
+        </div>
+        <div class="form-group">
+            <label for="addStockPerson"><i class="fas fa-user"></i> Added By</label>
+            <input type="text" id="addStockPerson" placeholder="e.g., Admin Name" required>
+        </div>
+        <div class="form-group">
+            <label for="addStockInvoice"><i class="fas fa-file-invoice"></i> Invoice Number</label>
+            <input type="text" id="addStockInvoice" placeholder="e.g., INV-2025-001" required>
         </div>
         <div style="display: flex; gap: 12px; margin-top: 25px;">
           <button onclick="addStockToSticker()" style="flex:1;"><i class="fas fa-plus"></i> Add Stock</button>
@@ -1081,12 +1088,10 @@
     </div>
   </div>
 </div>
-
 <!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
   const firebaseConfig = {
     apiKey: "AIzaSyDak-WfWfFGZG4TCrIsN0fS-2UFkKmmx8M",
     authDomain: "sticker-stocks.firebaseapp.com",
@@ -1096,15 +1101,12 @@
     appId: "1:641798479255:web:ccb1fc59f930cc934e78d2",
     measurementId: "G-7TDVLLRFCV"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
   // Expose to global scope for non-module script
   window.firebaseApp = app;
   window.firestore = { db, doc, getDoc, setDoc };
 </script>
-
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
@@ -1175,17 +1177,57 @@
   let editIndex = -1, addStockIndex = -1, usageModalIndex = -1;
   let exportType = '';
   let exportOption = 'month';
-
   function showLoader(show=true) {
     document.getElementById('loader').style.display = show ? 'flex' : 'none';
   }
-
   async function loadInventory() {
     showLoader(true);
     try {
       const docRef = window.firestore.doc(window.firestore.db, "inventory", "main");
       const docSnap = await window.firestore.getDoc(docRef);
       inventory = docSnap.exists() ? docSnap.data().items || [] : [];
+      
+      // === DATA MIGRATION for older inventories ===
+      inventory.forEach(item => {
+        if (!item.transactions || !Array.isArray(item.transactions)) {
+          item.transactions = [];
+          // Reconstruct from initial stock + usage
+          let balance = item.totalStock;
+          // First, log initial add
+          if (item.totalStock > 0) {
+            item.transactions.push({
+              type: "add",
+              amount: item.totalStock,
+              balance: item.totalStock,
+              date: "2000-01-01",
+              time: "00:00",
+              person: "System",
+              invoice: "MIGRATED"
+            });
+          }
+          // Then replay usage as deductions (in order)
+          if (Array.isArray(item.usage)) {
+            item.usage.forEach(u => {
+              balance -= u.amount;
+              item.transactions.push({
+                type: "deduct",
+                amount: u.amount,
+                balance: balance,
+                date: u.date,
+                time: u.time || "00:00",
+                person: u.person,
+                department: u.department
+              });
+            });
+          }
+          // Fix remainingStock if mismatched
+          if (balance !== item.remainingStock) {
+            console.warn("Balance mismatch fixed for:", item.name);
+            item.remainingStock = balance;
+          }
+        }
+      });
+      
     } catch (err) {
       console.error("Load from Firebase failed:", err);
       inventory = [];
@@ -1194,7 +1236,6 @@
       showLoader(false);
     }
   }
-
   async function saveInventory() {
     showLoader(true);
     try {
@@ -1207,8 +1248,7 @@
       showLoader(false);
     }
   }
-
-  // --- INVENTORY FUNCTIONS (UNCHANGED) ---
+  // --- INVENTORY FUNCTIONS ---
   function addSticker() {
     const name = document.getElementById("stickerName").value.trim();
     const label = document.getElementById("stickerLabel").value;
@@ -1220,9 +1260,23 @@
     if (inventory.some(s => s.name && s.name.toLowerCase() === name.toLowerCase())) {
       alert('Sticker with this name already exists.'); return;
     }
+    
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     inventory.push({
       name, label, totalStock: stock, remainingStock: stock,
-      costPerSticker: cost, usage: []
+      costPerSticker: cost, usage: [],
+      transactions: [{
+        type: "add",
+        amount: stock,
+        balance: stock,
+        date: dateString,
+        time: timeString,
+        person: "System",
+        invoice: "INITIAL"
+      }]
     });
     saveInventory().then(() => {
       updateSelectors();
@@ -1311,6 +1365,19 @@
     const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     item.remainingStock -= amount;
     item.usage.push({ department, amount, person, date, time: timeString });
+    
+    // ALSO log to transactions
+    if (!item.transactions) item.transactions = [];
+    item.transactions.push({
+      type: "deduct",
+      amount: amount,
+      balance: item.remainingStock,
+      date: date,
+      time: timeString,
+      person: person,
+      department: department
+    });
+    
     saveInventory().then(() => {
       updateReport();
       document.getElementById("selectSticker").value = "";
@@ -1397,8 +1464,10 @@
     addStockIndex = i;
     document.getElementById('addStockStickerName').textContent = inventory[i].label || inventory[i].name;
     document.getElementById('addStockAmount').value = "";
+    document.getElementById('addStockPerson').value = "";
+    document.getElementById('addStockInvoice').value = "";
     document.getElementById('addStockModal').style.display = 'flex';
-    setTimeout(()=>{document.getElementById('addStockAmount').focus()},250);
+    setTimeout(()=>{document.getElementById('addStockPerson').focus()},250);
   }
   function hideAddStockModal() {
     document.getElementById('addStockModal').style.display = 'none';
@@ -1406,12 +1475,37 @@
   }
   function addStockToSticker() {
     const amt = parseInt(document.getElementById('addStockAmount').value);
+    const person = document.getElementById('addStockPerson').value.trim();
+    const invoice = document.getElementById('addStockInvoice').value.trim();
+
     if (isNaN(amt) || amt <= 0) { alert("Enter a valid amount."); return; }
-    inventory[addStockIndex].totalStock += amt;
-    inventory[addStockIndex].remainingStock += amt;
+    if (!person) { alert("Please enter the name of the person adding stock."); return; }
+    if (!invoice) { alert("Please enter an invoice number."); return; }
+
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const item = inventory[addStockIndex];
+    const newBalance = item.remainingStock + amt;
+
+    item.totalStock += amt;
+    item.remainingStock = newBalance;
+
+    if (!item.transactions) item.transactions = [];
+    item.transactions.push({
+      type: "add",
+      amount: amt,
+      balance: newBalance,
+      date: dateString,
+      time: timeString,
+      person: person,
+      invoice: invoice
+    });
+
     saveInventory().then(() => {
-        updateReport();
-        hideAddStockModal();
+      updateReport();
+      hideAddStockModal();
     });
   }
   function showUsageModal(idx) {
@@ -1463,6 +1557,21 @@
     if (usageIndex !== -1) {
       sticker.usage.splice(usageIndex, 1);
       sticker.remainingStock += amount;
+      
+      // Also remove from transactions
+      const txIndex = sticker.transactions.findIndex(t =>
+        t.type === "deduct" &&
+        t.date === date &&
+        t.time === time &&
+        t.person === person &&
+        t.department === department &&
+        t.amount === amount
+      );
+      if (txIndex !== -1) {
+        sticker.transactions.splice(txIndex, 1);
+        // Recalculate balances if needed (optional, for safety)
+      }
+      
       saveInventory().then(() => {
         updateReport();
         showUsageModal(stickerIndex);
@@ -1568,7 +1677,7 @@
     }
     document.getElementById('statsContent').innerHTML = html;
   }
-  // --- EXPORT FUNCTIONS (UNCHANGED) ---
+  // --- EXPORT FUNCTIONS ---
   function getFilteredUsageData(startDate, endDate) {
     const filteredData = [];
     inventory.forEach(item => {
