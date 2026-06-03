@@ -1450,20 +1450,46 @@ html.dark #loginModal {
 
 @media (max-width: 768px) {
   .container {
-    padding: 16px;
+    padding: 12px;
   }
 
   .section-card {
-    padding: 16px;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+
+  .section-title i {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
   }
 
   .form-pair-group {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 14px;
   }
 
   .form-group {
     min-width: 100%;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    margin-bottom: 5px;
+  }
+
+  .form-group input, .form-group select {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    min-height: 38px;
   }
 
   .flex-row {
@@ -1472,114 +1498,348 @@ html.dark #loginModal {
   }
 
   .action-btn, button, .reset-btn, .download-btn, .upload-btn, .audit-btn, .export-btn, .stats-full-btn {
-    padding: 7px 12px;
-    font-size: 0.8rem;
+    padding: 7px 11px;
+    font-size: 0.78rem;
     gap: 4px;
+    border-radius: var(--radius-sm);
   }
 
-  th, td {
-    padding: 8px 8px;
-    font-size: 0.8rem;
+  /* Table improvements for mobile */
+  .table-responsive {
+    border-radius: var(--radius-md);
+    margin: 0 -6px;
+    width: calc(100% + 12px);
+  }
+
+  table {
+    min-width: 650px;
+  }
+
+  th {
+    padding: 9px 10px;
+    font-size: 0.72rem;
+  }
+
+  td {
+    padding: 9px 10px;
+    font-size: 0.82rem;
   }
 
   .app-header {
-    padding: 0 16px;
-    height: 50px;
+    padding: 0 14px;
+    height: 48px;
   }
 
   .app-header .header-brand {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    gap: 7px;
   }
 
+  .app-header .header-brand i {
+    font-size: 1.1rem;
+  }
+
+  /* Modals - full screen on mobile for better UX */
   .modal-content {
     padding: 0;
-    width: 95%;
+    width: 100%;
     max-width: none;
-    max-height: 95vh;
-    border-radius: var(--radius-lg);
+    max-height: 100vh;
+    border-radius: 0;
+    height: 100vh;
   }
 
   #statsModal .modal-content {
-    max-height: 90vh;
+    max-height: 100vh;
   }
 
   .modal-content h3 {
     font-size: 1rem;
-    padding: 16px 16px 12px 16px;
+    padding: 14px 16px 10px 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-card);
+    z-index: 5;
   }
 
   .modal-close {
-    top: 12px;
-    right: 12px;
-    width: 28px;
-    height: 28px;
-    font-size: 1.2rem;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 1.3rem;
+    background: var(--bg-primary);
+    border-radius: 50%;
   }
 
   #usageListTable th, #usageListTable td,
   #statsTable th, #statsTable td,
   #transactionTable th, #transactionTable td {
-    padding: 8px 5px;
+    padding: 8px 6px;
     font-size: 0.75rem;
   }
 
+  /* Tabs - scrollable on mobile */
   #statsTabs, #exportTypeTabs, #fullStatsTabs {
-    margin: 12px 12px;
+    margin: 10px 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #statsTabs::-webkit-scrollbar,
+  #exportTypeTabs::-webkit-scrollbar,
+  #fullStatsTabs::-webkit-scrollbar {
+    display: none;
   }
 
   #statsTabs button, #exportTypeTabs button, #fullStatsTabs button {
     padding: 6px 10px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    flex-shrink: 0;
   }
 
+  /* Stats modal cards */
   .stats-container {
     grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 12px;
+    gap: 10px;
+    padding: 10px;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-item {
+    padding: 10px;
   }
 
   .stats-card {
-    padding: 16px;
+    padding: 14px;
   }
 
   .stat-number {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  .stat-unit {
+    font-size: 0.7rem;
+  }
+
+  .stats-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .stats-header i {
+    font-size: 1rem;
+    padding: 6px;
+  }
+
+  .stats-header h4 {
+    font-size: 0.95rem;
+  }
+
+  /* Charts on mobile - taller for touch, wider labels */
+  .chart-container {
+    height: 200px;
+    padding-bottom: 44px;
+    margin: 12px 0;
+  }
+
+  .bar-chart {
+    padding: 18px 8px 0 8px;
+  }
+
+  .bar {
+    margin: 0 3px;
+    min-width: 22px;
+  }
+
+  .bar-value {
+    font-size: 0.65rem;
+    top: -18px;
   }
 
   .bar-label {
     font-size: 0.6rem;
+    bottom: -38px;
+    max-width: 55px;
   }
 
+  /* Data tables in stats - scrollable */
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table th, .data-table td {
+    padding: 8px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* Login */
   #loginForm {
-    padding: 28px 20px;
-    width: 95%;
+    padding: 24px 18px;
+    width: 92%;
+    border-radius: var(--radius-lg);
   }
 
   #loginForm h2 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
 
+  #loginForm input {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Full page stats dashboard - mobile optimized */
   .dashboard-header {
-    padding: 12px 16px;
+    padding: 10px 14px;
+    gap: 8px;
   }
 
   .dashboard-header h1 {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .dashboard-controls {
+    gap: 5px;
+  }
+
+  .dashboard-controls .export-btn,
+  .dashboard-controls .action-btn {
+    font-size: 0.72rem;
+    padding: 5px 9px;
   }
 
   #fullStatsContent {
+    padding: 10px;
+    min-height: auto;
+  }
+
+  .full-stats-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .full-stats-card {
+    padding: 14px;
+  }
+
+  .full-stats-card.wide {
+    grid-column: 1;
+  }
+
+  /* Full stats grid - 2 columns on mobile */
+  .full-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .full-stat-item {
+    padding: 10px;
+  }
+
+  .full-stat-number {
+    font-size: 1.3rem;
+  }
+
+  .full-stat-label {
+    font-size: 0.7rem;
+  }
+
+  /* Full charts - shorter on mobile */
+  .full-chart-container {
+    height: 240px;
+    padding: 14px 10px 50px 10px;
+  }
+
+  .full-bar {
+    margin: 0 4px;
+    min-width: 24px;
+  }
+
+  .full-bar-value {
+    font-size: 0.7rem;
+    top: -20px;
+  }
+
+  .full-bar-label {
+    font-size: 0.65rem;
+    bottom: -40px;
+    max-width: 60px;
+  }
+
+  /* Full data tables - scrollable */
+  .full-data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .full-data-table th, .full-data-table td {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+
+  /* Comparison grid */
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .comparison-card {
     padding: 12px;
+  }
+
+  /* Stats metrics */
+  .stats-metric {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .metric-label {
+    font-size: 0.78rem;
+  }
+
+  .metric-value {
+    font-size: 1rem;
+  }
+
+  /* Export modal forms */
+  #exportContent .form-group input,
+  #exportContent .form-group select {
+    font-size: 0.85rem;
   }
 }
 
+/* ===== SMALL MOBILE (under 480px) ===== */
 @media (max-width: 480px) {
+  .container {
+    padding: 8px;
+  }
+
+  .section-card {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  /* Toolbar - stack buttons */
   .flex-row {
     flex-direction: column;
+    gap: 5px;
   }
+
   .flex-row > button,
   .flex-row > .export-btn,
   .flex-row > .download-btn,
@@ -1588,5 +1848,250 @@ html.dark #loginModal {
   .flex-row > .reset-btn,
   .flex-row > .stats-full-btn {
     width: 100%;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.82rem;
+  }
+
+  /* Tables even more compact */
+  table {
+    min-width: 550px;
+  }
+
+  th {
+    padding: 7px 8px;
+    font-size: 0.68rem;
+  }
+
+  td {
+    padding: 7px 8px;
+    font-size: 0.76rem;
+  }
+
+  /* Stats grid - 2 cols tight */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .stat-item {
+    padding: 8px;
+  }
+
+  .stat-number {
+    font-size: 1.1rem;
+  }
+
+  /* Charts - compact */
+  .chart-container {
+    height: 180px;
+    padding-bottom: 42px;
+  }
+
+  .bar-chart {
+    padding: 14px 6px 0 6px;
+  }
+
+  .bar {
+    margin: 0 2px;
+    min-width: 18px;
+  }
+
+  .bar-value {
+    font-size: 0.6rem;
+    top: -16px;
+  }
+
+  .bar-label {
+    font-size: 0.55rem;
+    bottom: -36px;
+    max-width: 48px;
+  }
+
+  /* Full stats grid - 2 columns */
+  .full-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .full-stat-item {
+    padding: 8px;
+  }
+
+  .full-stat-number {
+    font-size: 1.1rem;
+  }
+
+  .full-stat-label {
+    font-size: 0.65rem;
+  }
+
+  /* Full charts compact */
+  .full-chart-container {
+    height: 210px;
+    padding: 12px 8px 48px 8px;
+  }
+
+  .full-bar {
+    margin: 0 3px;
+    min-width: 20px;
+  }
+
+  .full-bar-value {
+    font-size: 0.62rem;
+    top: -18px;
+  }
+
+  .full-bar-label {
+    font-size: 0.58rem;
+    bottom: -38px;
+    max-width: 50px;
+  }
+
+  /* Dashboard header stack */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .dashboard-controls {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-controls .export-btn,
+  .dashboard-controls .action-btn {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    font-size: 0.72rem;
+    padding: 6px 8px;
+  }
+
+  /* Tabs smaller */
+  #statsTabs, #exportTypeTabs, #fullStatsTabs {
+    margin: 8px 8px;
+    gap: 4px;
+    padding: 3px;
+  }
+
+  #statsTabs button, #exportTypeTabs button, #fullStatsTabs button {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* Login form */
+  #loginForm {
+    padding: 20px 16px;
+    border-radius: var(--radius-lg);
+  }
+
+  #loginForm h2 {
+    font-size: 1.05rem;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 30px 16px;
+  }
+
+  .empty-state i {
+    font-size: 2rem;
+  }
+
+  /* Period indicator */
+  .period-indicator {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    margin-left: 4px;
+  }
+
+  /* Comparison card */
+  .comparison-card {
+    padding: 10px;
+  }
+
+  .comparison-card h5 {
+    font-size: 0.85rem !important;
+  }
+
+  /* Export modal content */
+  #exportContent .form-group {
+    min-width: 100%;
+  }
+
+  /* Detailed breakdown grid */
+  .full-stats-card > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ===== TOUCH DEVICE IMPROVEMENTS ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .action-btn, button, .reset-btn, .download-btn, .upload-btn, .audit-btn, .export-btn, .stats-full-btn {
+    min-height: 40px;
+  }
+
+  .bar, .full-bar {
+    cursor: default;
+  }
+
+  .bar:hover, .full-bar:hover {
+    box-shadow: none;
+    filter: none;
+    transform: none;
+  }
+
+  .stats-card:hover, .full-stats-card:hover {
+    box-shadow: var(--shadow-xs);
+  }
+
+  /* Disable hover effects that feel weird on touch */
+  tr:hover td {
+    background-color: inherit;
+  }
+
+  .data-table tr:hover, .full-data-table tr:hover {
+    background: inherit;
+  }
+
+  /* Make modal close button easier to tap */
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
+  }
+}
+
+/* ===== LANDSCAPE PHONE ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-content {
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .dashboard-header {
+    padding: 6px 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 0.95rem;
+  }
+
+  .chart-container {
+    height: 160px;
+  }
+
+  .full-chart-container {
+    height: 190px;
+  }
+
+  #loginForm {
+    padding: 16px 20px;
   }
 }
